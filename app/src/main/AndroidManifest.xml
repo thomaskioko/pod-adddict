@@ -27,6 +27,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.thomaskioko.podadddict.app.PodCastListActivity" />
         </activity>
+
+        <provider
+            android:name=".data.provider.PodCastProvider"
+            android:authorities="com.thomaskioko.podadddict"
+            android:enabled="true"
+            android:exported="false"
+            android:syncable="true" />
     </application>
 
 </manifest>
