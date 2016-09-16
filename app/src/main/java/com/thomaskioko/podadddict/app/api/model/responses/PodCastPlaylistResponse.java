@@ -1,6 +1,6 @@
 package com.thomaskioko.podadddict.app.api.model.responses;
 
-import com.thomaskioko.podadddict.app.model.Rss;
+import com.thomaskioko.podadddict.app.api.model.Rss;
 
 /**
  * @author Thomas Kioko

@@ -1,6 +1,6 @@
 package com.thomaskioko.podadddict.app.api.model.responses;
 
-import com.thomaskioko.podadddict.app.model.Result;
+import com.thomaskioko.podadddict.app.api.model.Result;
 
 import java.util.ArrayList;
 import java.util.List;

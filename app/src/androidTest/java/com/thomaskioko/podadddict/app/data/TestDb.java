@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
 
+import com.thomaskioko.podadddict.app.data.db.PodCastFeedDbHelper;
 import com.thomaskioko.podadddict.app.data.utils.TestUtilities;
 
 import java.util.HashSet;
