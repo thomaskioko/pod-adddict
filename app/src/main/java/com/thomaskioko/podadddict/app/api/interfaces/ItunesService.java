@@ -1,8 +1,8 @@
 package com.thomaskioko.podadddict.app.api.interfaces;
 
-import com.thomaskioko.podadddict.app.api.model.ItunesLookUpResponse;
-import com.thomaskioko.podadddict.app.api.model.PodCastPlaylistResponse;
-import com.thomaskioko.podadddict.app.api.model.TopPodCastResponse;
+import com.thomaskioko.podadddict.app.api.model.responses.ItunesLookUpResponse;
+import com.thomaskioko.podadddict.app.api.model.responses.PodCastPlaylistResponse;
+import com.thomaskioko.podadddict.app.api.model.responses.TopPodCastResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -14,14 +14,14 @@ import retrofit2.http.Query;
 /**
  * @author Thomas Kioko
  */
-public interface ItunesService {
+public interface iTunesService {
 
     /**
      * Get Top rated PodCast from iTunes
      *
      * @return Json Response
      */
-    @GET("us/rss/toppodcasts/limit=1/explicit=true/json")
+    @GET("us/rss/toppodcasts/limit=50/explicit=true/json")
     Call<TopPodCastResponse> getTopRatedPodCasts();
 
     /**
