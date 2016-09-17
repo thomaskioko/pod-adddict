@@ -9,7 +9,7 @@
     android:divider="?android:attr/dividerHorizontal"
     android:orientation="horizontal"
     android:showDividers="middle"
-    tools:context="com.thomaskioko.podadddict.app.PodCastListActivity">
+    tools:context=".ui.PodCastListActivity">
 
     <!--
     This layout is a two-pane layout for the PodCasts
@@ -26,7 +26,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         app:layoutManager="LinearLayoutManager"
-        tools:context="com.thomaskioko.podadddict.app.PodCastListActivity"
+        tools:context=".ui.PodCastListActivity"
         tools:listitem="@layout/podcast_list_content" />
 
     <FrameLayout
