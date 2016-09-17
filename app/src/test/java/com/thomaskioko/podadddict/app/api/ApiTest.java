@@ -1,9 +1,9 @@
 package com.thomaskioko.podadddict.app.api;
 
 
-import com.thomaskioko.podadddict.app.api.model.ItunesLookUpResponse;
-import com.thomaskioko.podadddict.app.api.model.PodCastPlaylistResponse;
-import com.thomaskioko.podadddict.app.api.model.TopPodCastResponse;
+import com.thomaskioko.podadddict.app.api.model.responses.ItunesLookUpResponse;
+import com.thomaskioko.podadddict.app.api.model.responses.PodCastPlaylistResponse;
+import com.thomaskioko.podadddict.app.api.model.responses.TopPodCastResponse;
 import com.thomaskioko.podadddict.app.util.ApplicationConstants;
 
 import org.junit.Test;
@@ -25,7 +25,7 @@ public class ApiTest extends BaseTestCase {
 
 
     @Test
-    public void getPaymentResponse() throws IOException {
+    public void getTopRatedResponse() throws IOException {
 
         getApiClient().setEndpointUrl(ApplicationConstants.ITUNES_END_POINT);
         Call<TopPodCastResponse> serverPaymentResponseCall = getApiClient().iTunesServices()
