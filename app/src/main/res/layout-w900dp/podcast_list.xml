@@ -19,7 +19,7 @@
 
     <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/podcast_list"
+        android:id="@+id/recycler_view_list"
         android:name="com.thomaskioko.podadddict.app.PodCastListFragment"
         android:layout_width="@dimen/item_width"
         android:layout_height="match_parent"
