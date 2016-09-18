@@ -29,5 +29,13 @@ public class ApplicationConstants {
      * Connection write timeout duration
      */
     public static final int WRITE_TIMEOUT = 60 * 1000;
+    /**
+     * Default image size from feed list
+     */
+    public static final String IMAGE_SIZE_170x170 = "170";
+    /**
+     * Dimension for a larger image
+     */
+    public static final String IMAGE_SIZE_600x600 = "600";
 
 }

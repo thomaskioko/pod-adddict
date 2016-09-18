@@ -14,6 +14,7 @@ import android.util.Log;
 
 import com.thomaskioko.podadddict.app.data.PodCastContract.PodCastFeedEntry;
 import com.thomaskioko.podadddict.app.data.PodCastContract.PodCastFeedPlaylistEntry;
+import com.thomaskioko.podadddict.app.data.db.PodCastFeedDbHelper;
 import com.thomaskioko.podadddict.app.data.provider.PodCastProvider;
 import com.thomaskioko.podadddict.app.data.utils.TestUtilities;
 

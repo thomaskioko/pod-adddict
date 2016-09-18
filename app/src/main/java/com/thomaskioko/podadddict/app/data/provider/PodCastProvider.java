@@ -11,7 +11,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.thomaskioko.podadddict.app.data.PodCastContract;
-import com.thomaskioko.podadddict.app.data.PodCastFeedDbHelper;
+import com.thomaskioko.podadddict.app.data.db.PodCastFeedDbHelper;
 
 /**
  * Content providers manage access to a structured set of data. They encapsulate the data, and provide

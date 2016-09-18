@@ -1,7 +1,7 @@
 package com.thomaskioko.podadddict.app.api;
 
 
-import com.thomaskioko.podadddict.app.api.interfaces.ItunesInterface;
+import com.thomaskioko.podadddict.app.api.interfaces.iTunesService;
 import com.thomaskioko.podadddict.app.util.ApplicationConstants;
 
 import java.util.concurrent.TimeUnit;
@@ -101,12 +101,12 @@ public class ApiClient {
     }
 
     /**
-     * Return ItunesInterface class instance
+     * Return iTunesService class instance
      *
-     * @return {@link ItunesInterface}
+     * @return {@link iTunesService}
      */
-    public ItunesInterface iTunesServices() {
-        return getRestAdapter().create(ItunesInterface.class);
+    public iTunesService iTunesServices() {
+        return getRestAdapter().create(iTunesService.class);
     }
 
 }

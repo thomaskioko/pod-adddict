@@ -10,7 +10,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 
 import com.thomaskioko.podadddict.app.data.PodCastContract;
-import com.thomaskioko.podadddict.app.data.PodCastFeedDbHelper;
+import com.thomaskioko.podadddict.app.data.db.PodCastFeedDbHelper;
 
 import java.util.Map;
 import java.util.Set;
