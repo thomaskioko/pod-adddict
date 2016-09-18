@@ -29,7 +29,7 @@
         <TextWithBadge
             android:id="@+id/nav_action_favorite"
             android:icon="@drawable/ic_star_24dp"
-            android:title="@string/title_favorite" />
+            android:title="@string/title_favorites" />
     </Group>
 
 </menu>
