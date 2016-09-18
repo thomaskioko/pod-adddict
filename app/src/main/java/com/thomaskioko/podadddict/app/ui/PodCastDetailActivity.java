@@ -2,17 +2,14 @@ package com.thomaskioko.podadddict.app.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
-import com.thomaskioko.podadddict.app.PodCastDetailFragment;
-import com.thomaskioko.podadddict.app.PodCastListActivity;
 import com.thomaskioko.podadddict.app.R;
+import com.thomaskioko.podadddict.app.ui.fragments.PodCastDetailFragment;
+
+import butterknife.ButterKnife;
 
 /**
  * An activity representing a single PodCast detail screen. This
@@ -22,21 +19,13 @@ import com.thomaskioko.podadddict.app.R;
  */
 public class PodCastDetailActivity extends AppCompatActivity {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_podcast_detail);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
-        setSupportActionBar(toolbar);
+        ButterKnife.bind(this);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
@@ -57,8 +46,8 @@ public class PodCastDetailActivity extends AppCompatActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(PodCastDetailFragment.ARG_ITEM_ID,
-                    getIntent().getStringExtra(PodCastDetailFragment.ARG_ITEM_ID));
+            arguments.putString(PodCastDetailFragment.EXTRA_TITLE,
+                    getIntent().getStringExtra(PodCastDetailFragment.EXTRA_TITLE));
             PodCastDetailFragment fragment = new PodCastDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
