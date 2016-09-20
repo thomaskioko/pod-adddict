@@ -46,13 +46,15 @@ public class PodCastDetailActivity extends AppCompatActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(PodCastDetailFragment.EXTRA_TITLE,
-                    getIntent().getStringExtra(PodCastDetailFragment.EXTRA_TITLE));
+            arguments.putParcelable(PodCastDetailFragment.DETAIL_URI, getIntent().getData());
             PodCastDetailFragment fragment = new PodCastDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.podcast_detail_container, fragment)
                     .commit();
+
+            // Being here means we are in animation mode
+            supportPostponeEnterTransition();
         }
     }
 
