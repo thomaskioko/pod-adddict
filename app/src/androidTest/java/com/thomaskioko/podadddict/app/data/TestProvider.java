@@ -14,6 +14,7 @@ import android.util.Log;
 
 import com.thomaskioko.podadddict.app.data.PodCastContract.PodCastFeedEntry;
 import com.thomaskioko.podadddict.app.data.PodCastContract.PodCastFeedPlaylistEntry;
+import com.thomaskioko.podadddict.app.data.PodCastContract.PodcastFeedSubscriptionEntry;
 import com.thomaskioko.podadddict.app.data.db.PodCastFeedDbHelper;
 import com.thomaskioko.podadddict.app.data.provider.PodCastProvider;
 import com.thomaskioko.podadddict.app.data.utils.TestUtilities;
@@ -67,25 +68,43 @@ public class TestProvider extends AndroidTestCase {
      * the correct type for each type of URI that it can handle.
      */
     public void testGetType() {
-        // content://com.example.android.sunshine.app/weather/
+        // content://com.thomaskioko.podadddict/podCastFeed/
         String type = mContext.getContentResolver().getType(PodCastFeedPlaylistEntry.CONTENT_URI);
-        // vnd.android.cursor.dir/com.example.android.sunshine.app/weather
+        // vnd.android.cursor.dir/com.thomaskioko.podadddict/podCastFeed
         assertEquals("Error: the PodCastFeedPlaylistEntry CONTENT_URI should return PodCastFeedPlaylistEntry.CONTENT_TYPE",
                 PodCastFeedPlaylistEntry.CONTENT_TYPE, type);
 
-        int testFeedId = 94074;
-        // content://com.example.android.sunshine.app/weather/94074
+        int testFeedId = 201671138;
+        // content://com.thomaskioko.podadddict/podCastFeed/94074
         type = mContext.getContentResolver().getType(
                 PodCastFeedPlaylistEntry.buildPodCastFeedPlaylist(testFeedId));
-        // vnd.android.cursor.dir/com.example.android.sunshine.app/weather
+        // vnd.android.cursor.dir/com.thomaskioko.podadddict/podCastFeed
         assertEquals("Error: the PodCastFeedPlaylistEntry CONTENT_URI with location should return PodCastFeedPlaylistEntry.CONTENT_TYPE",
                 PodCastFeedPlaylistEntry.CONTENT_TYPE, type);
+
+        // content://com.thomaskioko.podadddict/podCastFeed/201671138
+        type = mContext.getContentResolver().getType(PodCastFeedEntry.buildPodCastFeedUri(testFeedId));
+        // vnd.android.cursor.dir/com.thomaskioko.podadddict/podCastFeed/201671138
+        assertEquals("Error: the PodCastFeedEntry CONTENT_URI with PodCastFeed should return PodCastFeedEntry.CONTENT_ITEM_TYPE",
+                PodCastFeedEntry.CONTENT_TYPE, type);
 
         // content://com.thomaskioko.podadddict.app.data/podCastFeed/
         type = mContext.getContentResolver().getType(PodCastFeedEntry.CONTENT_URI);
         // vnd.android.cursor.dir/com.thomaskioko.podadddict.app.data/podCastFeed
         assertEquals("Error: the PodCastFeedEntry CONTENT_URI should return PodCastFeedEntry.CONTENT_TYPE",
                 PodCastFeedEntry.CONTENT_TYPE, type);
+
+        // content://com.thomaskioko.podadddict/podCastFeed/
+        type = mContext.getContentResolver().getType(PodCastContract.PodcastFeedSubscriptionEntry.CONTENT_URI);
+        // vnd.android.cursor.dir/com.thomaskioko.podadddict/podCastFeedSubscription
+        assertEquals("Error: the PodcastFeedSubscription CONTENT_URI with PodcastFeedSubscription should return PodcastFeedSubscription.CONTENT_TYPE",
+                PodcastFeedSubscriptionEntry.CONTENT_TYPE, type);
+
+        // content://com.thomaskioko.podadddict/podCastFeedSubscription/201671138
+        type = mContext.getContentResolver().getType(PodCastContract.PodcastFeedSubscriptionEntry.buildSubscriptionUri(testFeedId));
+        // vnd.android.cursor.dir/com.thomaskioko.podadddict/podCastFeedSubscription/201671138
+        assertEquals("Error: the PodcastFeedSubscription CONTENT_URI with PodcastFeedSubscription should return PodcastFeedSubscription.CONTENT_ITEM_TYPE",
+                PodcastFeedSubscriptionEntry.CONTENT_TYPE, type);
     }
 
 
@@ -104,8 +123,8 @@ public class TestProvider extends AndroidTestCase {
         // Fantastic.  Now that we have a feed, add some playlist data!
         ContentValues podcastPlaylistValues = TestUtilities.createPodcastPlaylistValues(locationRowId);
 
-        long weatherRowId = db.insert(PodCastFeedPlaylistEntry.TABLE_NAME, null, podcastPlaylistValues);
-        assertTrue("Unable to Insert PodCastFeedPlaylistEntry into the Database", weatherRowId != -1);
+        long podCastFeedRowId = db.insert(PodCastFeedPlaylistEntry.TABLE_NAME, null, podcastPlaylistValues);
+        assertTrue("Unable to Insert PodCastFeedPlaylistEntry into the Database", podCastFeedRowId != -1);
 
         db.close();
 
@@ -192,25 +211,25 @@ public class TestProvider extends AndroidTestCase {
         TestUtilities.validateCursor("testInsertReadProvider. Error validating PodCastFeedEntry.",
                 cursor, testValues);
 
-        // Fantastic.  Now that we have a location, add some weather!
-        ContentValues weatherValues = TestUtilities.createPodcastPlaylistValues(rowId);
+        // Fantastic.  Now that we have a location, add some podCastFeed!
+        ContentValues podCastFeedValues = TestUtilities.createPodcastPlaylistValues(rowId);
         // The TestContentObserver is a one-shot class
         testContentObserver = TestUtilities.getTestContentObserver();
 
         mContext.getContentResolver().registerContentObserver(PodCastFeedPlaylistEntry.CONTENT_URI, true, testContentObserver);
 
-        Uri weatherInsertUri = mContext.getContentResolver()
-                .insert(PodCastFeedPlaylistEntry.CONTENT_URI, weatherValues);
-        assertTrue(weatherInsertUri != null);
+        Uri podCastFeedInsertUri = mContext.getContentResolver()
+                .insert(PodCastFeedPlaylistEntry.CONTENT_URI, podCastFeedValues);
+        assertTrue(podCastFeedInsertUri != null);
 
-        // Did our content observer get called?  Students:  If this fails, your insert weather
+        // Did our content observer get called?  Students:  If this fails, your insert podCastFeed
         // in your ContentProvider isn't calling
         // getContext().getContentResolver().notifyChange(uri, null);
         testContentObserver.waitForNotificationOrFail();
         mContext.getContentResolver().unregisterContentObserver(testContentObserver);
 
         // A cursor is your primary interface to the query results.
-        Cursor weatherCursor = mContext.getContentResolver().query(
+        Cursor podCastFeedCursor = mContext.getContentResolver().query(
                 PodCastFeedPlaylistEntry.CONTENT_URI,  // Table to Query
                 null, // leaving "columns" null just returns all the columns.
                 null, // cols for "where" clause
@@ -219,22 +238,22 @@ public class TestProvider extends AndroidTestCase {
         );
 
         TestUtilities.validateCursor("testInsertReadProvider. Error validating PodCastFeedPlaylistEntry insert.",
-                weatherCursor, weatherValues);
+                podCastFeedCursor, podCastFeedValues);
 
-        // Add the location values in with the weather data so that we can make
+        // Add the location values in with the podCastFeed data so that we can make
         // sure that the join worked and we actually get all the values back
-        weatherValues.putAll(testValues);
+        podCastFeedValues.putAll(testValues);
 
-        // Get the joined Weather and Location data
-        weatherCursor = mContext.getContentResolver().query(
+        // Get the joined podCastFeed and Location data
+        podCastFeedCursor = mContext.getContentResolver().query(
                 PodCastFeedPlaylistEntry.buildPodCastFeedPlaylistUri(TestUtilities.TEST_FEED_ID),
                 null, // leaving "columns" null just returns all the columns.
                 null, // cols for "where" clause
                 null, // values for "where" clause
                 null  // sort order
         );
-        TestUtilities.validateCursor("testInsertReadProvider.  Error validating joined Weather and Location Data.",
-                weatherCursor, weatherValues);
+        TestUtilities.validateCursor("testInsertReadProvider.  Error validating joined podCastFeed and Location Data.",
+                podCastFeedCursor, podCastFeedValues);
 
     }
 
@@ -248,24 +267,24 @@ public class TestProvider extends AndroidTestCase {
         TestUtilities.TestContentObserver locationObserver = TestUtilities.getTestContentObserver();
         mContext.getContentResolver().registerContentObserver(PodCastFeedEntry.CONTENT_URI, true, locationObserver);
 
-        // Register a content observer for our weather delete.
-        TestUtilities.TestContentObserver weatherObserver = TestUtilities.getTestContentObserver();
-        mContext.getContentResolver().registerContentObserver(PodCastFeedPlaylistEntry.CONTENT_URI, true, weatherObserver);
+        // Register a content observer for our podCastFeed delete.
+        TestUtilities.TestContentObserver podCastFeedObserver = TestUtilities.getTestContentObserver();
+        mContext.getContentResolver().registerContentObserver(PodCastFeedPlaylistEntry.CONTENT_URI, true, podCastFeedObserver);
 
         deleteAllRecordsFromProvider();
 
-        // Students: If either of these fail, you most-likely are not calling the
+        // If either of these fail, you most-likely are not calling the
         // getContext().getContentResolver().notifyChange(uri, null); in the ContentProvider
         // delete.  (only if the insertReadProvider is succeeding)
         locationObserver.waitForNotificationOrFail();
-        weatherObserver.waitForNotificationOrFail();
+        podCastFeedObserver.waitForNotificationOrFail();
 
         mContext.getContentResolver().unregisterContentObserver(locationObserver);
-        mContext.getContentResolver().unregisterContentObserver(weatherObserver);
+        mContext.getContentResolver().unregisterContentObserver(podCastFeedObserver);
     }
 
     /**
-     *
+     * Test update functionality
      */
     public void testUpdatePodCastFeed() {
         // Create a new map of values, where column names are the keys
