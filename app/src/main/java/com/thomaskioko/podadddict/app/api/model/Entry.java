@@ -15,14 +15,17 @@ public class Entry {
     @SerializedName("im:image")
     private List<ImImage> imImage = new ArrayList<>();
     private Summary summary;
+    @SerializedName("im:price")
     private ImPrice imPrice;
     private ImContentType imContentType;
     private Rights rights;
     private Title title;
     private Link link;
     private Id id;
+    @SerializedName("im:artist")
     private ImArtist imArtist;
     private Category category;
+    @SerializedName("im:releaseDate")
     private ImReleaseDate imReleaseDate;
 
     /**
