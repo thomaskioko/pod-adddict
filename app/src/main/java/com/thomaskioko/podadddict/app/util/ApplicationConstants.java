@@ -8,7 +8,7 @@ public class ApplicationConstants {
      * Set to true to Enable Debugging in the API false to disable. This should be false when
      * releasing the app.
      */
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     /**
      * Base iTunes API Endpoint.
      */
@@ -38,4 +38,16 @@ public class ApplicationConstants {
      */
     public static final String IMAGE_SIZE_600x600 = "600";
 
+    /**
+     * Podcast feeed column ID. These must match the order on which they have been created in
+     * {@link com.thomaskioko.podadddict.app.data.db.PodCastFeedDbHelper} otherwise data will not
+     * match
+     */
+    public static int COLUMN_PODCAST_FEED_ROW_ID = 0;
+    public static int COLUMN_PODCAST_FEED_ID = 1;
+    public static int COLUMN_PODCAST_FEED_TITLE = 2;
+    public static int COLUMN_PODCAST_FEED_IMAGE_URL = 3;
+    public static int COLUMN_PODCAST_FEED_SUMMARY = 4;
+    public static int COLUMN_PODCAST_FEED_ARTIST = 5;
+    public static int COLUMN_PODCAST_FEED_CATEGORY = 6;
 }
