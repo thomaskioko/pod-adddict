@@ -17,6 +17,8 @@
 
     <color name="grey_ripple">#8ddd</color>
     <color name="placeholder">#ddd</color>
+    <color name="cyan">#00BCD4</color>
+    <color name="white">#FFFF</color>
 
 
 </resources>
