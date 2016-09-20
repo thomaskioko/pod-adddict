@@ -14,4 +14,14 @@
     <string name="title_discover">Discover</string>
     <string name="title_downloads">Downloads</string>
     <string name="title_favorites">Favorites</string>
+
+    <!-- SyncAdapter related -->
+    <string name="sync_account_type">podadddict.thomaskioko.com</string>
+    <string name="content_authority">com.thomaskioko.podadddict</string>
+
+    <!-- Button Text -->
+    <string name="button_subscribe">Subscribe</string>
+
+    <!-- Dummy Data -->
+    <string name="podcast_description">Twice-monthly community updates for the small desert town of Night Vale, featuring local weather, news, announcements from the Sheriff\'s Secret Police, mysterious lights in the night sky, dark hooded figures with unknowable powers, and cultural events. Turn on your radio and hide. Never listened before? It\'s an ongoing radio show. Start with the current episode, and you\'ll catch on in no time. Or, go right to Episode 1 if you wanna binge-listen. (Produced by Night Vale Presents. Written by Joseph Fink and Jeffrey Cranor. Narrated by Cecil Baldwin. On Twitter as NightValeRadio)</string>
 </resources>
