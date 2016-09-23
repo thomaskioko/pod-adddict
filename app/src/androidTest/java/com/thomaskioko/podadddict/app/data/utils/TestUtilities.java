@@ -114,7 +114,15 @@ public class TestUtilities {
      */
     public static ContentValues createPodcastSubscriptionValues(long feedRowId) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(PodCastContract.PodcastFeedSubscriptionEntry.COLUMN_PODCAST_FEED_ID, feedRowId);
+        contentValues.put(PodCastContract.PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_FEED_ID, feedRowId);
+        contentValues.put(PodCastContract.PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_TRACK_ID, TEST_FEED_ID);
+        contentValues.put(PodCastContract.PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_ARTIST_NAME, TEST_FEED_PLAYLIST_ARTIST_NAME);
+        contentValues.put(PodCastContract.PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_TRACK_NAME, TEST_FEED_PLAYLIST_TRACK_NAME);
+        contentValues.put(PodCastContract.PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_URL, TEST_FEED_PLAYLIST_URL);
+        contentValues.put(PodCastContract.PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_ART_WORK_URL_100, TEST_FEED_PLAYLIST_ART_WORK_URL_100);
+        contentValues.put(PodCastContract.PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_ART_WORK_URL_600, TEST_FEED_PLAYLIST_ART_WORK_URL_600);
+        contentValues.put(PodCastContract.PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_TRACK_COUNT, TEST_FEED_PLAYLIST_TRACK_COUNT);
+        contentValues.put(PodCastContract.PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_GENRE, TEST_FEED_PLAYLIST_GENRE);
 
         return contentValues;
     }
