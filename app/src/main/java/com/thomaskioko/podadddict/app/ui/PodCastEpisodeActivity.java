@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.thomaskioko.podadddict.app.R;
-import com.thomaskioko.podadddict.app.ui.fragments.PodCastDetailFragment;
+import com.thomaskioko.podadddict.app.ui.fragments.PodCastEpisodesFragment;
 
 import butterknife.ButterKnife;
 
@@ -17,7 +17,7 @@ import butterknife.ButterKnife;
  * item details are presented side-by-side with a list of items
  * in a {@link PodCastListActivity}.
  */
-public class PodCastDetailActivity extends AppCompatActivity {
+public class PodCastEpisodeActivity extends AppCompatActivity {
 
 
     @Override
@@ -46,15 +46,13 @@ public class PodCastDetailActivity extends AppCompatActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putParcelable(PodCastDetailFragment.DETAIL_URI, getIntent().getData());
-            PodCastDetailFragment fragment = new PodCastDetailFragment();
+            arguments.putParcelable(PodCastEpisodesFragment.DETAIL_URI, getIntent().getData());
+            PodCastEpisodesFragment fragment = new PodCastEpisodesFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.podcast_detail_container, fragment)
                     .commit();
 
-            // Being here means we are in animation mode
-            supportPostponeEnterTransition();
         }
     }
 
