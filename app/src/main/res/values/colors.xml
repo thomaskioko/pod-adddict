@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#FF5722</color>
     <color name="colorPrimaryDark">#E64A19</color>
-    <color name="colorAccent">#22caff</color>
+    <color name="colorAccent">#147BAF</color>
 
     <color name="colorAccentPlus10">#F28509</color>
     <color name="colorAccentPlus20">#F9AD56</color>
@@ -19,6 +19,8 @@
     <color name="placeholder">#ddd</color>
     <color name="cyan">#00BCD4</color>
     <color name="white">#FFFF</color>
+    <color name="new_indicator_green">#669900</color>
+    <color name="image_readability_tint">#80000000</color>
 
 
 </resources>
