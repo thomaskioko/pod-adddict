@@ -1,12 +1,17 @@
 package com.thomaskioko.podadddict.app.api.model;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * @author Thomas Kioko
  */
 
 public class Enclosure {
+    @SerializedName(value = "@url")
     private String url;
+    @SerializedName(value = "@length")
     private String length;
+    @SerializedName(value = "@type")
     private String type;
 
     /**
