@@ -74,10 +74,18 @@ public class PodCastFeedDbHelper extends SQLiteOpenHelper {
                 PodcastFeedSubscriptionEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
 
                 // the ID of the PodCastFeedEntry entry associated with this PodcastFeedSubscriptionEntry
-                PodcastFeedSubscriptionEntry.COLUMN_PODCAST_FEED_ID + " INTEGER UNIQUE ON CONFLICT REPLACE NOT NULL, " +
+                PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_FEED_ID + " INTEGER UNIQUE ON CONFLICT REPLACE NOT NULL, " +
+                PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_TRACK_ID + " TEXT NOT NULL, " +
+                PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_ARTIST_NAME + " TEXT NOT NULL, " +
+                PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_TRACK_NAME + " TEXT NOT NULL, " +
+                PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_URL + " TEXT NOT NULL," +
+                PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_ART_WORK_URL_100 + " TEXT NOT NULL, " +
+                PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_ART_WORK_URL_600 + " TEXT NOT NULL, " +
+                PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_TRACK_COUNT + " INTEGER NOT NULL, " +
+                PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_GENRE + " TEXT NOT NULL, " +
 
                 // Set up the PodCastFeedEntry column as a foreign key to PodcastFeedSubscriptionEntry table.
-                " FOREIGN KEY (" + PodcastFeedSubscriptionEntry.COLUMN_PODCAST_FEED_ID + ") REFERENCES " +
+                " FOREIGN KEY (" + PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_FEED_ID + ") REFERENCES " +
                 PodCastFeedEntry.TABLE_NAME + " (" + PodCastFeedEntry.COLUMN_PODCAST_FEED_ID + ")); ";
 
 
