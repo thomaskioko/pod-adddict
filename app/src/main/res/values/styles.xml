@@ -6,6 +6,9 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="snvHintTextAppearance">@style/NavHintTextAppearance</item>
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -16,5 +19,49 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="NavigationViewStyle" parent="SnvSublimeNavigationView">
+        <item name="android:background">#f0f0f0</item>
+    </style>
+
+    <style name="NavItemTextAppearance" parent="TextAppearance.AppCompat.Body2">
+        <item name="android:textSize">25sp</item>
+    </style>
+
+    <style name="NavHintTextAppearance" parent="SnvDefaultHintTextAppearance">
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <!--<item name="colorControlNormal">#FFDDD3</item>-->
+        <item name="android:textColorPrimary">#FFFFFF</item>
+    </style>
+
+    <style name="AppTheme.Home">
+        <item name="android:windowActionBar">false</item>
+    </style>
+
+    <style name="AppTheme.Details">
+        <item name="android:windowActionBar">false</item>
+    </style>
+
+    <style name="PodAdddict.TextView.UnreadIndicator" parent="@android:style/TextAppearance.Small">
+        <item name="android:textSize">@dimen/text_size_micro</item>
+        <item name="android:textColor">@color/new_indicator_green</item>
+    </style>
+
+    <style name="PodAdddict.TextView.ListItemPrimaryTitle" parent="@android:style/TextAppearance.Small">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:lines">2</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="PodAdddict.TextView.ListItemSecondaryTitle" parent="@android:style/TextAppearance.Small">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+        <item name="android:lines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
 
 </resources>

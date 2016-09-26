@@ -1,7 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="text_margin">16dp</dimen>
+
+    <!-- Padding dimensions -->
+    <dimen name="padding_small">8dp</dimen>
+    <dimen name="padding_normal">16dp</dimen>
+    <dimen name="padding_large">24dp</dimen>
+
+    <!--Image dimensions. -->
+    <dimen name="image_small_dimen">70dp</dimen>
+    <dimen name="image_height">200dp</dimen>
+    <dimen name="image_view_medium">120dp</dimen>
+
+    <!-- Margin dimensions. -->
+    <dimen name="margin_medium">16dp</dimen>
+    <dimen name="margin_large">20dp</dimen>
+
+    <!-- Text Sizes. -->
+    <dimen name="text_size_micro">12sp</dimen>
+    <dimen name="text_size_small">14sp</dimen>
+    <dimen name="text_size_navdrawer">16sp</dimen>
+    <dimen name="text_size_medium">18sp</dimen>
+    <dimen name="text_size_large">25sp</dimen>
+
+    <!-- View dimensions. -->
+    <dimen name="grid_item_spacing">2dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="app_bar_height">200dp</dimen>
     <dimen name="item_width">200dp</dimen>
-    <dimen name="text_margin">16dp</dimen>
+    <dimen name="header_view_height">192dp</dimen>
+    <dimen name="listview_secondary_button_width">38dp</dimen>
+
+    <!-- List Dimensions -->
+    <dimen name="listitem_threeline_height">96dp</dimen>
+    <dimen name="listitem_threeline_textleftpadding">14dp</dimen>
+    <dimen name="listitem_threeline_textrightpadding">8dp</dimen>
+    <dimen name="listitem_threeline_verticalpadding">16dp</dimen>
+    <dimen name="listitem_threeline_horizontalpadding">16dp</dimen>
+
+    <!-- Fab Dimensions -->
+    <dimen name="fab_elevation">8dp</dimen>
+    <dimen name="fab_elevation_press">12dp</dimen>
+    <dimen name="fab_size">56dp</dimen>
+
+    <!-- Layout Dimensions -->
+    <dimen name="layout_height">160dp</dimen>
+
 </resources>

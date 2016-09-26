@@ -1,0 +1,217 @@
+package com.thomaskioko.podadddict.app.ui;
+
+import android.annotation.TargetApi;
+import android.app.ActivityOptions;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialogFragment;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
+
+import com.appeaser.sublimenavigationviewlibrary.OnNavigationMenuEventListener;
+import com.appeaser.sublimenavigationviewlibrary.SublimeBaseMenuItem;
+import com.appeaser.sublimenavigationviewlibrary.SublimeNavigationView;
+import com.thomaskioko.podadddict.app.R;
+import com.thomaskioko.podadddict.app.data.PodCastContract;
+import com.thomaskioko.podadddict.app.data.sync.PodAdddictSyncAdapter;
+import com.thomaskioko.podadddict.app.ui.adapter.PodCastAdapterAdapter;
+import com.thomaskioko.podadddict.app.ui.adapter.SubscribedPodCastAdapter;
+import com.thomaskioko.podadddict.app.ui.fragments.DiscoverPodcastFragment;
+import com.thomaskioko.podadddict.app.ui.fragments.PodcastBottomSheetDialogFragment;
+import com.thomaskioko.podadddict.app.ui.fragments.SubscriptionFragment;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
+/**
+ * This is the main activity of the app.
+ *
+ * @author Thomas Kioko
+ */
+public class PodCastListActivity extends AppCompatActivity implements OnNavigationMenuEventListener,
+        DiscoverPodcastFragment.Callback, SubscriptionFragment.Callback {
+
+    /**
+     * Bind View using butter knife.
+     */
+    @Bind(R.id.drawer_layout)
+    DrawerLayout mDrawerLayout;
+    @Bind(R.id.navigation_view)
+    SublimeNavigationView mSublimeNavigationView;
+    @Bind(R.id.coordinated_layout)
+    CoordinatorLayout mCoordinatedLayout;
+    @Bind(R.id.bottomSheetLayout)
+    LinearLayout bottomSheetLayout;
+    @Bind(R.id.toolbar)
+    Toolbar mToolbar;
+
+    //Variables
+    private BottomSheetBehavior mBottomSheetBehavior;
+    private static final String LOG_TAG = PodCastListActivity.class.getSimpleName();
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_podcast_list);
+        ButterKnife.bind(this);
+
+        setSupportActionBar(mToolbar);
+        mToolbar.setTitle(getTitle());
+
+        //Set up the Drawer
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
+                this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawerLayout.setDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
+
+        //Register on clickListener event to the navigation drawer
+        mSublimeNavigationView.setNavigationMenuEventListener(this);
+
+        //Initialize the BottomSheet view
+        mBottomSheetBehavior = BottomSheetBehavior.from(findViewById(R.id.bottomSheetLayout));
+
+        //We set the bottom view state to hidden otherwise it will be displayed be default.
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        bottomSheetLayout.setVisibility(View.GONE);
+
+        Uri podCastSubscribedUri = PodCastContract.PodcastFeedSubscriptionEntry.buildSubscriptionUri();
+
+        Cursor cursor = getContentResolver().query(podCastSubscribedUri, null, null, null, null);
+
+
+        /**
+         * Check if the user has any subscriptions and decide what fragment to load.
+         * If there are no subscriptions load {@link DiscoverPodcastFragment} otherwise we load
+         * {@link SubscriptionFragment}
+         */
+        if (cursor != null) {
+            boolean hasObject = false;
+            if (cursor.moveToFirst()) {
+                hasObject = true;
+            }
+            if (hasObject) {
+
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.add(R.id.frameLayout_container, new SubscriptionFragment());
+                fragmentTransaction.commit();
+                cursor.close();
+            } else {
+                //Load discover fragment
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.add(R.id.frameLayout_container, new DiscoverPodcastFragment());
+                fragmentTransaction.commit();
+
+            }
+        }
+
+        //Initialize the sync adapter
+        PodAdddictSyncAdapter.syncImmediately(this);
+
+
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        }
+        if (mBottomSheetBehavior.getState() != BottomSheetBehavior.STATE_HIDDEN) {
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onNavigationMenuEvent(Event event, SublimeBaseMenuItem menuItem) {
+        FragmentTransaction fragmentTransaction;
+        switch (menuItem.getItemId()) {
+            case R.id.nav_action_poscasts:
+                fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.frameLayout_container, new SubscriptionFragment());
+                fragmentTransaction.commit();
+                //Close the DrawerLayout when an item is selected
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+                break;
+            case R.id.nav_action_downloads:
+                break;
+            case R.id.nav_action_discover:
+                fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.frameLayout_container,
+                        new DiscoverPodcastFragment()
+                );
+                fragmentTransaction.commit();
+                //Close the DrawerLayout when an item is selected
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+                break;
+
+            default:
+                break;
+        }
+        return true;
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == R.id.action_add_subscription) {
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.frameLayout_container,
+                    new DiscoverPodcastFragment()
+            );
+            fragmentTransaction.commit();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    public void onFeedItemSelected(Uri feedUri, PodCastAdapterAdapter.PhotoViewHolder photoViewHolder) {
+
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        BottomSheetDialogFragment bottomSheetDialogFragment = PodcastBottomSheetDialogFragment.newInstance(PodCastListActivity.this, feedUri);
+        bottomSheetDialogFragment.show(getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
+
+
+    }
+
+    @Override
+    public void onSubscribedFeedItemSelected(Uri feedUri, SubscribedPodCastAdapter.ViewHolder viewHolder) {
+        //Pass the uri via the intent
+        Intent intent = new Intent(getApplicationContext(), PodCastEpisodeActivity.class).setData(feedUri);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this, viewHolder.imageView,
+                    viewHolder.imageView.getTransitionName()).toBundle());
+        } else {
+            startActivity(intent);
+        }
+    }
+}

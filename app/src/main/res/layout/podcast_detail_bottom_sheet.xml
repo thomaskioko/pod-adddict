@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottomSheetLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:orientation="vertical"
+    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="40dp">
+
+            <RelativeLayout
+                android:id="@+id/imageViewBackground"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/layout_height"
+                android:gravity="center"
+                android:background="@drawable/photo_background_protection"
+                android:orientation="vertical">
+
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="@dimen/image_view_medium"
+                    android:layout_height="@dimen/image_view_medium"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="10dp"
+                    android:contentDescription="@null"
+                    android:transitionName="@string/transition_photo"/>
+
+                <TextView
+                    android:id="@+id/podcast_title"
+                    style="@style/TextAppearance.AppCompat.Headline"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignStart="@+id/podcast_artist_name"
+                    android:layout_alignTop="@+id/imageView"
+                    android:fontFamily="sans-serif-condensed"
+                    android:maxLines="@integer/max_line"
+                    android:textColor="@color/white" />
+
+
+                <TextView
+                    android:id="@+id/podcast_artist_name"
+                    style="@style/TextAppearance.AppCompat.Body1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/podcast_title"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_toEndOf="@+id/imageView"
+                    android:fontFamily="sans-serif-light"
+                    android:textColor="@color/white" />
+
+
+                <Button
+                    android:id="@+id/button_subscribe"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/imageView"
+                    android:layout_alignStart="@+id/podcast_artist_name"
+                    android:layout_marginEnd="10dp"
+                    android:textSize="18sp"
+                    android:fontFamily="sans-serif-condensed"
+                    android:background="@color/white"
+                    android:text="@string/button_subscribe" />
+
+
+            </RelativeLayout>
+
+            <!-- Line separator -->
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="10dp"
+                android:background="#4000" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/description_title"
+                    style="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Description"
+                    android:textColor="@android:color/primary_text_light" />
+
+                <TextView
+                    android:id="@+id/podcast_description"
+                    style="@style/TextAppearance.AppCompat.Body1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="sans-serif-light"
+                    android:text="@string/podcast_description"
+                    android:textColor="@android:color/primary_text_light" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/image_height">
+
+
+    <com.thomaskioko.podadddict.app.ui.util.ForegroundImageView
+        android:id="@+id/photo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:foreground="@drawable/grey_ripple"
+        android:scaleType="centerCrop"
+        android:stateListAnimator="@animator/raise"
+        android:transitionName="@string/transition_photo" />
+
+    <jp.shts.android.library.TriangleLabelView
+        android:id="@+id/triangleCountView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="end|top"
+        android:elevation="4dp"
+        app:backgroundColor="@color/colorAccent"
+        app:corner="rightTop"
+        app:primaryText="146"
+        app:primaryTextColor="@color/white"
+        app:primaryTextSize="12sp" />
+</FrameLayout>
