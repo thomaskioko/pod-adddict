@@ -16,15 +16,15 @@ public class ApplicationConstants {
     /**
      * Server Url
      */
-    public static final String LOCAL_SERVER_END_POINT = "http://localhost/";
+    public static final String LOCAL_SERVER_END_POINT = "http://192.168.1.40/";
     /**
      * Connection timeout duration
      */
-    public static final int CONNECT_TIMEOUT = 60 * 1000;
+    public static final int CONNECT_TIMEOUT = 60 * 10000;
     /**
      * Connection Read timeout duration
      */
-    public static final int READ_TIMEOUT = 60 * 1000;
+    public static final int READ_TIMEOUT = 60 * 10000;
     /**
      * Connection write timeout duration
      */
@@ -50,4 +50,12 @@ public class ApplicationConstants {
     public static int COLUMN_PODCAST_FEED_SUMMARY = 4;
     public static int COLUMN_PODCAST_FEED_ARTIST = 5;
     public static int COLUMN_PODCAST_FEED_CATEGORY = 6;
+
+    /**
+     * Subscribed podcast columns
+     */
+    public static int COLUMN_SUBSCRIBED_PODCAST_FEED_URL = 5;
+    public static int COLUMN_SUBSCRIBED_PODCAST_FEED_IMAGE_URL = 7;
+    public static int COLUMN_SUBSCRIBED_PODCAST_FEED_TRACK_COUNT = 8;
+
 }
