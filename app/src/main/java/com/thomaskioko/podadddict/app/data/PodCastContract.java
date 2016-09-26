@@ -27,6 +27,7 @@ public class PodCastContract {
      */
     public static final String PATH_PODCAST_FEED = "podCastFeed";
     public static final String PATH_PODCAST_FEED_PLAYLIST = "podCastFeedPlaylist";
+    public static final String PATH_PODCAST_FEED_SUBSCRIBED = "podCastFeedSubscribed";
 
 
     /**
@@ -53,7 +54,6 @@ public class PodCastContract {
         public static final String COLUMN_PODCAST_FEED_SUMMARY = "summary";
         public static final String COLUMN_PODCAST_FEED_ARTIST = "artist";
         public static final String COLUMN_PODCAST_FEED_CATEGORY = "category";
-        public static final String COLUMN_PODCAST_FEED_SUBSCRIBE_STATE = "subscribe_state";
 
         /**
          * Helper method for building the ContentProvider query.
@@ -64,6 +64,26 @@ public class PodCastContract {
         public static Uri buildPodCastFeedUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
+
+        /**
+         * Helper method to build base URI
+         * @return Uri
+         */
+        public static Uri buildPodCastFeedUri() {
+            return CONTENT_URI.buildUpon().build();
+        }
+
+        /**
+         * Helper method for building the ContentProvider query. It gets the feedId from the URI
+         * content://com.thomaskioko.podadddict/podCastFeed/20167113
+         *
+         * @param uri {@link Uri}
+         * @return FeedId
+         */
+        public static String getPodcastFeedIdFromUri(Uri uri) {
+            return uri.getPathSegments().get(1);
+        }
+
     }
 
     /**
@@ -122,7 +142,7 @@ public class PodCastContract {
          * @param uri {@link Uri}
          * @return URI
          */
-        public static String getLocationSettingFromUri(Uri uri) {
+        public static String getFeedIdFromUri(Uri uri) {
             return uri.getPathSegments().get(1);
         }
 
@@ -138,6 +158,59 @@ public class PodCastContract {
                 return Long.parseLong(playlistFeedString);
             else
                 return 0;
+        }
+    }
+
+    /**
+     * Podcast Feed Subscription Columns and table .
+     */
+    public static final class PodcastFeedSubscriptionEntry implements BaseColumns {
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_PODCAST_FEED_SUBSCRIBED).build();
+
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PODCAST_FEED_SUBSCRIBED;
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PODCAST_FEED_SUBSCRIBED;
+
+        public static final String TABLE_NAME = "podCastFeedSubscription";
+
+        public static final String COLUMN_SUBSCRIBED_PODCAST_FEED_ID = "feed_id";
+        public static final String COLUMN_SUBSCRIBED_PODCAST_TRACK_ID = "track_id";
+        public static final String COLUMN_SUBSCRIBED_PODCAST_ARTIST_NAME = "artist_name";
+        public static final String COLUMN_SUBSCRIBED_PODCAST_TRACK_NAME = "track_name";
+        public static final String COLUMN_SUBSCRIBED_PODCAST_URL = "feed_url";
+        public static final String COLUMN_SUBSCRIBED_PODCAST_ART_WORK_URL_100 = "artwork_100";
+        public static final String COLUMN_SUBSCRIBED_PODCAST_ART_WORK_URL_600 = "artwork_600";
+        public static final String COLUMN_SUBSCRIBED_PODCAST_TRACK_COUNT = "track_count";
+        public static final String COLUMN_SUBSCRIBED_PODCAST_GENRE = "genre_name";
+
+        /**
+         * Helper method for building the ContentProvider query.
+         *
+         * @param id id
+         * @return URI
+         */
+        public static Uri buildSubscriptionUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        /**
+         * This method retrieves the Feed Id from the Uri
+         *
+         * @param uri Query Uri
+         * @return Feed Id
+         */
+        public static String getPodcastFeedIdFromUri(Uri uri) {
+            return uri.getPathSegments().get(1);
+        }
+
+        /**
+         * Helper method to build base URI
+         * @return Uri
+         */
+        public static Uri buildSubscriptionUri() {
+            return CONTENT_URI.buildUpon().build();
         }
     }
 }
