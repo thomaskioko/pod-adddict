@@ -1,9 +1,8 @@
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.thomaskioko.podadddict.app.ui.PodCastDetailActivity">
+    tools:context="com.thomaskioko.podadddict.app.ui.PodCastEpisodeActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,14 +13,14 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="300dp">
 
-            <com.thomaskioko.podadddict.app.ui.util.ThreeTwoImageView
+            <ImageView
                 android:id="@+id/photo"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:scaleType="fitXY"
+                android:layout_height="300dp"
                 android:background="@drawable/photo_background_protection"
+                android:scaleType="fitXY"
                 android:transitionName="@string/transition_photo" />
 
             <Toolbar
@@ -35,29 +34,12 @@
 
         <LinearLayout
             android:id="@+id/description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:orientation="vertical"
             android:transitionGroup="true">
 
-            <TextView
-                android:id="@+id/author"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingEnd="@dimen/padding_normal"
-                android:paddingStart="@dimen/padding_normal"
-                android:paddingTop="@dimen/padding_large"
-                android:textColor="?android:textColorPrimary"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:lineSpacingMultiplier="1.26315789474"
-                android:paddingEnd="@dimen/padding_normal"
-                android:paddingStart="@dimen/padding_normal"
-                android:paddingTop="@dimen/padding_normal"
-                android:text="@string/lorum_ipsum"
-                android:textColor="?android:textColorSecondary"/>
+            <include layout="@layout/recycler_list" />
 
         </LinearLayout>
 
