@@ -3,9 +3,9 @@ package com.thomaskioko.podadddict.app.data.sync.service;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.util.Log;
 
 import com.thomaskioko.podadddict.app.data.sync.PodAdddictSyncAdapter;
+import com.thomaskioko.podadddict.app.util.LogUtils;
 
 
 /**
@@ -16,11 +16,11 @@ import com.thomaskioko.podadddict.app.data.sync.PodAdddictSyncAdapter;
 public class PodAdddictSyncService extends Service {
     private static final Object sSyncAdapterLock = new Object();
     private PodAdddictSyncAdapter sPodAdddictSyncAdapter = null;
-
+    private static final String LOG_TAG = PodAdddictSyncService.class.getSimpleName();
 
     @Override
     public void onCreate() {
-        Log.d("PodAdddictSyncService", "onCreate - PodAdddictSyncService");
+        LogUtils.showDebugLog(LOG_TAG, "@onCreate - PodAdddictSyncService");
         synchronized (sSyncAdapterLock) {
             if (sPodAdddictSyncAdapter == null) {
                 sPodAdddictSyncAdapter = new PodAdddictSyncAdapter(getApplicationContext(), true);
