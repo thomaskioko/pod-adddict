@@ -1,19 +1,23 @@
 package com.thomaskioko.podadddict.app.api.model;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * @author Thomas Kioko
  */
 
 public class Item {
+    @SerializedName(value = "itunes:author")
     private String itunesAuthor;
+    @SerializedName(value = "itunes:subtitle")
     private String itunesSubtitle;
+    @SerializedName(value = "itunes:summary")
     private String itunesSummary;
+    @SerializedName(value = "itunes:duration")
     private String itunesDuration;
     private String itunesExplicit;
     private String title;
-    private String description;
     private String pubDate;
-    private Guid guid;
     private Enclosure enclosure;
 
     /**
@@ -100,19 +104,6 @@ public class Item {
         this.title = title;
     }
 
-    /**
-     * @return The description
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * @param description The description
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     /**
      * @return The pubDate
@@ -128,19 +119,6 @@ public class Item {
         this.pubDate = pubDate;
     }
 
-    /**
-     * @return The guid
-     */
-    public Guid getGuid() {
-        return guid;
-    }
-
-    /**
-     * @param guid The guid
-     */
-    public void setGuid(Guid guid) {
-        this.guid = guid;
-    }
 
     /**
      * @return The enclosure
