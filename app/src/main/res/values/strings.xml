@@ -21,7 +21,42 @@
 
     <!-- Button Text -->
     <string name="button_subscribe">Subscribe</string>
+    <string name="button_subscribed">Open</string>
 
     <!-- Dummy Data -->
     <string name="podcast_description">Twice-monthly community updates for the small desert town of Night Vale, featuring local weather, news, announcements from the Sheriff\'s Secret Police, mysterious lights in the night sky, dark hooded figures with unknowable powers, and cultural events. Turn on your radio and hide. Never listened before? It\'s an ongoing radio show. Start with the current episode, and you\'ll catch on in no time. Or, go right to Episode 1 if you wanna binge-listen. (Produced by Night Vale Presents. Written by Joseph Fink and Jeffrey Cranor. Narrated by Cecil Baldwin. On Twitter as NightValeRadio)</string>
+
+    <!-- Messages -->
+    <string name="loading">Loading …</string>
+
+    <!-- Error Messages -->
+    <string name="error_no_internet_connection">No internet connection!</string>
+    <string name="error_no_message">Something went wrong on our end!</string>
+    <string name="error_no_data">No Data!</string>
+    <string name="error_db_message">Could not fetch data!</string>
+
+    <!-- Toolbar Titles -->
+    <string name="title_add_podcast">Add Podcast</string>
+    <string name="new_label">New</string>
+
+    <!-- Time Strings -->
+    <string name="time_seconds">seconds</string>
+    <string name="time_minutes">minutes</string>
+    <string name="time_hours">hours</string>
+    <string name="duration">%1$d:%2$02d</string>
+
+    <!-- Plurals -->
+    <plurals name="time_seconds_quantified">
+        <item quantity="one">1 second</item>
+        <item quantity="other">%d seconds</item>
+    </plurals>
+    <plurals name="time_minutes_quantified">
+        <item quantity="one">1 minute</item>
+        <item quantity="other">%d minutes</item>
+    </plurals>
+    <plurals name="time_hours_quantified">
+        <item quantity="one">1 hour</item>
+        <item quantity="other">%d hours</item>
+    </plurals>
+
 </resources>
