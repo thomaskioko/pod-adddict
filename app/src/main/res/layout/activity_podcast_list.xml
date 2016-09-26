@@ -9,6 +9,7 @@
     tools:openDrawer="start">
 
     <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/coordinated_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
@@ -32,6 +33,8 @@
             android:id="@+id/frameLayout_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
+        <include layout="@layout/podcast_detail_bottom_sheet"/>
 
     </android.support.design.widget.CoordinatorLayout>
 
