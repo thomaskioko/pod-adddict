@@ -46,6 +46,7 @@ public class TestDb extends AndroidTestCase {
         final HashSet<String> tableNameHashSet = new HashSet<>();
         tableNameHashSet.add(PodCastContract.PodCastFeedEntry.TABLE_NAME);
         tableNameHashSet.add(PodCastContract.PodCastFeedPlaylistEntry.TABLE_NAME);
+        tableNameHashSet.add(PodCastContract.PodcastFeedSubscriptionEntry.TABLE_NAME);
 
         mContext.deleteDatabase(PodCastFeedDbHelper.DATABASE_NAME);
         SQLiteDatabase db = new PodCastFeedDbHelper(this.mContext).getWritableDatabase();
@@ -64,8 +65,7 @@ public class TestDb extends AndroidTestCase {
 
 
         /**
-         * If this fails, it means that your database doesn't contain both the location entry and
-         * weather entry tables
+         * If this fails, it means that your database doesn't contain both the podCastFeed entry
          */
         assertTrue("Error: Your database was created without both the podcastFeed entry and podcastPlaylist entry tables",
                 tableNameHashSet.isEmpty());
@@ -86,7 +86,6 @@ public class TestDb extends AndroidTestCase {
         podCastFeedColumnHashSet.add(PodCastContract.PodCastFeedEntry.COLUMN_PODCAST_FEED_SUMMARY);
         podCastFeedColumnHashSet.add(PodCastContract.PodCastFeedEntry.COLUMN_PODCAST_FEED_ARTIST);
         podCastFeedColumnHashSet.add(PodCastContract.PodCastFeedEntry.COLUMN_PODCAST_FEED_CATEGORY);
-        podCastFeedColumnHashSet.add(PodCastContract.PodCastFeedEntry.COLUMN_PODCAST_FEED_SUBSCRIBE_STATE);
 
         int columnNameIndex = cursor.getColumnIndex("name");
         do {
@@ -96,7 +95,7 @@ public class TestDb extends AndroidTestCase {
 
         // if this fails, it means that your database doesn't contain all of the required podcast feed
         // entry columns
-        assertTrue("Error: The database doesn't contain all of the required location entry columns",
+        assertTrue("Error: The database doesn't contain all of the required podCastFeed entry columns",
                 podCastFeedColumnHashSet.isEmpty());
         cursor.close();
         db.close();
@@ -130,12 +129,12 @@ public class TestDb extends AndroidTestCase {
                 null  // sort order
         );
 
-        assertTrue("Error: No Records returned from location query", cursor.moveToFirst());
+        assertTrue("Error: No Records returned from podCastFeed query", cursor.moveToFirst());
 
         // Validate data in resulting Cursor with the original ContentValues
-        TestUtilities.validateCursor("Error: Location Query Validation Failed", cursor, contentValues);
+        TestUtilities.validateCursor("Error: podCastFeed Query Validation Failed", cursor, contentValues);
 
-        assertFalse("Error: More than one record returned from location query", cursor.moveToNext());
+        assertFalse("Error: More than one record returned from podCastFeed query", cursor.moveToNext());
         // Finally, close the cursor and database
         cursor.close();
 
@@ -161,8 +160,8 @@ public class TestDb extends AndroidTestCase {
         ContentValues podcastPlaylistValues = TestUtilities.createPodcastPlaylistValues(rowId);
 
         // Third Step (PodCastPlaylist): Insert ContentValues into database and get a row ID back
-        long weatherRowId = db.insert(PodCastContract.PodCastFeedPlaylistEntry.TABLE_NAME, null, podcastPlaylistValues);
-        assertTrue(weatherRowId != -1);
+        long podCastPlaylistFeedRowId = db.insert(PodCastContract.PodCastFeedPlaylistEntry.TABLE_NAME, null, podcastPlaylistValues);
+        assertTrue(podCastPlaylistFeedRowId != -1);
 
         // Fourth Step: Query the database and receive a Cursor back
         // A cursor is your primary interface to the query results.
@@ -192,11 +191,61 @@ public class TestDb extends AndroidTestCase {
         dbHelper.close();
     }
 
+    /**
+     * Helper method to test record insertion in podcast subscription table.
+     */
+    public void testPodcastSubscriptionTable() {
+        long rowId = insertPodcastFeed();
+
+        // Make sure we have a valid row ID.
+        assertFalse("Error: PodCast Subscription Feed Not Inserted Correctly", rowId == -1L);
+
+        // First step: Get reference to writable database
+        // If there's an error in those massive SQL table creation Strings,
+        // errors will be thrown here when you try to get a writable database.
+        PodCastFeedDbHelper dbHelper = new PodCastFeedDbHelper(mContext);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        // Second Step (PodCastFeed): Create PodCastFeed values
+        ContentValues podcastFeedValues = TestUtilities.createPodcastSubscriptionValues(rowId);
+
+        // Third Step (PodCastPlaylist): Insert ContentValues into database and get a row ID back
+        long recordId = db.insert(PodCastContract.PodcastFeedSubscriptionEntry.TABLE_NAME, null, podcastFeedValues);
+        assertTrue(recordId != -1);
+
+        // Fourth Step: Query the database and receive a Cursor back
+        // A cursor is your primary interface to the query results.
+        Cursor subscriptionCursor = db.query(
+                PodCastContract.PodcastFeedSubscriptionEntry.TABLE_NAME,  // Table to Query
+                null, // leaving "columns" null just returns all the columns.
+                null, // cols for "where" clause
+                null, // values for "where" clause
+                null, // columns to group by
+                null, // columns to filter by row groups
+                null  // sort order
+        );
+
+        // Move the cursor to the first valid database row and check to see if we have any rows
+        assertTrue("Error: No Records returned from PodcastFeed Subscription query", subscriptionCursor.moveToFirst());
+
+        // Fifth Step: Validate the PodCastFeed Query
+        TestUtilities.validateCurrentRecord("testInsertReadDb PodcastFeed Subscription failed to validate",
+                subscriptionCursor, podcastFeedValues);
+
+        // Move the cursor to demonstrate that there is only one record in the database
+        assertFalse("Error: More than one record returned from PodcastFeed Subscription query",
+                subscriptionCursor.moveToNext());
+
+        // Sixth Step: Close cursor and database
+        subscriptionCursor.close();
+        dbHelper.close();
+    }
+
 
     /**
      * Helper method to test data insertion in PodCastFeed table
      *
-     * @return Location row Id
+     * @return podCastFeed row Id
      */
     private long insertPodcastFeed() {
         // First step: Get reference to writable database
@@ -209,10 +258,10 @@ public class TestDb extends AndroidTestCase {
         ContentValues testValues = TestUtilities.createPodCastFeedValues();
 
         // Third Step: Insert ContentValues into database and get a row ID back
-        long locationRowId = db.insert(PodCastContract.PodCastFeedEntry.TABLE_NAME, null, testValues);
+        long podCastFeedRowId = db.insert(PodCastContract.PodCastFeedEntry.TABLE_NAME, null, testValues);
 
         // Verify we got a row back.
-        assertTrue(locationRowId != -1);
+        assertTrue(podCastFeedRowId != -1);
 
         // Data's inserted.  IN THEORY.  Now pull some out to stare at it and verify it made
         // the round trip.
@@ -246,6 +295,6 @@ public class TestDb extends AndroidTestCase {
         // Sixth Step: Close Cursor and Database
         cursor.close();
         db.close();
-        return locationRowId;
+        return podCastFeedRowId;
     }
 }

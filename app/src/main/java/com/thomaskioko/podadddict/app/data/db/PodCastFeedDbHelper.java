@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.thomaskioko.podadddict.app.data.PodCastContract.PodCastFeedEntry;
 import com.thomaskioko.podadddict.app.data.PodCastContract.PodCastFeedPlaylistEntry;
+import com.thomaskioko.podadddict.app.data.PodCastContract.PodcastFeedSubscriptionEntry;
 
 /**
  * @author Thomas Kioko
@@ -16,7 +17,7 @@ public class PodCastFeedDbHelper extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
     private static final int DATABASE_VERSION = 1;
 
-    static final String DATABASE_NAME = "podAdddict.db";
+    public static final String DATABASE_NAME = "podAdddict.db";
 
     /**
      * Default constructor.
@@ -32,34 +33,23 @@ public class PodCastFeedDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
         final String SQL_CREATE_PODCAST_FEED_TABLE = "CREATE TABLE " + PodCastFeedEntry.TABLE_NAME + " (" +
-                // Why AutoIncrement here, and not above?
-                // Unique keys will be auto-generated in either case.  But for weather
-                // forecasting, it's reasonable to assume the user will want information
-                // for a certain date and all dates *following*, so the forecast data
-                // should be sorted accordingly.
                 PodCastFeedEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
 
                 /**
                  * Make the Feed Id setting unique
                  */
-                PodCastFeedEntry.COLUMN_PODCAST_FEED_ID + " INTEGER UNIQUE NOT NULL, " +
+                PodCastFeedEntry.COLUMN_PODCAST_FEED_ID + " INTEGER UNIQUE ON CONFLICT REPLACE NOT NULL, " +
                 PodCastFeedEntry.COLUMN_PODCAST_FEED_TITLE + " TEXT NOT NULL, " +
                 PodCastFeedEntry.COLUMN_PODCAST_FEED_IMAGE_URL + " TEXT NOT NULL, " +
                 PodCastFeedEntry.COLUMN_PODCAST_FEED_SUMMARY + " TEXT NOT NULL, " +
                 PodCastFeedEntry.COLUMN_PODCAST_FEED_ARTIST + " TEXT NOT NULL, " +
-                PodCastFeedEntry.COLUMN_PODCAST_FEED_CATEGORY + " TEXT NOT NULL, " +
-                PodCastFeedEntry.COLUMN_PODCAST_FEED_SUBSCRIBE_STATE + " TEXT NOT NULL " +
+                PodCastFeedEntry.COLUMN_PODCAST_FEED_CATEGORY + " TEXT NOT NULL " +
                 ");";
 
         final String SQL_CREATE_PODCAST_PLAYLIST_TABLE = "CREATE TABLE " + PodCastFeedPlaylistEntry.TABLE_NAME + " (" +
-                // Why AutoIncrement here, and not above?
-                // Unique keys will be auto-generated in either case.  But for weather
-                // forecasting, it's reasonable to assume the user will want information
-                // for a certain date and all dates *following*, so the forecast data
-                // should be sorted accordingly.
                 PodCastFeedPlaylistEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
 
-                // the ID of the location entry associated with this weather data
+                // the ID of the PodCastFeedEntry entry associated with the feed Id
                 PodCastFeedPlaylistEntry.COLUMN_PODCAST_FEED_PLAYLIST_ID + " INTEGER NOT NULL, " +
                 PodCastFeedPlaylistEntry.COLUMN_PODCAST_FEED_PLAYLIST_TRACK_ID + " TEXT NOT NULL, " +
                 PodCastFeedPlaylistEntry.COLUMN_PODCAST_FEED_PLAYLIST_TRACK_NAME + " TEXT NOT NULL, " +
@@ -71,18 +61,37 @@ public class PodCastFeedDbHelper extends SQLiteOpenHelper {
                 PodCastFeedPlaylistEntry.COLUMN_PODCAST_FEED_PLAYLIST_GENRE + " TEXT NOT NULL, " +
 
 
-                // Set up the location column as a foreign key to location table.
+                // Set up the PodCastFeedEntry column as a foreign key to PodCastFeedEntry table.
                 " FOREIGN KEY (" + PodCastFeedPlaylistEntry.COLUMN_PODCAST_FEED_PLAYLIST_ID + ") REFERENCES " +
                 PodCastFeedEntry.TABLE_NAME + " (" + PodCastFeedEntry._ID + "), " +
 
-                // To assure the application have just one weather entry per day
-                // per location, it's created a UNIQUE constraint with REPLACE strategy
+                // To assure the application have just one feed ID entry
+                // per PodCastFeedEntry, it's created a UNIQUE constraint with REPLACE strategy
                 " UNIQUE (" + PodCastFeedPlaylistEntry.COLUMN_PODCAST_FEED_PLAYLIST_ID + ", " +
                 PodCastFeedPlaylistEntry.COLUMN_PODCAST_FEED_PLAYLIST_ID + ") ON CONFLICT REPLACE);";
+
+        final String SQL_CREATE_PODCAST_SUBSCRIPTION_TABLE = "CREATE TABLE " + PodcastFeedSubscriptionEntry.TABLE_NAME + " (" +
+                PodcastFeedSubscriptionEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+
+                // the ID of the PodCastFeedEntry entry associated with this PodcastFeedSubscriptionEntry
+                PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_FEED_ID + " INTEGER UNIQUE ON CONFLICT REPLACE NOT NULL, " +
+                PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_TRACK_ID + " TEXT NOT NULL, " +
+                PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_ARTIST_NAME + " TEXT NOT NULL, " +
+                PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_TRACK_NAME + " TEXT NOT NULL, " +
+                PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_URL + " TEXT NOT NULL," +
+                PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_ART_WORK_URL_100 + " TEXT NOT NULL, " +
+                PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_ART_WORK_URL_600 + " TEXT NOT NULL, " +
+                PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_TRACK_COUNT + " INTEGER NOT NULL, " +
+                PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_GENRE + " TEXT NOT NULL, " +
+
+                // Set up the PodCastFeedEntry column as a foreign key to PodcastFeedSubscriptionEntry table.
+                " FOREIGN KEY (" + PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_FEED_ID + ") REFERENCES " +
+                PodCastFeedEntry.TABLE_NAME + " (" + PodCastFeedEntry.COLUMN_PODCAST_FEED_ID + ")); ";
 
 
         sqLiteDatabase.execSQL(SQL_CREATE_PODCAST_PLAYLIST_TABLE);
         sqLiteDatabase.execSQL(SQL_CREATE_PODCAST_FEED_TABLE);
+        sqLiteDatabase.execSQL(SQL_CREATE_PODCAST_SUBSCRIPTION_TABLE);
     }
 
     @Override
@@ -95,6 +104,7 @@ public class PodCastFeedDbHelper extends SQLiteOpenHelper {
         // should be your top priority before modifying this method.
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + PodCastFeedEntry.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + PodCastFeedPlaylistEntry.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + PodcastFeedSubscriptionEntry.TABLE_NAME);
         onCreate(sqLiteDatabase);
     }
 }

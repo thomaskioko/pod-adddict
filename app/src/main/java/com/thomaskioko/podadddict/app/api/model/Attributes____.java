@@ -1,11 +1,14 @@
 package com.thomaskioko.podadddict.app.api.model;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * @author Thomas Kioko
  */
 
 public class Attributes____ {
 
+    @SerializedName(value = "im:id")
     private String imId;
 
     /**

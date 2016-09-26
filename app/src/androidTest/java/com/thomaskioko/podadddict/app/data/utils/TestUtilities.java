@@ -34,6 +34,7 @@ public class TestUtilities {
     public static final int TEST_FEED_PLAYLIST_TRACK_COUNT = 147;
     public static final String TEST_FEED_PLAYLIST_GENRE = "Technology";
     private static final String TEST_FEED_CATEGORY = "Technology";
+    private static final String TEST_FEED_RIGHTS = "© Copyright 2016 NPR - For Personal Use Only";
     private static final String TEST_FEED_SUMMARY = "Child abductions are rare crimes. And they're typically solved. For 27 years, the investigation into the abduction of Jacob Wetterling in rural Minnesota yielded no answers. In the most comprehensive reporting on this case, APM Reports and reporter Madeleine Baran reveal how law enforcement mishandled one of the most notorious child abductions in the country and how those failures fueled national anxiety about stranger danger, changed how adults parent their kids and led to the nation's sex-offender registries.";
     private static final String TEST_FEED_STATUS = "1";
 
@@ -73,18 +74,18 @@ public class TestUtilities {
      * @return {@link ContentValues}
      */
     public static ContentValues createPodcastPlaylistValues(long feedRowId) {
-        ContentValues weatherValues = new ContentValues();
-        weatherValues.put(PodCastContract.PodCastFeedPlaylistEntry.COLUMN_PODCAST_FEED_PLAYLIST_ID, feedRowId);
-        weatherValues.put(PodCastContract.PodCastFeedPlaylistEntry.COLUMN_PODCAST_FEED_PLAYLIST_TRACK_ID, TEST_FEED_PLAYLIST_TRACK_ID);
-        weatherValues.put(PodCastContract.PodCastFeedPlaylistEntry.COLUMN_PODCAST_FEED_PLAYLIST_ARTIST_NAME, TEST_FEED_PLAYLIST_ARTIST_NAME);
-        weatherValues.put(PodCastContract.PodCastFeedPlaylistEntry.COLUMN_PODCAST_FEED_PLAYLIST_TRACK_NAME, TEST_FEED_PLAYLIST_TRACK_NAME);
-        weatherValues.put(PodCastContract.PodCastFeedPlaylistEntry.COLUMN_PODCAST_FEED_PLAYLIST_URL, TEST_FEED_PLAYLIST_URL);
-        weatherValues.put(PodCastContract.PodCastFeedPlaylistEntry.COLUMN_PODCAST_FEED_PLAYLIST_ART_WORK_URL_100, TEST_FEED_PLAYLIST_ART_WORK_URL_100);
-        weatherValues.put(PodCastContract.PodCastFeedPlaylistEntry.COLUMN_PODCAST_FEED_PLAYLIST_ART_WORK_URL_600, TEST_FEED_PLAYLIST_ART_WORK_URL_600);
-        weatherValues.put(PodCastContract.PodCastFeedPlaylistEntry.COLUMN_PODCAST_FEED_PLAYLIST_TRACK_COUNT, TEST_FEED_PLAYLIST_TRACK_COUNT);
-        weatherValues.put(PodCastContract.PodCastFeedPlaylistEntry.COLUMN_PODCAST_FEED_PLAYLIST_GENRE, TEST_FEED_PLAYLIST_GENRE);
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(PodCastContract.PodCastFeedPlaylistEntry.COLUMN_PODCAST_FEED_PLAYLIST_ID, feedRowId);
+        contentValues.put(PodCastContract.PodCastFeedPlaylistEntry.COLUMN_PODCAST_FEED_PLAYLIST_TRACK_ID, TEST_FEED_PLAYLIST_TRACK_ID);
+        contentValues.put(PodCastContract.PodCastFeedPlaylistEntry.COLUMN_PODCAST_FEED_PLAYLIST_ARTIST_NAME, TEST_FEED_PLAYLIST_ARTIST_NAME);
+        contentValues.put(PodCastContract.PodCastFeedPlaylistEntry.COLUMN_PODCAST_FEED_PLAYLIST_TRACK_NAME, TEST_FEED_PLAYLIST_TRACK_NAME);
+        contentValues.put(PodCastContract.PodCastFeedPlaylistEntry.COLUMN_PODCAST_FEED_PLAYLIST_URL, TEST_FEED_PLAYLIST_URL);
+        contentValues.put(PodCastContract.PodCastFeedPlaylistEntry.COLUMN_PODCAST_FEED_PLAYLIST_ART_WORK_URL_100, TEST_FEED_PLAYLIST_ART_WORK_URL_100);
+        contentValues.put(PodCastContract.PodCastFeedPlaylistEntry.COLUMN_PODCAST_FEED_PLAYLIST_ART_WORK_URL_600, TEST_FEED_PLAYLIST_ART_WORK_URL_600);
+        contentValues.put(PodCastContract.PodCastFeedPlaylistEntry.COLUMN_PODCAST_FEED_PLAYLIST_TRACK_COUNT, TEST_FEED_PLAYLIST_TRACK_COUNT);
+        contentValues.put(PodCastContract.PodCastFeedPlaylistEntry.COLUMN_PODCAST_FEED_PLAYLIST_GENRE, TEST_FEED_PLAYLIST_GENRE);
 
-        return weatherValues;
+        return contentValues;
     }
 
     /**
@@ -101,9 +102,29 @@ public class TestUtilities {
         testValues.put(PodCastContract.PodCastFeedEntry.COLUMN_PODCAST_FEED_SUMMARY, TEST_FEED_SUMMARY);
         testValues.put(PodCastContract.PodCastFeedEntry.COLUMN_PODCAST_FEED_ARTIST, TEST_FEED_PLAYLIST_ARTIST_NAME);
         testValues.put(PodCastContract.PodCastFeedEntry.COLUMN_PODCAST_FEED_CATEGORY, TEST_FEED_CATEGORY);
-        testValues.put(PodCastContract.PodCastFeedEntry.COLUMN_PODCAST_FEED_SUBSCRIBE_STATE, TEST_FEED_STATUS);
 
         return testValues;
+    }
+
+    /**
+     * Helper method to create podcast subscription content values
+     *
+     * @param feedRowId podcat feed id
+     * @return PodcastFeedSubscriptionEntry {@link ContentValues}
+     */
+    public static ContentValues createPodcastSubscriptionValues(long feedRowId) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(PodCastContract.PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_FEED_ID, feedRowId);
+        contentValues.put(PodCastContract.PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_TRACK_ID, TEST_FEED_ID);
+        contentValues.put(PodCastContract.PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_ARTIST_NAME, TEST_FEED_PLAYLIST_ARTIST_NAME);
+        contentValues.put(PodCastContract.PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_TRACK_NAME, TEST_FEED_PLAYLIST_TRACK_NAME);
+        contentValues.put(PodCastContract.PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_URL, TEST_FEED_PLAYLIST_URL);
+        contentValues.put(PodCastContract.PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_ART_WORK_URL_100, TEST_FEED_PLAYLIST_ART_WORK_URL_100);
+        contentValues.put(PodCastContract.PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_ART_WORK_URL_600, TEST_FEED_PLAYLIST_ART_WORK_URL_600);
+        contentValues.put(PodCastContract.PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_TRACK_COUNT, TEST_FEED_PLAYLIST_TRACK_COUNT);
+        contentValues.put(PodCastContract.PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_GENRE, TEST_FEED_PLAYLIST_GENRE);
+
+        return contentValues;
     }
 
     /**
@@ -118,12 +139,12 @@ public class TestUtilities {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues testValues = TestUtilities.createPodCastFeedValues();
 
-        long locationRowId = db.insert(PodCastContract.PodCastFeedEntry.TABLE_NAME, null, testValues);
+        long podcastFeedRowId = db.insert(PodCastContract.PodCastFeedEntry.TABLE_NAME, null, testValues);
 
         // Verify we got a row back.
-        assertTrue("Error: Failure to insert Podcast Feed Values", locationRowId != -1);
+        assertTrue("Error: Failure to insert Podcast Feed Values", podcastFeedRowId != -1);
 
-        return locationRowId;
+        return podcastFeedRowId;
     }
 
     /**

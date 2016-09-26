@@ -1,6 +1,8 @@
 package com.thomaskioko.podadddict.app.ui.adapter;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,35 +10,69 @@ import android.view.ViewGroup;
 
 import com.squareup.picasso.Picasso;
 import com.thomaskioko.podadddict.app.R;
-import com.thomaskioko.podadddict.app.api.model.Entry;
-import com.thomaskioko.podadddict.app.api.model.ImImage;
+import com.thomaskioko.podadddict.app.data.PodCastContract;
 import com.thomaskioko.podadddict.app.ui.util.ForegroundImageView;
+import com.thomaskioko.podadddict.app.ui.util.RecyclerItemChoiceManager;
 import com.thomaskioko.podadddict.app.util.ApplicationConstants;
-
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import jp.shts.android.library.TriangleLabelView;
 
 /**
  * PodcastFeed adapter class
  *
  * @author Thomas Kioko
  */
-public class PodCastAdapterAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
+public class PodCastAdapterAdapter extends RecyclerView.Adapter<PodCastAdapterAdapter.PhotoViewHolder> {
 
+    private Cursor mCursor;
     private Context mContext;
-    private final List<Entry> mEntryList;
+    final private PodCastAdapterAdapterOnClickHandler mClickHandler;
+    final private RecyclerItemChoiceManager mRecyclerItemChoiceManager;
 
     /**
      * Constructor
      *
-     * @param context   Context in which the class is called.
-     * @param entryList List of podcast feeds
+     * @param context Context in which the class is called.
+     * @param dh      List of podcast feeds
      */
-    public PodCastAdapterAdapter(Context context, List<Entry> entryList) {
-        mEntryList = entryList;
+    public PodCastAdapterAdapter(Context context, PodCastAdapterAdapterOnClickHandler dh, int choiceMode) {
         mContext = context;
+        mClickHandler = dh;
+        mRecyclerItemChoiceManager = new RecyclerItemChoiceManager(this);
+        mRecyclerItemChoiceManager.setChoiceMode(choiceMode);
+    }
+
+    public interface PodCastAdapterAdapterOnClickHandler {
+        void onClick(int feedId, PhotoViewHolder vh);
+    }
+
+
+    public class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        @Bind(R.id.photo)
+        public ForegroundImageView imageView;
+        @Bind(R.id.triangleCountView)
+        TriangleLabelView triangleLabelView;
+        public View view;
+
+        public PhotoViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+            view = itemView;
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            int adapterPosition = getAdapterPosition();
+            mCursor.moveToPosition(adapterPosition);
+
+            int podcastIndex = mCursor.getColumnIndex(PodCastContract.PodCastFeedEntry.COLUMN_PODCAST_FEED_ID);
+            mClickHandler.onClick(mCursor.getInt(podcastIndex), this);
+            mRecyclerItemChoiceManager.onClick(this);
+        }
     }
 
     @Override
@@ -48,26 +84,10 @@ public class PodCastAdapterAdapter extends RecyclerView.Adapter<PhotoViewHolder>
 
     @Override
     public void onBindViewHolder(final PhotoViewHolder holder, final int position) {
-        final Entry entry = mEntryList.get(position);
+        mCursor.moveToPosition(position);
 
-        List<ImImage> imImages = entry.getImImage();
-
-        String url = null;
-        for (ImImage imImage : imImages) {
-            url = imImage.getLabel();
-        }
-        /**
-         * The Image from the feed are not clear. The largest size from the JSON Object is
-         * {@link ApplicationConstants.IMAGE_SIZE_170x170} which is not clear. So we replace the
-         * default dimensions with a larger one making the image clear. {@link ApplicationConstants.IMAGE_SIZE_600x600}
-         *
-         * Sample Url:
-         * {@see <href "http://is1.mzstatic.com/image/thumb/Podcasts71/v4/03/62/51/036251e2-e2b5-b462-41ea-e2c2d29458fa/mza_1057278831507231273.png/170x170bb-85.jpg"}
-         */
-        if (url != null) {
-            url = url.replace(ApplicationConstants.IMAGE_SIZE_170x170, ApplicationConstants.IMAGE_SIZE_600x600);
-        }
-
+        holder.triangleLabelView.setVisibility(View.GONE);
+        String url = mCursor.getString(ApplicationConstants.COLUMN_PODCAST_FEED_IMAGE_URL);
         Picasso.with(mContext)
                 .load(url)
                 .placeholder(R.color.placeholder)
@@ -76,23 +96,67 @@ public class PodCastAdapterAdapter extends RecyclerView.Adapter<PhotoViewHolder>
 
     @Override
     public int getItemCount() {
-        return mEntryList.size();
+        if (null == mCursor) return 0;
+        return mCursor.getCount();
     }
 
+    /**
+     * Method to swap cursor with a new one
+     *
+     * @param cursor Cursor
+     */
+    public void swapCursor(Cursor cursor) {
+        mCursor = cursor;
+        notifyDataSetChanged();
+    }
 
-    public Entry getItem(int position) {
-        return mEntryList.get(position);
+    /**
+     * Method to get the instance of the cursor.
+     *
+     * @return Cursor
+     */
+    public Cursor getCursor() {
+        return mCursor;
+    }
+
+    /**
+     * Method to get the selected item position in the recyclerView
+     *
+     * @return Position
+     */
+    public int getSelectedItemPosition() {
+        return mRecyclerItemChoiceManager.getSelectedItemPosition();
+    }
+
+    /**
+     * Method to restore saved data.
+     *
+     * @param savedInstanceState {@link Bundle}
+     */
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        mRecyclerItemChoiceManager.onRestoreInstanceState(savedInstanceState);
+    }
+
+    /**
+     * Method to save data in a bundle. This is called is specific cases. When the screen orientation
+     * changes. and other cases
+     *
+     * @param outState {@link Bundle}
+     */
+    public void onSaveInstanceState(Bundle outState) {
+        mRecyclerItemChoiceManager.onSaveInstanceState(outState);
+    }
+
+    /**
+     * @param viewHolder
+     */
+    public void selectView(RecyclerView.ViewHolder viewHolder) {
+        if (viewHolder instanceof PhotoViewHolder) {
+            PhotoViewHolder forecastAdapterViewHolder = (PhotoViewHolder) viewHolder;
+            forecastAdapterViewHolder.onClick(forecastAdapterViewHolder.itemView);
+        }
     }
 
 }
 
-class PhotoViewHolder extends RecyclerView.ViewHolder {
 
-    @Bind(R.id.photo)
-    ForegroundImageView imageView;
-
-    public PhotoViewHolder(View itemView) {
-        super(itemView);
-        ButterKnife.bind(this, itemView);
-    }
-}
