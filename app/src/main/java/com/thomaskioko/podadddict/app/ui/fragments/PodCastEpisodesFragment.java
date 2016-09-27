@@ -178,7 +178,9 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
     }
 
     /**
-     * @param feedUrl
+     * Helper method to fetch podcast playlist
+     *
+     * @param feedUrl {@link String} Url containing podacast playlist
      */
     private void fetchFeedData(String feedUrl) throws UnsupportedEncodingException {
 
@@ -212,7 +214,7 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
                 if (response.code() == 200) {
                     List<Item> links = response.body().getRss().getChannel().getItem();
 
-                    mRecyclerView.setAdapter(new PodcastEpisodeListAdapter(getActivity(), links));
+                    mRecyclerView.setAdapter(new PodcastEpisodeListAdapter(getActivity(), links, mUri));
                 }
             }
 

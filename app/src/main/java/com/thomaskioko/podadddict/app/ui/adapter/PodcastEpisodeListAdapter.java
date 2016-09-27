@@ -1,6 +1,9 @@
 package com.thomaskioko.podadddict.app.ui.adapter;
 
 import android.content.Context;
+import android.net.Uri;
+import android.support.design.widget.BottomSheetDialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +15,7 @@ import android.widget.Toast;
 
 import com.thomaskioko.podadddict.app.R;
 import com.thomaskioko.podadddict.app.api.model.Item;
+import com.thomaskioko.podadddict.app.ui.fragments.PodcastEpisodeBottomSheetFragment;
 import com.thomaskioko.podadddict.app.ui.util.RecyclerItemChoiceManager;
 import com.thomaskioko.podadddict.app.util.DateUtils;
 
@@ -36,6 +40,7 @@ public class PodcastEpisodeListAdapter extends RecyclerView.Adapter<PodcastEpiso
 
     private List<Item> mItemList;
     private Context mContext;
+    private Uri mUri;
     private final RecyclerItemChoiceManager mRecyclerItemChoiceManager;
     private static final String LOG_TAG = PodcastEpisodeListAdapter.class.getSimpleName();
 
@@ -44,10 +49,12 @@ public class PodcastEpisodeListAdapter extends RecyclerView.Adapter<PodcastEpiso
      *
      * @param context  Context in which the class is called.
      * @param itemList List of podcast feeds
+     * @param uri
      */
-    public PodcastEpisodeListAdapter(Context context, List<Item> itemList) {
+    public PodcastEpisodeListAdapter(Context context, List<Item> itemList, Uri uri) {
         mContext = context;
         mItemList = itemList;
+        mUri = uri;
         mRecyclerItemChoiceManager = new RecyclerItemChoiceManager(this);
         mRecyclerItemChoiceManager.setChoiceMode(choiceMode);
     }
@@ -137,7 +144,7 @@ public class PodcastEpisodeListAdapter extends RecyclerView.Adapter<PodcastEpiso
         holder.mEpisodeRl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, item.getItunesAuthor(), Toast.LENGTH_SHORT).show();
+                displayBottomSheet(item);
             }
         });
     }
@@ -146,6 +153,17 @@ public class PodcastEpisodeListAdapter extends RecyclerView.Adapter<PodcastEpiso
     public int getItemCount() {
         if (null == mItemList) return 0;
         return mItemList.size();
+    }
+
+    /**
+     *
+     */
+    private void displayBottomSheet(Item item) {
+
+        View view = ((FragmentActivity) mContext).getLayoutInflater().inflate(R.layout.podcast_detail_bottom_sheet, null);
+        BottomSheetDialogFragment bottomSheetDialogFragment = PodcastEpisodeBottomSheetFragment.newInstance(item, mUri);
+        bottomSheetDialogFragment.show(((FragmentActivity) mContext).getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
+
     }
 
 }
