@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialogFragment;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -23,10 +22,10 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.github.clans.fab.FloatingActionButton;
 import com.thomaskioko.podadddict.app.R;
 import com.thomaskioko.podadddict.app.api.model.Item;
 import com.thomaskioko.podadddict.app.util.ApplicationConstants;
-import com.thomaskioko.podadddict.app.util.LogUtils;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -50,7 +49,7 @@ public class PodcastEpisodeBottomSheetFragment extends BottomSheetDialogFragment
     @Bind(R.id.description_title)
     TextView mTvDescriptionTitle;
     @Bind(R.id.fabDownload)
-    FloatingActionButton mBtnSubscribe;
+    FloatingActionButton mFloatingActionButton;
 
     private static Uri mUri;
     private static Item mItem;
@@ -60,9 +59,8 @@ public class PodcastEpisodeBottomSheetFragment extends BottomSheetDialogFragment
     /**
      * Constructor
      *
-     *
-     * @param item
-     * @param uri UrI with selected item.
+     * @param item Feed Item
+     * @param uri  UrI with selected item.
      * @return Fragment instance
      */
     public static PodcastEpisodeBottomSheetFragment newInstance(Item item, Uri uri) {
@@ -83,8 +81,7 @@ public class PodcastEpisodeBottomSheetFragment extends BottomSheetDialogFragment
         View view = inflater.inflate(R.layout.fragment_podcast_episode_bottom_sheet, container, false);
         ButterKnife.bind(this, view);
 
-        LogUtils.showInformationLog(LOG_TAG, mUri.getPath());
-
+        //Set content on the views.
         mPodcastTitle.setText(mItem.getTitle());
         mPodcastDescription.setText(mItem.getItunesSummary());
         mPodcastArtistName.setText(mItem.getItunesAuthor());
@@ -95,7 +92,7 @@ public class PodcastEpisodeBottomSheetFragment extends BottomSheetDialogFragment
     void onButtonSubscribeClicked(View view) {
         switch (view.getId()) {
             case R.id.fabDownload:
-
+                //TODO:: Download the Episode
                 break;
             default:
                 break;
@@ -145,26 +142,24 @@ public class PodcastEpisodeBottomSheetFragment extends BottomSheetDialogFragment
                             Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
                                 @Override
                                 public void onGenerated(Palette palette) {
-
+                                    //Set the background of the relative layout.
                                     if (palette.getDarkVibrantSwatch() != null) {
                                         mRelativeLayout.setBackgroundColor(palette.getDarkVibrantSwatch().getRgb());
-//                                        mBtnSubscribe.setBackgroundColor(palette.getDarkVibrantSwatch().getRgb());
-//                                        mBtnSubscribe.setBackgroundColor(palette.getDarkVibrantSwatch().getRgb());
-
                                     } else if (palette.getMutedSwatch() != null) {
                                         mRelativeLayout.setBackgroundColor(palette.getMutedSwatch().getRgb());
-//                                        mBtnSubscribe.setBackgroundColor(palette.getMutedSwatch().getRgb());
-//                                        mBtnSubscribe.setBackgroundColor(palette.getMutedSwatch().getRgb());
+                                    }
+
+                                    //Set the color of the floating actionbar
+                                    if (palette.getLightVibrantSwatch() != null) {
+                                        mFloatingActionButton.setColorNormal(palette.getLightVibrantSwatch().getRgb());
+                                    } else if (palette.getLightMutedSwatch() != null) {
+                                        mFloatingActionButton.setColorNormal(palette.getLightMutedSwatch().getRgb());
                                     }
 
                                 }
                             });
                         }
                     });
-
-
-
-
         }
 
     }
