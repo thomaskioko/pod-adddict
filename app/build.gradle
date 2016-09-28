@@ -31,6 +31,7 @@ dependencies {
     compile "com.android.support:design:$supportLibraryVersion"
     compile "com.android.support:support-v4:$supportLibraryVersion"
     compile "com.android.support:palette-v7:$supportLibraryVersion"
+    compile "com.android.support:support-v4:$supportLibraryVersion"
 
 
     compile 'com.squareup.retrofit2:retrofit:2.0.1'
@@ -45,6 +46,7 @@ dependencies {
     compile 'com.github.shts:TriangleLabelView:1.1.2'
     compile 'org.apache.commons:commons-lang3:3.4'
     compile 'com.yqritc:recyclerview-flexibledivider:1.4.0'
-    compile 'com.android.support:support-v4:24.2.1'
+    compile 'com.github.clans:fab:1.6.4'
+
     testCompile 'junit:junit:4.12'
 }
