@@ -4,6 +4,7 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.LightingColorFilter;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -34,6 +35,8 @@ import com.thomaskioko.podadddict.app.data.db.DbUtils;
 import com.thomaskioko.podadddict.app.ui.PodCastEpisodeActivity;
 import com.thomaskioko.podadddict.app.ui.PodCastListActivity;
 import com.thomaskioko.podadddict.app.util.ApplicationConstants;
+import com.thomaskioko.podadddict.app.util.glide.ApGlideSettings;
+import com.thomaskioko.podadddict.app.util.glide.FastBlurTransformation;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -51,6 +54,8 @@ public class PodcastBottomSheetDialogFragment extends BottomSheetDialogFragment 
 
     @Bind(R.id.imageView)
     ImageView mImageView;
+    @Bind(R.id.imgvBackground)
+    ImageView imgvBackground;
     @Bind(R.id.imageViewBackground)
     RelativeLayout mRelativeLayout;
     @Bind(R.id.podcast_title)
@@ -214,6 +219,18 @@ public class PodcastBottomSheetDialogFragment extends BottomSheetDialogFragment 
                             });
                         }
                     });
+
+            //Create a blur effect
+            imgvBackground.setColorFilter(new LightingColorFilter(0xff828282, 0x000000));
+
+            Glide.with(getActivity())
+                    .load(imageUrl)
+                    .placeholder(R.color.image_readability_tint)
+                    .error(R.color.image_readability_tint)
+                    .diskCacheStrategy(ApGlideSettings.AP_DISK_CACHE_STRATEGY)
+                    .transform(new FastBlurTransformation(getActivity()))
+                    .dontAnimate()
+                    .into(imgvBackground);
 
 
             mRowId = data.getInt(ApplicationConstants.COLUMN_PODCAST_FEED_ROW_ID);
