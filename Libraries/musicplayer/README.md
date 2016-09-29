@@ -1,2 +1,0 @@
-Pod Adddict Music Player
------------------------
