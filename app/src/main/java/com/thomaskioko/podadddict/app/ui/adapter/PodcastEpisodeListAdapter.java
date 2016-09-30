@@ -11,10 +11,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.thomaskioko.podadddict.app.R;
 import com.thomaskioko.podadddict.app.api.model.Item;
+import com.thomaskioko.podadddict.app.ui.fragments.PodCastEpisodesFragment;
 import com.thomaskioko.podadddict.app.ui.fragments.PodcastEpisodeBottomSheetFragment;
 import com.thomaskioko.podadddict.app.ui.util.RecyclerItemChoiceManager;
 import com.thomaskioko.podadddict.app.util.DateUtils;
@@ -42,19 +42,26 @@ public class PodcastEpisodeListAdapter extends RecyclerView.Adapter<PodcastEpiso
     private Context mContext;
     private Uri mUri;
     private final RecyclerItemChoiceManager mRecyclerItemChoiceManager;
+    final private PodCastEpisodeAdapterOnClickHandler mClickHandler;
+    private PodCastEpisodesFragment mPodCastEpisodesFragment;
     private static final String LOG_TAG = PodcastEpisodeListAdapter.class.getSimpleName();
 
     /**
      * Constructor
      *
-     * @param context  Context in which the class is called.
-     * @param itemList List of podcast feeds
-     * @param uri
+     * @param context                 Context in which the class is called.
+     * @param itemList                List of podcast feeds
+     * @param uri                     {@link Uri} Podcast Query Uri
+     * @param podCastEpisodesFragment
+     * @param clickHandler            Interface to handle onClick actions
      */
-    public PodcastEpisodeListAdapter(Context context, List<Item> itemList, Uri uri) {
+    public PodcastEpisodeListAdapter(Context context, List<Item> itemList, Uri uri,
+                                     PodCastEpisodesFragment podCastEpisodesFragment, PodCastEpisodeAdapterOnClickHandler clickHandler) {
         mContext = context;
         mItemList = itemList;
         mUri = uri;
+        mClickHandler = clickHandler;
+        mPodCastEpisodesFragment = podCastEpisodesFragment;
         mRecyclerItemChoiceManager = new RecyclerItemChoiceManager(this);
         mRecyclerItemChoiceManager.setChoiceMode(choiceMode);
     }
@@ -63,7 +70,7 @@ public class PodcastEpisodeListAdapter extends RecyclerView.Adapter<PodcastEpiso
      *
      */
     public interface PodCastEpisodeAdapterOnClickHandler {
-        void onClick(int feedId, ViewHolder vh);
+        void onClick(Uri uri, Item feedItem, View.OnClickListener vh);
     }
 
 
@@ -137,7 +144,7 @@ public class PodcastEpisodeListAdapter extends RecyclerView.Adapter<PodcastEpiso
         holder.mPlayImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, item.getTitle(), Toast.LENGTH_SHORT).show();
+                mPodCastEpisodesFragment.onClick(mUri, item);
             }
         });
 
@@ -156,11 +163,10 @@ public class PodcastEpisodeListAdapter extends RecyclerView.Adapter<PodcastEpiso
     }
 
     /**
-     *
+     * This method displays a bottom sheet containting podcast episode details.
      */
     private void displayBottomSheet(Item item) {
 
-        View view = ((FragmentActivity) mContext).getLayoutInflater().inflate(R.layout.podcast_detail_bottom_sheet, null);
         BottomSheetDialogFragment bottomSheetDialogFragment = PodcastEpisodeBottomSheetFragment.newInstance(item, mUri);
         bottomSheetDialogFragment.show(((FragmentActivity) mContext).getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
 
