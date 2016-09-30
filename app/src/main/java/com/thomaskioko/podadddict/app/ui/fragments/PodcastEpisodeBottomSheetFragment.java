@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -32,10 +31,15 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Podcast episode BottomSheet fragment class.
+ *
+ * @author kioko
  */
 public class PodcastEpisodeBottomSheetFragment extends BottomSheetDialogFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    /**
+     * BindView
+     */
     @Bind(R.id.imageView)
     ImageView mImageView;
     @Bind(R.id.imageViewBackground)
@@ -92,7 +96,7 @@ public class PodcastEpisodeBottomSheetFragment extends BottomSheetDialogFragment
     void onButtonSubscribeClicked(View view) {
         switch (view.getId()) {
             case R.id.fabDownload:
-                //TODO:: Download the Episode
+                //TODO:: Download the Episode or change this to favorite.
                 break;
             default:
                 break;
