@@ -12,4 +12,11 @@
         <item name="android:windowExitTransition">@transition/grid_exit</item>
         <item name="android:windowReenterTransition">@transition/grid_reenter</item>
     </style>
+
+    <style name="AppTheme.Details">
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowAllowEnterTransitionOverlap">true</item>
+        <item name="android:windowAllowReturnTransitionOverlap">true</item>
+    </style>
 </resources>
