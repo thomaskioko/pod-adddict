@@ -47,6 +47,9 @@ dependencies {
     compile 'org.apache.commons:commons-lang3:3.4'
     compile 'com.yqritc:recyclerview-flexibledivider:1.4.0'
     compile 'com.github.clans:fab:1.6.4'
+    compile 'jp.wasabeef:recyclerview-animators:2.2.3'
+    compile 'de.hdodenhof:circleimageview:2.0.0'
+    compile 'com.wang.avi:library:1.0.5'
 
     testCompile 'junit:junit:4.12'
 }
