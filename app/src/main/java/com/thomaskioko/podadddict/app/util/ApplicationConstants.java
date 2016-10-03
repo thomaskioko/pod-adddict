@@ -16,7 +16,7 @@ public class ApplicationConstants {
     /**
      * Server Url
      */
-    public static final String LOCAL_SERVER_END_POINT = "http://192.168.1.40/";
+    public static final String LOCAL_SERVER_END_POINT = "http://192.168.46.128/";
     /**
      * Connection timeout duration
      */
@@ -54,8 +54,18 @@ public class ApplicationConstants {
     /**
      * Subscribed podcast columns
      */
+    public static int COLUMN_SUBSCRIBED_PODCAST_TRACK_NAME = 4;
     public static int COLUMN_SUBSCRIBED_PODCAST_FEED_URL = 5;
     public static int COLUMN_SUBSCRIBED_PODCAST_FEED_IMAGE_URL = 7;
     public static int COLUMN_SUBSCRIBED_PODCAST_FEED_TRACK_COUNT = 8;
+
+    public static final String ACTION_PLAY = "action_play";
+    public static final String ACTION_PAUSE = "action_pause";
+    public static final String ACTION_REWIND = "action_rewind";
+    public static final String ACTION_FAST_FORWARD = "action_fast_foward";
+    public static final String ACTION_NEXT = "action_next";
+    public static final String ACTION_PREVIOUS = "action_previous";
+    public static final String ACTION_STOP = "action_stop";
+    public static final String LOG_TAG = "MediaService";
 
 }
