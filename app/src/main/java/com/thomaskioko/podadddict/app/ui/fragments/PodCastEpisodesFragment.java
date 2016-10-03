@@ -75,6 +75,12 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
     public PodCastEpisodesFragment() {
     }
 
+
+
+    public interface EpisodeCallback {
+        void onEpisodeSelected(Uri uri, Item item);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -204,7 +210,9 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
 
 
         Call<PodCastPlaylistResponse> podCastPlaylistResponseCall = apiClient.iTunesServices()
-                .getPodCastPlaylistResponse(URLEncoder.encode(feedUrl, "UTF-8"));
+                .getPodCastPlaylistResponse(
+                        URLEncoder.encode(feedUrl, "UTF-8") //Encode the URl ensuring it's in the right format.
+                );
         podCastPlaylistResponseCall.enqueue(new Callback<PodCastPlaylistResponse>() {
             @Override
             public void onResponse(Call<PodCastPlaylistResponse> call, Response<PodCastPlaylistResponse> response) {
@@ -214,7 +222,14 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
                 if (response.code() == 200) {
                     List<Item> links = response.body().getRss().getChannel().getItem();
 
-                    mRecyclerView.setAdapter(new PodcastEpisodeListAdapter(getActivity(), links, mUri));
+                    mRecyclerView.setAdapter(new PodcastEpisodeListAdapter(getActivity(), links, mUri,
+                           PodCastEpisodesFragment.this, new PodcastEpisodeListAdapter.PodCastEpisodeAdapterOnClickHandler() {
+                        @Override
+                        public void onClick(Uri uri, Item feedItem, View.OnClickListener vh) {
+
+
+                        }
+                    }));
                 }
             }
 
@@ -226,5 +241,11 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
 
             }
         });
+    }
+
+    public void onClick(Uri mUri, Item feedItem) {
+
+        ((PodCastEpisodesFragment.EpisodeCallback) getActivity())
+                .onEpisodeSelected(mUri, feedItem );
     }
 }
