@@ -59,6 +59,18 @@ public class ApplicationConstants {
     public static int COLUMN_SUBSCRIBED_PODCAST_FEED_IMAGE_URL = 7;
     public static int COLUMN_SUBSCRIBED_PODCAST_FEED_TRACK_COUNT = 8;
 
+    /**
+     * Episode Columns
+     */
+    public static int COLUMN_PODCAST_EPISODE_ID = 0;
+    public static int COLUMN_PODCAST_EPISODE_FEED_ID = 1;
+    public static int COLUMN_PODCAST_EPISODE_TITLE = 2;
+    public static int COLUMN_PODCAST_EPISODE_AUTHOR = 3;
+    public static int COLUMN_PODCAST_EPISODE_SUMMARY = 4;
+    public static int COLUMN_PODCAST_EPISODE_DURATION = 5;
+    public static int COLUMN_PODCAST_EPISODE_PUBLISH_DATE = 6;
+    public static int COLUMN_PODCAST_EPISODE_STREAM_URL = 7;
+
     public static final String ACTION_PLAY = "action_play";
     public static final String ACTION_PAUSE = "action_pause";
     public static final String ACTION_REWIND = "action_rewind";
