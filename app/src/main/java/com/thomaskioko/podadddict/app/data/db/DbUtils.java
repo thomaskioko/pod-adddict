@@ -9,6 +9,7 @@ import android.net.Uri;
 
 import com.thomaskioko.podadddict.app.api.model.Entry;
 import com.thomaskioko.podadddict.app.api.model.ImImage;
+import com.thomaskioko.podadddict.app.api.model.Item;
 import com.thomaskioko.podadddict.app.api.model.Result;
 import com.thomaskioko.podadddict.app.data.PodCastContract;
 import com.thomaskioko.podadddict.app.util.ApplicationConstants;
@@ -159,6 +160,63 @@ public class DbUtils {
     }
 
     /**
+     * Helper method to insert podcast episode records to the DB.
+     *
+     * @param context {@link Context} Context in which method is called
+     * @param podcastFeedId Podcast Feed ID
+     * @param itemList list of Feed items
+     * @return Id. if 0 no records have been inserted.
+     */
+    public static int insertPodcastEpisode(Context context, int podcastFeedId, List<Item> itemList) {
+        //Vector to hold content values.
+        Vector<ContentValues> contentValuesVector = new Vector<>(itemList.size());
+
+        //Loop through the response object and get the data
+        for (Item item : itemList) {
+
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_FEED_ID, podcastFeedId);
+            contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_TITLE, item.getTitle());
+            contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_STREAM_URL, item.getEnclosure().getUrl());
+            contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_SUMMARY, item.getItunesSummary());
+            contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_AUTHOR, item.getItunesAuthor());
+            contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_DURATION, item.getItunesDuration());
+            contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_PUBLISH_DATE, item.getPubDate());
+
+            contentValuesVector.add(contentValues);
+        }
+
+
+        // add to database
+        if (contentValuesVector.size() > 0) {
+            ContentValues[] contentValuesArray = new ContentValues[contentValuesVector.size()];
+            contentValuesVector.toArray(contentValuesArray);
+            context.getContentResolver().bulkInsert(PodCastContract.PodCastEpisodeEntry.CONTENT_URI, contentValuesArray);
+        }
+
+        Uri podCastUri = PodCastContract.PodCastEpisodeEntry.buildPodCastEpisodeUri();
+
+        // Display what what you stored in the bulkInsert
+        Cursor cursor = context.getContentResolver().query(
+                podCastUri, null, null, null, null);
+
+        if (cursor != null) {
+            contentValuesVector = new Vector<>(cursor.getCount());
+            if (cursor.moveToFirst()) {
+                do {
+                    ContentValues cv = new ContentValues();
+                    DatabaseUtils.cursorRowToContentValues(cursor, cv);
+                    contentValuesVector.add(cv);
+                } while (cursor.moveToNext());
+            }
+            return contentValuesVector.size();
+        }
+
+        return 0;
+    }
+
+
+    /**
      *
      * @param context
      * @param feedId
@@ -184,6 +242,41 @@ public class DbUtils {
             }
             //here, count is records found
             LogUtils.showInformationLog(TAG, "@dbHasRecord Records found" +  count);
+
+        }
+
+        cursor.close();          // Dont forget to close your cursor
+        db.close();              //AND your Database!
+        return hasObject;
+    }
+
+    /**
+     * Helper method to check if podcast episode db has data.
+     *
+     * @param context {@link Context}
+     * @param feedId Podcast Feed Id
+     * @return {@link Boolean}
+     */
+    public static boolean episodeDbHasRecords(Context context, String feedId) {
+        PodCastFeedDbHelper dbHelper = new PodCastFeedDbHelper(context);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        String selectString = "SELECT * FROM " + PodCastContract.PodCastEpisodeEntry.TABLE_NAME
+                + " WHERE " + PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_FEED_ID + " =?";
+
+        Cursor cursor = db.rawQuery(selectString, new String[]{feedId});
+
+        boolean hasObject = false;
+        if (cursor.moveToFirst()) {
+            hasObject = true;
+            //region if you had multiple records to check for, use this region.
+
+            int count = 0;
+            while (cursor.moveToNext()) {
+                count++;
+            }
+            //here, count is records found
+            LogUtils.showInformationLog(TAG, "@episodeDbHasRecords Records found" +  count);
 
         }
 
