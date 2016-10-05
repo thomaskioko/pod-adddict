@@ -28,6 +28,7 @@ public class PodCastContract {
     public static final String PATH_PODCAST_FEED = "podCastFeed";
     public static final String PATH_PODCAST_FEED_PLAYLIST = "podCastFeedPlaylist";
     public static final String PATH_PODCAST_FEED_SUBSCRIBED = "podCastFeedSubscribed";
+    public static final String PATH_PODCAST_EPISODES = "podCastEpisode";
 
 
     /**
@@ -220,12 +221,12 @@ public class PodCastContract {
     public static final class PodCastEpisodeEntry implements BaseColumns {
 
         public static final Uri CONTENT_URI =
-                BASE_CONTENT_URI.buildUpon().appendPath(PATH_PODCAST_FEED_PLAYLIST).build();
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_PODCAST_EPISODES).build();
 
         public static final String CONTENT_TYPE =
-                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PODCAST_FEED_PLAYLIST;
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PODCAST_EPISODES;
         public static final String CONTENT_ITEM_TYPE =
-                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PODCAST_FEED_PLAYLIST;
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PODCAST_EPISODES;
 
         // Table name
         public static final String TABLE_NAME = "podCastEpisode";
@@ -275,7 +276,7 @@ public class PodCastContract {
          * @param uri {@link Uri}
          * @return URI
          */
-        public static String getEpsiodeIdFromUri(Uri uri) {
+        public static String getEpisodeIdFromUri(Uri uri) {
             return uri.getPathSegments().get(1);
         }
 
@@ -285,7 +286,7 @@ public class PodCastContract {
          * @param uri {@link Uri}
          * @return long id
          */
-        public static long getPlaylistFeedIdFromUri(Uri uri) {
+        public static long getEpisodeFromUri(Uri uri) {
             String playlistFeedString = uri.getQueryParameter(COLUMN_PODCAST_FEED_ID);
             if (null != playlistFeedString && playlistFeedString.length() > 0)
                 return Long.parseLong(playlistFeedString);
