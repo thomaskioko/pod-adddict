@@ -89,7 +89,7 @@ public class PodCastFeedDbHelper extends SQLiteOpenHelper {
                 " FOREIGN KEY (" + PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_FEED_ID + ") REFERENCES " +
                 PodCastFeedEntry.TABLE_NAME + " (" + PodCastFeedEntry.COLUMN_PODCAST_FEED_ID + ")); ";
 
-        final String SQL_CREATE_PODCAST_EPISODE_TABLE = "CREATE TABLE " + PodcastFeedSubscriptionEntry.TABLE_NAME + " (" +
+        final String SQL_CREATE_PODCAST_EPISODE_TABLE = "CREATE TABLE " + PodCastEpisodeEntry.TABLE_NAME + " (" +
                 PodcastFeedSubscriptionEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
 
                 // the ID of the PodCastFeedEntry entry associated with this PodcastFeedSubscriptionEntry
