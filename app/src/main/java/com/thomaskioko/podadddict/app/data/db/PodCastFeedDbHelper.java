@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.thomaskioko.podadddict.app.data.PodCastContract.PodCastFeedEntry;
 import com.thomaskioko.podadddict.app.data.PodCastContract.PodCastFeedPlaylistEntry;
 import com.thomaskioko.podadddict.app.data.PodCastContract.PodcastFeedSubscriptionEntry;
+import com.thomaskioko.podadddict.app.data.PodCastContract.PodCastEpisodeEntry;
 
 /**
  * @author Thomas Kioko
@@ -88,10 +89,27 @@ public class PodCastFeedDbHelper extends SQLiteOpenHelper {
                 " FOREIGN KEY (" + PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_FEED_ID + ") REFERENCES " +
                 PodCastFeedEntry.TABLE_NAME + " (" + PodCastFeedEntry.COLUMN_PODCAST_FEED_ID + ")); ";
 
+        final String SQL_CREATE_PODCAST_EPISODE_TABLE = "CREATE TABLE " + PodCastEpisodeEntry.TABLE_NAME + " (" +
+                PodcastFeedSubscriptionEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+
+                // the ID of the PodCastFeedEntry entry associated with this PodcastFeedSubscriptionEntry
+                PodCastEpisodeEntry.COLUMN_PODCAST_FEED_ID + " INTEGER UNIQUE ON CONFLICT REPLACE NOT NULL, " +
+                PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_TITLE + " TEXT NOT NULL, " +
+                PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_AUTHOR + " TEXT NOT NULL, " +
+                PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_SUMMARY + " TEXT NOT NULL, " +
+                PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_DURATION + " TEXT NOT NULL," +
+                PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_PUBLISH_DATE + " TEXT NOT NULL, " +
+                PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_STREAM_URL + " TEXT NOT NULL, " +
+
+                // Set up the PodCastFeedEntry column as a foreign key to PodcastFeedSubscriptionEntry table.
+                " FOREIGN KEY (" + PodCastEpisodeEntry.COLUMN_PODCAST_FEED_ID + ") REFERENCES " +
+                PodcastFeedSubscriptionEntry.TABLE_NAME + " (" + PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_FEED_ID + ")); ";
+
 
         sqLiteDatabase.execSQL(SQL_CREATE_PODCAST_PLAYLIST_TABLE);
         sqLiteDatabase.execSQL(SQL_CREATE_PODCAST_FEED_TABLE);
         sqLiteDatabase.execSQL(SQL_CREATE_PODCAST_SUBSCRIPTION_TABLE);
+        sqLiteDatabase.execSQL(SQL_CREATE_PODCAST_EPISODE_TABLE);
     }
 
     @Override
@@ -105,6 +123,7 @@ public class PodCastFeedDbHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + PodCastFeedEntry.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + PodCastFeedPlaylistEntry.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + PodcastFeedSubscriptionEntry.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + PodCastEpisodeEntry.TABLE_NAME);
         onCreate(sqLiteDatabase);
     }
 }

@@ -28,6 +28,7 @@ public class PodCastContract {
     public static final String PATH_PODCAST_FEED = "podCastFeed";
     public static final String PATH_PODCAST_FEED_PLAYLIST = "podCastFeedPlaylist";
     public static final String PATH_PODCAST_FEED_SUBSCRIBED = "podCastFeedSubscribed";
+    public static final String PATH_PODCAST_EPISODES = "podCastEpisode";
 
 
     /**
@@ -213,4 +214,85 @@ public class PodCastContract {
             return CONTENT_URI.buildUpon().build();
         }
     }
+
+    /**
+     * PodCastFeedPlayList class which defines the columns and URI's for the table
+     */
+    public static final class PodCastEpisodeEntry implements BaseColumns {
+
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_PODCAST_EPISODES).build();
+
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PODCAST_EPISODES;
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PODCAST_EPISODES;
+
+        // Table name
+        public static final String TABLE_NAME = "podCastEpisode";
+
+        /**
+         * Columns
+         */
+        public static final String COLUMN_PODCAST_FEED_ID = "podCast_feedId";
+        public static final String COLUMN_PODCAST_EPISODE_TITLE = "episode_title";
+        public static final String COLUMN_PODCAST_EPISODE_AUTHOR = "episode_author";
+        public static final String COLUMN_PODCAST_EPISODE_SUMMARY = "episode_summary";
+        public static final String COLUMN_PODCAST_EPISODE_DURATION = "episode_duration";
+        public static final String COLUMN_PODCAST_EPISODE_STREAM_URL = "episode_stream_url";
+        public static final String COLUMN_PODCAST_EPISODE_PUBLISH_DATE = "episode_publish_date";
+
+        /**
+         * Helper method to build base URI
+         * @return Uri
+         */
+        public static Uri buildPodCastEpisodeUri() {
+            return CONTENT_URI.buildUpon().build();
+        }
+        /**
+         * Helper method for building the ContentProvider query.
+         *
+         * @param id id
+         * @return URI
+         */
+        public static Uri buildPodCastEpisodePlaylistUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        /**
+         * Helper method for building the ContentProvider query.
+         *
+         * @param feedId PodCast Feed Id
+         * @return URI
+         */
+        public static Uri buildPodCastEpisode(long feedId) {
+            return CONTENT_URI.buildUpon().appendPath(String.valueOf(feedId)).build();
+        }
+
+
+        /**
+         * Helper method for building the ContentProvider query.
+         *
+         * @param uri {@link Uri}
+         * @return URI
+         */
+        public static String getEpisodeIdFromUri(Uri uri) {
+            return uri.getPathSegments().get(1);
+        }
+
+        /**
+         * Helper method for getting the id of a record
+         *
+         * @param uri {@link Uri}
+         * @return long id
+         */
+        public static long getEpisodeFromUri(Uri uri) {
+            String playlistFeedString = uri.getQueryParameter(COLUMN_PODCAST_FEED_ID);
+            if (null != playlistFeedString && playlistFeedString.length() > 0)
+                return Long.parseLong(playlistFeedString);
+            else
+                return 0;
+        }
+    }
+
 }

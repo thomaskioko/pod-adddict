@@ -32,6 +32,8 @@ public class PodCastProvider extends ContentProvider {
     public static final int PODCAST_FEED_WITH_FEED_ID = 301;
     public static final int PODCAST_SUBSCRIPTION_FEED = 400;
     public static final int PODCAST_SUBSCRIPTION_FEED_WITH_ID = 401;
+    public static final int PODCAST_EPISODES = 500;
+    public static final int PODCAST_EPISODES_WITH_ID = 501;
 
     private static final SQLiteQueryBuilder sqLiteQueryBuilder;
 
@@ -79,6 +81,9 @@ public class PodCastProvider extends ContentProvider {
 
         uriMatcher.addURI(authority, PodCastContract.PATH_PODCAST_FEED_SUBSCRIBED, PODCAST_SUBSCRIPTION_FEED);
         uriMatcher.addURI(authority, PodCastContract.PATH_PODCAST_FEED_SUBSCRIBED + "/*", PODCAST_SUBSCRIPTION_FEED_WITH_ID);
+
+        uriMatcher.addURI(authority, PodCastContract.PATH_PODCAST_EPISODES, PODCAST_EPISODES);
+        uriMatcher.addURI(authority, PodCastContract.PATH_PODCAST_EPISODES + "/*", PODCAST_EPISODES_WITH_ID);
         return uriMatcher;
     }
 
@@ -102,6 +107,10 @@ public class PodCastProvider extends ContentProvider {
                 return PodCastContract.PodcastFeedSubscriptionEntry.CONTENT_TYPE;
             case PODCAST_SUBSCRIPTION_FEED_WITH_ID:
                 return PodCastContract.PodcastFeedSubscriptionEntry.CONTENT_TYPE;
+            case PODCAST_EPISODES:
+                return PodCastContract.PodCastEpisodeEntry.CONTENT_TYPE;
+            case PODCAST_EPISODES_WITH_ID:
+                return PodCastContract.PodCastEpisodeEntry.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -156,6 +165,26 @@ public class PodCastProvider extends ContentProvider {
                 retCursor = getPodcastSubscriptionFeedWithId(uri);
                 break;
             }
+            // "podCastEpisode"
+            case PODCAST_EPISODES: {
+                retCursor = podCastEpisodes(projection, selection, selectionArgs, sortOrder);
+                break;
+            }
+            // "podCastEpisode/325404506"
+            case PODCAST_EPISODES_WITH_ID: {
+                //Set the tables
+                sqLiteQueryBuilder.setTables(
+                        PodCastContract.PodCastEpisodeEntry.TABLE_NAME + " INNER JOIN " +
+                                PodCastContract.PodCastFeedEntry.TABLE_NAME +
+                                " ON " + PodCastContract.PodCastEpisodeEntry.TABLE_NAME +
+                                "." + PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_FEED_ID +
+                                " = " + PodCastContract.PodCastFeedEntry.TABLE_NAME +
+                                "." + PodCastContract.PodCastFeedEntry.COLUMN_PODCAST_FEED_ID
+                );
+
+                retCursor = getPodcastEpisodesWithId(uri);
+                break;
+            }
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -199,6 +228,14 @@ public class PodCastProvider extends ContentProvider {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             }
+            case PODCAST_EPISODES: {
+                long _id = db.insert(PodCastContract.PodCastEpisodeEntry.TABLE_NAME, null, values);
+                if (_id > 0)
+                    returnUri = PodCastContract.PodCastEpisodeEntry.buildPodCastEpisodePlaylistUri(_id);
+                else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
+            }
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -225,6 +262,15 @@ public class PodCastProvider extends ContentProvider {
             case PODCAST_FEED: {
                 rowsDeleted = db.delete(
                         PodCastContract.PodCastFeedEntry.TABLE_NAME,
+                        selection,
+                        selectionArgs
+                );
+
+                break;
+            }
+            case PODCAST_EPISODES: {
+                rowsDeleted = db.delete(
+                        PodCastContract.PodCastEpisodeEntry.TABLE_NAME,
                         selection,
                         selectionArgs
                 );
@@ -268,6 +314,16 @@ public class PodCastProvider extends ContentProvider {
 
                 break;
             }
+            case PODCAST_EPISODES: {
+                rowsUpdated = db.update(
+                        PodCastContract.PodCastEpisodeEntry.TABLE_NAME,
+                        values,
+                        selection,
+                        selectionArgs
+                );
+
+                break;
+            }
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -283,13 +339,28 @@ public class PodCastProvider extends ContentProvider {
     public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
         final SQLiteDatabase sqLiteDatabase = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
+        int returnCount = 0;
         switch (match) {
             case PLAYLIST_FEED:
                 sqLiteDatabase.beginTransaction();
-                int returnCount = 0;
                 try {
                     for (ContentValues value : values) {
                         long _id = sqLiteDatabase.insert(PodCastContract.PodCastFeedPlaylistEntry.TABLE_NAME, null, value);
+                        if (_id != -1) {
+                            returnCount++;
+                        }
+                    }
+                    sqLiteDatabase.setTransactionSuccessful();
+                } finally {
+                    sqLiteDatabase.endTransaction();
+                }
+                getContext().getContentResolver().notifyChange(uri, null);
+                return returnCount;
+            case PODCAST_EPISODES:
+                sqLiteDatabase.beginTransaction();
+                try {
+                    for (ContentValues value : values) {
+                        long _id = sqLiteDatabase.insert(PodCastContract.PodCastEpisodeEntry.TABLE_NAME, null, value);
                         if (_id != -1) {
                             returnCount++;
                         }
@@ -436,6 +507,44 @@ public class PodCastProvider extends ContentProvider {
                 null,
                 sPodCastFeedSelection,
                 new String[]{locationSetting},
+                null,
+                null,
+                null
+        );
+    }
+
+    /**
+     * @param projection    A list of which columns to return. Passing null will return all columns, which is inefficient.
+     * @param selection     A filter declaring which rows to return
+     * @param selectionArgs You may includes in selection, which will be replaced by the values from selectionArgs
+     * @param sortOrder     How to order the rows
+     * @return {@link Cursor} with result
+     */
+    private Cursor podCastEpisodes(String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        return mOpenHelper.getReadableDatabase().query(
+                PodCastContract.PodCastEpisodeEntry.TABLE_NAME,
+                null,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder
+        );
+    }
+
+    /**
+     * Helper method to get specific Podcast subscription feed using the select feed id
+     *
+     * @param uri Uri with selected podcast Id
+     * @return Cursor
+     */
+    private Cursor getPodcastEpisodesWithId(Uri uri) {
+        String feedId = PodCastContract.PodCastEpisodeEntry.getEpisodeIdFromUri(uri);
+
+        return sqLiteQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+                null,
+                sPodCastFeedSelection,
+                new String[]{feedId},
                 null,
                 null,
                 null

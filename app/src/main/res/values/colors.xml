@@ -22,5 +22,10 @@
     <color name="new_indicator_green">#669900</color>
     <color name="image_readability_tint">#80000000</color>
 
+    <color name="colorControlActivated">#FFA036</color>
+    <color name="colorDark">#111111</color>
+    <color name="colorListItem">#111111</color>
+    <color name="colorPlaylistCardView">#333333</color>
+
 
 </resources>

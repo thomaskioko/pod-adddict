@@ -9,7 +9,7 @@ import android.os.IBinder;
  *
  * @author Thomas Kioko
  */
-public class SunshineAuthenticatorService extends Service {
+public class PodAddditctAuthenticatorService extends Service {
     // Instance field that stores the authenticator object
     private PodAdddictAuthenticator mAuthenticator;
 
