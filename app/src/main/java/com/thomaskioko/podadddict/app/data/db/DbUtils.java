@@ -34,7 +34,7 @@ public class DbUtils {
      *
      * @param context    {@link Context}
      * @param resultList List of result object
-     * @return Row id of the record
+     * @return Number or records inserted
      */
     public static long insertSubscriptionFeed(Context context, List<Result> resultList, int rowId) {
 
@@ -57,7 +57,7 @@ public class DbUtils {
 
         }
 
-        // add to database
+        // if the vector size is greater that 0, we do a bulk insert
         if (contentValuesVector.size() > 0) {
             ContentValues[] contentValuesArray = new ContentValues[contentValuesVector.size()];
             contentValuesVector.toArray(contentValuesArray);
@@ -86,9 +86,12 @@ public class DbUtils {
     }
 
     /**
-     * @param context
-     * @param entryList
-     * @return
+     * This method inserts FeedIds into {@link com.thomaskioko.podadddict.app.data.PodCastContract.PodCastFeedEntry}
+     * table
+     *
+     * @param context    {@link Context}
+     * @param entryList List of feed items
+     * @return Number or records inserted
      */
     public static int insertPodcastFeeds(Context context, List<Entry> entryList) {
         //Vector to hold content values.
@@ -131,7 +134,7 @@ public class DbUtils {
         }
 
 
-        // add to database
+        // if the vector size is greater that 0, we do a bulk insert
         if (contentValuesVector.size() > 0) {
             ContentValues[] contentValuesArray = new ContentValues[contentValuesVector.size()];
             contentValuesVector.toArray(contentValuesArray);
@@ -165,7 +168,7 @@ public class DbUtils {
      * @param context {@link Context} Context in which method is called
      * @param podcastFeedId Podcast Feed ID
      * @param itemList list of Feed items
-     * @return Id. if 0 no records have been inserted.
+     * @return Number or records inserted
      */
     public static int insertPodcastEpisode(Context context, int podcastFeedId, List<Item> itemList) {
         //Vector to hold content values.
@@ -187,7 +190,7 @@ public class DbUtils {
         }
 
 
-        // add to database
+        // if the vector size is greater that 0, we do a bulk insert
         if (contentValuesVector.size() > 0) {
             ContentValues[] contentValuesArray = new ContentValues[contentValuesVector.size()];
             contentValuesVector.toArray(contentValuesArray);
@@ -217,10 +220,11 @@ public class DbUtils {
 
 
     /**
+     * Helper method to check is subscription table has records.
      *
-     * @param context
-     * @param feedId
-     * @return
+     * @param context {}
+     * @param feedId Podcast Feed Id
+     * @return {@link Boolean} True/False
      */
     public static boolean dbHasRecord(Context context, String feedId) {
         PodCastFeedDbHelper dbHelper = new PodCastFeedDbHelper(context);
