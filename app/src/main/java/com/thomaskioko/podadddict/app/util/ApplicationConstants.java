@@ -54,6 +54,7 @@ public class ApplicationConstants {
     /**
      * Subscribed podcast columns
      */
+    public static int COLUMN_SUBSCRIBED_PODCAST_FEED_ID = 2;
     public static int COLUMN_SUBSCRIBED_PODCAST_TRACK_NAME = 4;
     public static int COLUMN_SUBSCRIBED_PODCAST_FEED_URL = 5;
     public static int COLUMN_SUBSCRIBED_PODCAST_FEED_IMAGE_URL = 7;

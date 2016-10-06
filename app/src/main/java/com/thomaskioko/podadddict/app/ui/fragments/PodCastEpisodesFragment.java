@@ -162,7 +162,7 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
 
         // We need to start the enter transition after the data has loaded
         while (data.moveToNext()) {
-            String feedId = data.getString(ApplicationConstants.COLUMN_SUBSCRIBED_PODCAST_FEED_IMAGE_URL);
+            String feedId = data.getString(ApplicationConstants.COLUMN_SUBSCRIBED_PODCAST_FEED_ID);
             String imageUrl = data.getString(ApplicationConstants.COLUMN_SUBSCRIBED_PODCAST_FEED_IMAGE_URL);
 
             Glide.with(getActivity())
@@ -195,7 +195,8 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
     }
 
     /**
-     * Helper method to load episodes from DB
+     * Helper method to load episodes from DB. This is invoked once {@link #fetchFeedData(String, String)}
+     * has completed loading data from the API
      *
      * @param feedId Feed Id related to the episode.
      */
@@ -206,6 +207,9 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
         Cursor cursor = getActivity().getContentResolver().query(podCastEpisodeUri, null, null, null, null);
         List<Item> itemList = new ArrayList<>();
         if (cursor != null) {
+            mProgressBar.setVisibility(View.GONE);
+            mTvErrorMessage.setVisibility(View.GONE);
+
             while (cursor.moveToNext()){
                 Item item = new Item();
                 Enclosure enclosure = new Enclosure();
@@ -264,8 +268,6 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
         podCastPlaylistResponseCall.enqueue(new Callback<PodCastPlaylistResponse>() {
             @Override
             public void onResponse(Call<PodCastPlaylistResponse> call, Response<PodCastPlaylistResponse> response) {
-                mProgressBar.setVisibility(View.GONE);
-                mTvErrorMessage.setVisibility(View.GONE);
 
                 if (response.code() == 200) {
                     List<Item> links = response.body().getRss().getChannel().getItem();
@@ -274,19 +276,11 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
                     int record = DbUtils.insertPodcastEpisode(getActivity(), Integer.parseInt(feedId),
                             links);
                     if(record != 0){
-                        mRecyclerView.setAdapter(new PodcastEpisodeListAdapter(getActivity(), links, mUri,
-                                PodCastEpisodesFragment.this, new PodcastEpisodeListAdapter.PodCastEpisodeAdapterOnClickHandler() {
-                            @Override
-                            public void onClick(Uri uri, Item feedItem, View.OnClickListener vh) {
-
-
-                            }
-                        }));
+                     loadDataFromDb(feedId);
                     }else{
                         //Notify the user something went wrong
                         mTvErrorMessage.setText(getResources().getString(R.string.error_no_message));
                     }
-
 
                 }
             }
