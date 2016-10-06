@@ -9,6 +9,7 @@ import android.net.Uri;
 
 import com.thomaskioko.podadddict.app.api.model.Entry;
 import com.thomaskioko.podadddict.app.api.model.ImImage;
+import com.thomaskioko.podadddict.app.api.model.Item;
 import com.thomaskioko.podadddict.app.api.model.Result;
 import com.thomaskioko.podadddict.app.data.PodCastContract;
 import com.thomaskioko.podadddict.app.util.ApplicationConstants;
@@ -33,7 +34,7 @@ public class DbUtils {
      *
      * @param context    {@link Context}
      * @param resultList List of result object
-     * @return Row id of the record
+     * @return Number or records inserted
      */
     public static long insertSubscriptionFeed(Context context, List<Result> resultList, int rowId) {
 
@@ -56,7 +57,7 @@ public class DbUtils {
 
         }
 
-        // add to database
+        // if the vector size is greater that 0, we do a bulk insert
         if (contentValuesVector.size() > 0) {
             ContentValues[] contentValuesArray = new ContentValues[contentValuesVector.size()];
             contentValuesVector.toArray(contentValuesArray);
@@ -85,9 +86,12 @@ public class DbUtils {
     }
 
     /**
-     * @param context
-     * @param entryList
-     * @return
+     * This method inserts FeedIds into {@link com.thomaskioko.podadddict.app.data.PodCastContract.PodCastFeedEntry}
+     * table
+     *
+     * @param context    {@link Context}
+     * @param entryList List of feed items
+     * @return Number or records inserted
      */
     public static int insertPodcastFeeds(Context context, List<Entry> entryList) {
         //Vector to hold content values.
@@ -130,7 +134,7 @@ public class DbUtils {
         }
 
 
-        // add to database
+        // if the vector size is greater that 0, we do a bulk insert
         if (contentValuesVector.size() > 0) {
             ContentValues[] contentValuesArray = new ContentValues[contentValuesVector.size()];
             contentValuesVector.toArray(contentValuesArray);
@@ -159,10 +163,68 @@ public class DbUtils {
     }
 
     /**
+     * Helper method to insert podcast episode records to the DB.
      *
-     * @param context
-     * @param feedId
-     * @return
+     * @param context {@link Context} Context in which method is called
+     * @param podcastFeedId Podcast Feed ID
+     * @param itemList list of Feed items
+     * @return Number or records inserted
+     */
+    public static int insertPodcastEpisode(Context context, int podcastFeedId, List<Item> itemList) {
+        //Vector to hold content values.
+        Vector<ContentValues> contentValuesVector = new Vector<>(itemList.size());
+
+        //Loop through the response object and get the data
+        for (Item item : itemList) {
+
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_FEED_ID, podcastFeedId);
+            contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_TITLE, item.getTitle());
+            contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_STREAM_URL, item.getEnclosure().getUrl());
+            contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_SUMMARY, item.getItunesSummary());
+            contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_AUTHOR, item.getItunesAuthor());
+            contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_DURATION, item.getItunesDuration());
+            contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_PUBLISH_DATE, item.getPubDate());
+
+            contentValuesVector.add(contentValues);
+        }
+
+
+        // if the vector size is greater that 0, we do a bulk insert
+        if (contentValuesVector.size() > 0) {
+            ContentValues[] contentValuesArray = new ContentValues[contentValuesVector.size()];
+            contentValuesVector.toArray(contentValuesArray);
+            context.getContentResolver().bulkInsert(PodCastContract.PodCastEpisodeEntry.CONTENT_URI, contentValuesArray);
+        }
+
+        Uri podCastUri = PodCastContract.PodCastEpisodeEntry.buildPodCastEpisodeUri();
+
+        // Display what what you stored in the bulkInsert
+        Cursor cursor = context.getContentResolver().query(
+                podCastUri, null, null, null, null);
+
+        if (cursor != null) {
+            contentValuesVector = new Vector<>(cursor.getCount());
+            if (cursor.moveToFirst()) {
+                do {
+                    ContentValues cv = new ContentValues();
+                    DatabaseUtils.cursorRowToContentValues(cursor, cv);
+                    contentValuesVector.add(cv);
+                } while (cursor.moveToNext());
+            }
+            return contentValuesVector.size();
+        }
+
+        return 0;
+    }
+
+
+    /**
+     * Helper method to check is subscription table has records.
+     *
+     * @param context {}
+     * @param feedId Podcast Feed Id
+     * @return {@link Boolean} True/False
      */
     public static boolean dbHasRecord(Context context, String feedId) {
         PodCastFeedDbHelper dbHelper = new PodCastFeedDbHelper(context);
@@ -184,6 +246,41 @@ public class DbUtils {
             }
             //here, count is records found
             LogUtils.showInformationLog(TAG, "@dbHasRecord Records found" +  count);
+
+        }
+
+        cursor.close();          // Dont forget to close your cursor
+        db.close();              //AND your Database!
+        return hasObject;
+    }
+
+    /**
+     * Helper method to check if podcast episode db has data.
+     *
+     * @param context {@link Context}
+     * @param feedId Podcast Feed Id
+     * @return {@link Boolean}
+     */
+    public static boolean episodeDbHasRecords(Context context, String feedId) {
+        PodCastFeedDbHelper dbHelper = new PodCastFeedDbHelper(context);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        String selectString = "SELECT * FROM " + PodCastContract.PodCastEpisodeEntry.TABLE_NAME
+                + " WHERE " + PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_FEED_ID + " =?";
+
+        Cursor cursor = db.rawQuery(selectString, new String[]{feedId});
+
+        boolean hasObject = false;
+        if (cursor.moveToFirst()) {
+            hasObject = true;
+            //region if you had multiple records to check for, use this region.
+
+            int count = 0;
+            while (cursor.moveToNext()) {
+                count++;
+            }
+            //here, count is records found
+            LogUtils.showInformationLog(TAG, "@episodeDbHasRecords Records found" +  count);
 
         }
 

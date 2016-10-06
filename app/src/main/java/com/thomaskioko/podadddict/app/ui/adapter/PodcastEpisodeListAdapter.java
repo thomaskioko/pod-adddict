@@ -1,6 +1,9 @@
 package com.thomaskioko.podadddict.app.ui.adapter;
 
 import android.content.Context;
+import android.net.Uri;
+import android.support.design.widget.BottomSheetDialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,10 +11,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.thomaskioko.podadddict.app.R;
 import com.thomaskioko.podadddict.app.api.model.Item;
+import com.thomaskioko.podadddict.app.ui.fragments.PodCastEpisodesFragment;
+import com.thomaskioko.podadddict.app.ui.fragments.PodcastEpisodeBottomSheetFragment;
 import com.thomaskioko.podadddict.app.ui.util.RecyclerItemChoiceManager;
 import com.thomaskioko.podadddict.app.util.DateUtils;
 
@@ -36,18 +40,28 @@ public class PodcastEpisodeListAdapter extends RecyclerView.Adapter<PodcastEpiso
 
     private List<Item> mItemList;
     private Context mContext;
+    private Uri mUri;
     private final RecyclerItemChoiceManager mRecyclerItemChoiceManager;
+    final private PodCastEpisodeAdapterOnClickHandler mClickHandler;
+    private PodCastEpisodesFragment mPodCastEpisodesFragment;
     private static final String LOG_TAG = PodcastEpisodeListAdapter.class.getSimpleName();
 
     /**
      * Constructor
      *
-     * @param context  Context in which the class is called.
-     * @param itemList List of podcast feeds
+     * @param context                 Context in which the class is called.
+     * @param itemList                List of podcast feeds
+     * @param uri                     {@link Uri} Podcast Query Uri
+     * @param podCastEpisodesFragment
+     * @param clickHandler            Interface to handle onClick actions
      */
-    public PodcastEpisodeListAdapter(Context context, List<Item> itemList) {
+    public PodcastEpisodeListAdapter(Context context, List<Item> itemList, Uri uri,
+                                     PodCastEpisodesFragment podCastEpisodesFragment, PodCastEpisodeAdapterOnClickHandler clickHandler) {
         mContext = context;
         mItemList = itemList;
+        mUri = uri;
+        mClickHandler = clickHandler;
+        mPodCastEpisodesFragment = podCastEpisodesFragment;
         mRecyclerItemChoiceManager = new RecyclerItemChoiceManager(this);
         mRecyclerItemChoiceManager.setChoiceMode(choiceMode);
     }
@@ -56,7 +70,7 @@ public class PodcastEpisodeListAdapter extends RecyclerView.Adapter<PodcastEpiso
      *
      */
     public interface PodCastEpisodeAdapterOnClickHandler {
-        void onClick(int feedId, ViewHolder vh);
+        void onClick(Uri uri, Item feedItem, View.OnClickListener vh);
     }
 
 
@@ -130,14 +144,14 @@ public class PodcastEpisodeListAdapter extends RecyclerView.Adapter<PodcastEpiso
         holder.mPlayImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, item.getTitle(), Toast.LENGTH_SHORT).show();
+                mPodCastEpisodesFragment.onClick(mUri, item);
             }
         });
 
         holder.mEpisodeRl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, item.getItunesAuthor(), Toast.LENGTH_SHORT).show();
+                displayBottomSheet(item);
             }
         });
     }
@@ -146,6 +160,16 @@ public class PodcastEpisodeListAdapter extends RecyclerView.Adapter<PodcastEpiso
     public int getItemCount() {
         if (null == mItemList) return 0;
         return mItemList.size();
+    }
+
+    /**
+     * This method displays a bottom sheet containting podcast episode details.
+     */
+    private void displayBottomSheet(Item item) {
+
+        BottomSheetDialogFragment bottomSheetDialogFragment = PodcastEpisodeBottomSheetFragment.newInstance(item, mUri);
+        bottomSheetDialogFragment.show(((FragmentActivity) mContext).getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
+
     }
 
 }

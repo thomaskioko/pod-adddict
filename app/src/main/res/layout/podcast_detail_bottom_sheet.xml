@@ -22,6 +22,12 @@
                 android:background="@drawable/photo_background_protection"
                 android:orientation="vertical">
 
+                <ImageView
+                    android:id="@+id/imgvBackground"
+                    android:scaleType="centerCrop"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
 
                 <ImageView
                     android:id="@+id/imageView"

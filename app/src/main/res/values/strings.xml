@@ -37,6 +37,7 @@
 
     <!-- Toolbar Titles -->
     <string name="title_add_podcast">Add Podcast</string>
+    <string name="title_player">Music Player</string>
     <string name="new_label">New</string>
 
     <!-- Time Strings -->

@@ -36,7 +36,8 @@ public class TestUtilities {
     private static final String TEST_FEED_CATEGORY = "Technology";
     private static final String TEST_FEED_RIGHTS = "© Copyright 2016 NPR - For Personal Use Only";
     private static final String TEST_FEED_SUMMARY = "Child abductions are rare crimes. And they're typically solved. For 27 years, the investigation into the abduction of Jacob Wetterling in rural Minnesota yielded no answers. In the most comprehensive reporting on this case, APM Reports and reporter Madeleine Baran reveal how law enforcement mishandled one of the most notorious child abductions in the country and how those failures fueled national anxiety about stranger danger, changed how adults parent their kids and led to the nation's sex-offender registries.";
-    private static final String TEST_FEED_STATUS = "1";
+    private static final String TEST_FEED_DURATION = "00:01:23";
+    private static final String TEST_FEED_PUBLISH_DATE = "2019";
 
     /**
      * @param error          Error Message
@@ -125,6 +126,25 @@ public class TestUtilities {
         contentValues.put(PodCastContract.PodcastFeedSubscriptionEntry.COLUMN_SUBSCRIBED_PODCAST_GENRE, TEST_FEED_PLAYLIST_GENRE);
 
         return contentValues;
+    }
+
+    /**
+     * Helper method to populate content values with data.
+     *
+     * @return {@link ContentValues}
+     */
+    public static ContentValues createPodCastEpisodeValues() {
+        // Create a new map of values, where column names are the keys
+        ContentValues testValues = new ContentValues();
+        testValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_FEED_ID, TEST_FEED_ID);
+        testValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_TITLE, TEST_FEED_PLAYLIST_TRACK_NAME);
+        testValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_STREAM_URL, TEST_FEED_PLAYLIST_ART_WORK_URL_600);
+        testValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_SUMMARY, TEST_FEED_SUMMARY);
+        testValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_AUTHOR, TEST_FEED_PLAYLIST_ARTIST_NAME);
+        testValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_DURATION, TEST_FEED_DURATION);
+        testValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_PUBLISH_DATE, TEST_FEED_PUBLISH_DATE);
+
+        return testValues;
     }
 
     /**

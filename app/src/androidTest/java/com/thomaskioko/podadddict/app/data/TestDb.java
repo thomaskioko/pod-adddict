@@ -47,6 +47,7 @@ public class TestDb extends AndroidTestCase {
         tableNameHashSet.add(PodCastContract.PodCastFeedEntry.TABLE_NAME);
         tableNameHashSet.add(PodCastContract.PodCastFeedPlaylistEntry.TABLE_NAME);
         tableNameHashSet.add(PodCastContract.PodcastFeedSubscriptionEntry.TABLE_NAME);
+        tableNameHashSet.add(PodCastContract.PodCastEpisodeEntry.TABLE_NAME);
 
         mContext.deleteDatabase(PodCastFeedDbHelper.DATABASE_NAME);
         SQLiteDatabase db = new PodCastFeedDbHelper(this.mContext).getWritableDatabase();
@@ -239,6 +240,46 @@ public class TestDb extends AndroidTestCase {
         // Sixth Step: Close cursor and database
         subscriptionCursor.close();
         dbHelper.close();
+    }
+
+    /**
+     * Helper method to test inserting data in the PodCastEpisode table.
+     *
+     * @return {@link long} Id of the record that was last inserted.
+     */
+    public long testPodCastEpisodeTable() {
+        // First step: Get reference to writable database
+        SQLiteDatabase db = new PodCastFeedDbHelper(this.mContext).getWritableDatabase();
+        assertEquals(true, db.isOpen());
+
+        // Create ContentValues of what you want to insert
+        ContentValues contentValues = TestUtilities.createPodCastEpisodeValues();
+
+        // Insert ContentValues into database and get a row ID back
+        long insertResult = db.insert(PodCastContract.PodCastEpisodeEntry.TABLE_NAME, null, contentValues);
+
+        assertTrue(insertResult != -1);
+        // Move the cursor to a valid database row
+        Cursor cursor = db.query(
+                PodCastContract.PodCastEpisodeEntry.TABLE_NAME, //Table name
+                null, // leaving "columns" null just returns all the columns.
+                null, // cols for "where" clause
+                null, // values for "where" clause
+                null, // columns to group by
+                null, // columns to filter by row groups
+                null  // sort order
+        );
+
+        assertTrue("Error: No Records returned from PodCastEpisodeEntry query", cursor.moveToFirst());
+
+        // Validate data in resulting Cursor with the original ContentValues
+        TestUtilities.validateCursor("Error: PodCastEpisodeEntry Query Validation Failed", cursor, contentValues);
+
+        assertFalse("Error: More than one record returned from PodCastEpisodeEntry query", cursor.moveToNext());
+        // Finally, close the cursor and database
+        cursor.close();
+
+        return insertResult;
     }
 
 

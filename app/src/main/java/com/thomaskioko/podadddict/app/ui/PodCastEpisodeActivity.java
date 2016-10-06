@@ -1,14 +1,29 @@
 package com.thomaskioko.podadddict.app.ui;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.LightingColorFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.graphics.Palette;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.thomaskioko.podadddict.app.R;
+import com.thomaskioko.podadddict.app.api.model.Item;
 import com.thomaskioko.podadddict.app.ui.fragments.PodCastEpisodesFragment;
+import com.thomaskioko.podadddict.app.util.ApplicationConstants;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
 
 /**
@@ -17,8 +32,14 @@ import butterknife.ButterKnife;
  * item details are presented side-by-side with a list of items
  * in a {@link PodCastListActivity}.
  */
-public class PodCastEpisodeActivity extends AppCompatActivity {
+public class PodCastEpisodeActivity extends AppCompatActivity implements PodCastEpisodesFragment.EpisodeCallback {
 
+    @Bind(R.id.bottomMargin)
+    FrameLayout mRelativeLayout;
+    @Bind(R.id.selected_track_image_sp_home)
+    ImageView mThumbNail;
+    @Bind(R.id.selected_track_title_sp_home)
+    TextView mTrackTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,5 +91,49 @@ public class PodCastEpisodeActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onEpisodeSelected(Uri uri, Item item) {
+
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        if (cursor != null) {
+            //Display the MiniPlayer
+            mRelativeLayout.setVisibility(View.VISIBLE);
+
+            while (cursor.moveToNext()) {
+
+                //Create a blur effect
+                mTrackTitle.setText(item.getTitle());
+
+                String imageUrl = cursor.getString(ApplicationConstants.COLUMN_SUBSCRIBED_PODCAST_FEED_IMAGE_URL);
+                mThumbNail.setColorFilter(new LightingColorFilter(0xff828282, 0x000000));
+                Glide.with(PodCastEpisodeActivity.this)
+                        .load(imageUrl)
+                        .asBitmap()
+                        .placeholder(R.color.placeholder)
+                        .into(new BitmapImageViewTarget(mThumbNail) {
+                            @Override
+                            public void onResourceReady(Bitmap bitmap, final GlideAnimation glideAnimation) {
+                                super.onResourceReady(bitmap, glideAnimation);
+                                Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
+                                    @Override
+                                    public void onGenerated(Palette palette) {
+                                        //Set the background of the relative layout.
+                                        if (palette.getDarkVibrantSwatch() != null) {
+                                            mRelativeLayout.setBackgroundColor(palette.getDarkVibrantSwatch().getRgb());
+                                        } else if (palette.getMutedSwatch() != null) {
+                                            mRelativeLayout.setBackgroundColor(palette.getMutedSwatch().getRgb());
+                                        }
+
+                                    }
+                                });
+                            }
+                        });
+            }
+
+            cursor.close();
+        }
+
     }
 }

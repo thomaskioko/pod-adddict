@@ -41,7 +41,7 @@
             android:syncable="true" />
 
         <!-- SyncAdapter's authentication service -->
-        <service android:name=".data.sync.SunshineAuthenticatorService">
+        <service android:name=".data.sync.PodAddditctAuthenticatorService">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
