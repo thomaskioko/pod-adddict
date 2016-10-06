@@ -1,4 +1,4 @@
-package com.thomaskioko.podadddict.app.ui.util;
+package com.thomaskioko.podadddict.app.ui.views;
 
 
 import android.content.Context;

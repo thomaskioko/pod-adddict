@@ -1,4 +1,4 @@
-package com.thomaskioko.podadddict.app.ui.util;
+package com.thomaskioko.podadddict.app.ui.views;
 
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;

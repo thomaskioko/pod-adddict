@@ -1,4 +1,4 @@
-package com.thomaskioko.podadddict.app.ui.util;
+package com.thomaskioko.podadddict.app.ui.views;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -6,8 +6,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
-
-import com.thomaskioko.podadddict.app.ui.fragments.PlayerFragment;
 
 /**
  * Custom helper class used to style the progressBar.
@@ -52,7 +50,7 @@ public class CustomProgressBar extends View {
         hsv[2] = (float) 0.5;
         forePaint.setColor(Color.parseColor("#B24242"));
         forePaint.setAlpha(248);
-        float right = ((float) canvas.getWidth() / (float) PlayerFragment.durationInMilliSec) * (float) PlayerFragment.mMediaPlayer.getCurrentPosition();
-        canvas.drawRect(0, 0, right, canvas.getHeight(), forePaint);
+//        float right = ((float) canvas.getWidth() / (float) PlayerFragment.durationInMilliSec) * (float) PlayerFragment.mMediaPlayer.getCurrentPosition();
+        canvas.drawRect(0, 0, 10, canvas.getHeight(), forePaint);
     }
 }
