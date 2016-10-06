@@ -93,7 +93,7 @@ public class PodCastFeedDbHelper extends SQLiteOpenHelper {
                 PodcastFeedSubscriptionEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
 
                 // the ID of the PodCastFeedEntry entry associated with this PodcastFeedSubscriptionEntry
-                PodCastEpisodeEntry.COLUMN_PODCAST_FEED_ID + " INTEGER UNIQUE ON CONFLICT REPLACE NOT NULL, " +
+                PodCastEpisodeEntry.COLUMN_PODCAST_FEED_ID + " INTEGER NOT NULL, " +
                 PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_TITLE + " TEXT NOT NULL, " +
                 PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_AUTHOR + " TEXT NOT NULL, " +
                 PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_SUMMARY + " TEXT NOT NULL, " +
