@@ -26,8 +26,16 @@
         <activity
             android:name=".ui.PodCastEpisodeActivity"
             android:label="@string/title_podcast_detail"
+            android:launchMode="singleTop"
             android:parentActivityName=".ui.PodCastListActivity"
             android:theme="@style/AppTheme.Details">
+            <intent-filter>
+                <action android:name="android.intent.action.MUSIC_PLAYER" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.APP_MUSIC" />
+            </intent-filter>
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.PodCastListActivity" />
@@ -45,6 +53,7 @@
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
+
             <meta-data
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator" />
@@ -57,10 +66,12 @@
             <intent-filter>
                 <action android:name="android.content.SyncAdapter" />
             </intent-filter>
+
             <meta-data
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/syncadapter" />
         </service>
+
     </application>
 
 </manifest>
