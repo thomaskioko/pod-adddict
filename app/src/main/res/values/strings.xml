@@ -46,6 +46,10 @@
     <string name="time_hours">hours</string>
     <string name="duration">%1$d:%2$02d</string>
 
+    <!-- playback view !-->
+    <string name="playback_view_time">%1$02d:%2$02d</string>
+    <string name="playback_view_title">&lt;b>%1$s&lt;/b> - %2$s</string>
+
     <!-- Plurals -->
     <plurals name="time_seconds_quantified">
         <item quantity="one">1 second</item>
@@ -59,5 +63,8 @@
         <item quantity="one">1 hour</item>
         <item quantity="other">%d hours</item>
     </plurals>
+
+    <!-- toast !-->
+    <string name="toast_track_added">Added to the playlist. Touch again to play now.</string>
 
 </resources>
