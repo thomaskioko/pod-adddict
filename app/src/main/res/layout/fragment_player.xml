@@ -1,4 +1,4 @@
-<com.thomaskioko.podadddict.app.ui.util.SlidingRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.thomaskioko.podadddict.app.ui.views.SlidingRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root_view"
     android:layout_width="match_parent"
@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="70dp">
 
-        <com.thomaskioko.podadddict.app.ui.util.CustomProgressBar
+        <com.thomaskioko.podadddict.app.ui.views.CustomProgressBar
             android:id="@+id/customProgress"
             android:layout_width="match_parent"
             android:layout_height="5dp"
@@ -249,4 +249,4 @@
 
     </RelativeLayout>
 
-</com.thomaskioko.podadddict.app.ui.util.SlidingRelativeLayout>
+</com.thomaskioko.podadddict.app.ui.views.SlidingRelativeLayout>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- notification dimens !-->
+    <dimen name="dimen_notification_title">18sp</dimen>
+    <dimen name="dimen_notification_subtitle">14sp</dimen>
+    <dimen name="dimen_notification_icon">64dp</dimen>
+    <dimen name="dimen_notification_icon_expanded">128dp</dimen>
+    <dimen name="dimen_notification_padding">8dp</dimen>
+    <dimen name="dimen_notification_icon_padding">5dp</dimen>
+    <dimen name="dimen_notification_icon_padding_big">7dp</dimen>
+
+</resources>
