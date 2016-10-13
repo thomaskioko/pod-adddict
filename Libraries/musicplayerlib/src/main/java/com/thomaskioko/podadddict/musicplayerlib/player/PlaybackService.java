@@ -113,6 +113,9 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
      */
     private static final String BUNDLE_KEY_TRACK_POSITION = "player_bundle_key_seek_to";
 
+    public static final String FORCE_WIDGET_UPDATE = "com.thomaskioko.podadddict.musicplayerlib.FORCE_WIDGET_UPDATE";
+    public static final String STOP_WIDGET_UPDATE = "com.thomaskioko.podadddict.musicplayerlib.STOP_WIDGET_UPDATE";
+
     /**
      * what id used to identify "play" message.
      */
