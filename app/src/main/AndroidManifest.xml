@@ -72,6 +72,29 @@
                 android:resource="@xml/syncadapter" />
         </service>
 
+        <service
+            android:name=".service.PlayerWidgetService"
+            android:enabled="true"
+            android:exported="false">
+        </service>
+
+        <receiver android:name=".receiver.PlayerWidget">
+            <intent-filter>
+                <action android:name="com.thomaskioko.podadddict.musicplayerlib.FORCE_WIDGET_UPDATE"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.thomaskioko.podadddict.app.FORCE_WIDGET_UPDATE"/>
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/player_widget_info"/>
+
+            <intent-filter>
+                <action android:name="com.thomaskioko.podadddict.musicplayerlib.STOP_WIDGET_UPDATE"/>
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>
