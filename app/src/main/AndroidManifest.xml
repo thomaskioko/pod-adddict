@@ -78,12 +78,13 @@
             android:exported="false">
         </service>
 
-        <receiver android:name=".receiver.PlayerWidget">
+        <receiver android:name=".receiver.PlayerWidgetProvider">
             <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <!-- Broadcast Receiver that will also process our self created action -->
+                <action android:name="com.thomaskioko.podadddict.app.ACTION_WIDGET_RECEIVER"/>
                 <action android:name="com.thomaskioko.podadddict.musicplayerlib.FORCE_WIDGET_UPDATE"/>
-            </intent-filter>
-            <intent-filter>
-                <action android:name="com.thomaskioko.podadddict.app.FORCE_WIDGET_UPDATE"/>
+                <action android:name="com.thomaskioko.podadddict.musicplayerlib.ACTION_DATA_UPDATED" />
             </intent-filter>
 
             <meta-data
