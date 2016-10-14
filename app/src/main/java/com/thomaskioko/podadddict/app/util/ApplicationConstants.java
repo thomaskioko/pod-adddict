@@ -16,7 +16,7 @@ public class ApplicationConstants {
     /**
      * Server Url
      */
-    public static final String LOCAL_SERVER_END_POINT = "http://192.168.46.128/";
+    public static final String LOCAL_SERVER_END_POINT = "PUT_API_ADDRESS_HERE";
     /**
      * Connection timeout duration
      */
@@ -72,13 +72,5 @@ public class ApplicationConstants {
     public static int COLUMN_PODCAST_EPISODE_PUBLISH_DATE = 6;
     public static int COLUMN_PODCAST_EPISODE_STREAM_URL = 7;
 
-    public static final String ACTION_PLAY = "action_play";
-    public static final String ACTION_PAUSE = "action_pause";
-    public static final String ACTION_REWIND = "action_rewind";
-    public static final String ACTION_FAST_FORWARD = "action_fast_foward";
-    public static final String ACTION_NEXT = "action_next";
-    public static final String ACTION_PREVIOUS = "action_previous";
-    public static final String ACTION_STOP = "action_stop";
-    public static final String LOG_TAG = "MediaService";
 
 }
