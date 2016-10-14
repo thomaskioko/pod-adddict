@@ -67,4 +67,9 @@
     <!-- toast !-->
     <string name="toast_track_added">Added to the playlist. Touch again to play now.</string>
 
+    <string name="play_label">Play</string>
+    <string name="no_media_playing_label">No media playing</string>
+    <string name="title_trrack_name">Chapter 8: When it begins</string>
+    <string name="title_artist">NPR Radio</string>
+
 </resources>
