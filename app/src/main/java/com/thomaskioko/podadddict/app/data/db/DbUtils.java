@@ -176,17 +176,22 @@ public class DbUtils {
 
         //Loop through the response object and get the data
         for (Item item : itemList) {
+            try {
 
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_FEED_ID, podcastFeedId);
-            contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_TITLE, item.getTitle());
-            contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_STREAM_URL, item.getEnclosure().getUrl());
-            contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_SUMMARY, item.getItunesSummary());
-            contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_AUTHOR, item.getItunesAuthor());
-            contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_DURATION, item.getItunesDuration());
-            contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_PUBLISH_DATE, item.getPubDate());
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_FEED_ID, podcastFeedId);
+                contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_TITLE, item.getTitle());
+                contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_STREAM_URL, item.getEnclosure().getUrl());
+                contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_SUMMARY, item.getItunesSummary());
+                contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_AUTHOR, item.getItunesAuthor());
+                contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_DURATION, item.getItunesDuration());
+                contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_PUBLISH_DATE, item.getPubDate());
 
-            contentValuesVector.add(contentValues);
+                contentValuesVector.add(contentValues);
+            }catch (NullPointerException np){
+                LogUtils.showErrorLog(TAG, "@insertPodcastEpisode Error Inserting Values: " + np.getMessage());
+            }
+
         }
 
 
