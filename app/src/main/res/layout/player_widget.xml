@@ -12,7 +12,7 @@
         tools:ignore="contentDescription">
 
         <TextView
-            android:id="@+id/playback_view_track"
+            android:id="@+id/widget_track_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
@@ -26,14 +26,14 @@
             android:layout_toEndOf="@+id/playback_art_work" />
 
         <TextView
-            android:id="@+id/playback_view_artist"
+            android:id="@+id/widget_artist"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:padding="5dp"
             android:maxLines="1"
             android:fontFamily="sans-serif-condensed"
-            android:layout_below="@+id/playback_view_track"
+            android:layout_below="@+id/widget_track_title"
             android:textColor="@color/white"
             android:textSize="16sp"
             android:text="@string/title_artist"
@@ -54,7 +54,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:layout_below="@+id/playback_view_artist"
+            android:layout_below="@+id/widget_artist"
             android:layout_toEndOf="@+id/playback_art_work"
             android:orientation="horizontal"
             android:layout_marginBottom="15dp">
