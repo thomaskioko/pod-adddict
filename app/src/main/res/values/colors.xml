@@ -61,5 +61,10 @@
     <color name="puce_inner_dot">@color/colorPrimary</color>
     <color name="puce_ring">@color/grey_darker</color>
 
+    <color name="selection_background_color_dark">#484B4D</color>
+    <color name="selection_background_color_light">#E3E3E3</color>
+
+    <color name="transparent_grey">#73000000</color>
+
 
 </resources>
