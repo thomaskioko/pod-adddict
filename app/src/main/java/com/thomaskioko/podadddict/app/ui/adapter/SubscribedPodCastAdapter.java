@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 import com.squareup.picasso.Picasso;
 import com.thomaskioko.podadddict.app.R;
 import com.thomaskioko.podadddict.app.data.PodCastContract;
-import com.thomaskioko.podadddict.app.ui.util.ForegroundImageView;
 import com.thomaskioko.podadddict.app.ui.util.RecyclerItemChoiceManager;
+import com.thomaskioko.podadddict.app.ui.views.ForegroundImageView;
 import com.thomaskioko.podadddict.app.util.ApplicationConstants;
 
 import butterknife.Bind;
