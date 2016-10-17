@@ -56,7 +56,8 @@ public class PodcastEpisodeListAdapter extends RecyclerView.Adapter<PodcastEpiso
      * @param clickHandler            Interface to handle onClick actions
      */
     public PodcastEpisodeListAdapter(Context context, List<Item> itemList, Uri uri,
-                                     PodCastEpisodesFragment podCastEpisodesFragment, PodCastEpisodeAdapterOnClickHandler clickHandler) {
+                                     PodCastEpisodesFragment podCastEpisodesFragment,
+                                     PodCastEpisodeAdapterOnClickHandler clickHandler) {
         mContext = context;
         mItemList = itemList;
         mUri = uri;
@@ -144,6 +145,7 @@ public class PodcastEpisodeListAdapter extends RecyclerView.Adapter<PodcastEpiso
         holder.mPlayImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //TODO:: Change Icon based on action. If playing, equalizer icon, pause pause-icon etc
                 mPodCastEpisodesFragment.onClick(mUri, item);
             }
         });
