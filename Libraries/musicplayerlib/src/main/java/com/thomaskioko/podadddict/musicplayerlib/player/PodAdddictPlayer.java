@@ -14,7 +14,9 @@ import java.util.List;
 import rx.functions.Action1;
 
 /**
- * Encapsulate network and player features to work with sound cloud.
+ * Encapsulate network and player features.
+ *
+ * @author kioko
  */
 public final class PodAdddictPlayer implements Action1<ArrayList<Track>> {
 
