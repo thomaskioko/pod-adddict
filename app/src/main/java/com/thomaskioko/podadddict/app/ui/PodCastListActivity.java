@@ -4,28 +4,32 @@ import android.annotation.TargetApi;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
-import com.appeaser.sublimenavigationviewlibrary.OnNavigationMenuEventListener;
-import com.appeaser.sublimenavigationviewlibrary.SublimeBaseMenuItem;
-import com.appeaser.sublimenavigationviewlibrary.SublimeNavigationView;
 import com.thomaskioko.podadddict.app.R;
 import com.thomaskioko.podadddict.app.data.PodCastContract;
+import com.thomaskioko.podadddict.app.data.db.DbUtils;
 import com.thomaskioko.podadddict.app.data.sync.PodAdddictSyncAdapter;
 import com.thomaskioko.podadddict.app.ui.adapter.PodCastAdapterAdapter;
 import com.thomaskioko.podadddict.app.ui.adapter.SubscribedPodCastAdapter;
@@ -41,8 +45,8 @@ import butterknife.ButterKnife;
  *
  * @author Thomas Kioko
  */
-public class PodCastListActivity extends AppCompatActivity implements OnNavigationMenuEventListener,
-        DiscoverPodcastFragment.Callback, SubscriptionFragment.Callback {
+public class PodCastListActivity extends AppCompatActivity implements DiscoverPodcastFragment.Callback,
+        SubscriptionFragment.Callback, NavigationView.OnNavigationItemSelectedListener {
 
     /**
      * Bind View using butter knife.
@@ -50,7 +54,7 @@ public class PodCastListActivity extends AppCompatActivity implements OnNavigati
     @Bind(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
     @Bind(R.id.navigation_view)
-    SublimeNavigationView mSublimeNavigationView;
+    NavigationView mSublimeNavigationView;
     @Bind(R.id.coordinated_layout)
     CoordinatorLayout mCoordinatedLayout;
     @Bind(R.id.bottomSheetLayout)
@@ -79,10 +83,20 @@ public class PodCastListActivity extends AppCompatActivity implements OnNavigati
         actionBarDrawerToggle.syncState();
 
         //Register on clickListener event to the navigation drawer
-        mSublimeNavigationView.setNavigationMenuEventListener(this);
+        mSublimeNavigationView.setNavigationItemSelectedListener(this);
 
         //Initialize the BottomSheet view
         mBottomSheetBehavior = BottomSheetBehavior.from(findViewById(R.id.bottomSheetLayout));
+
+        int episodeCount = DbUtils.getEpisodeCount(getApplicationContext());
+
+        TextView tvPodcastCount=(TextView) MenuItemCompat.getActionView(mSublimeNavigationView.getMenu().
+                findItem(R.id.nav_action_poscasts));
+
+        tvPodcastCount.setText(String.valueOf(episodeCount));
+        tvPodcastCount.setTextColor(getResources().getColor(R.color.colorAccent));
+        tvPodcastCount.setGravity(Gravity.CENTER_VERTICAL);
+        tvPodcastCount.setTypeface(null, Typeface.BOLD);
 
         //We set the bottom view state to hidden otherwise it will be displayed be default.
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -138,9 +152,9 @@ public class PodCastListActivity extends AppCompatActivity implements OnNavigati
     }
 
     @Override
-    public boolean onNavigationMenuEvent(Event event, SublimeBaseMenuItem menuItem) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         FragmentTransaction fragmentTransaction;
-        switch (menuItem.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.nav_action_poscasts:
                 fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.frameLayout_container, new SubscriptionFragment());

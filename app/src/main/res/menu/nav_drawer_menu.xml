@@ -2,34 +2,33 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <Group
-        android:id="@+id/group_1"
-        android:checkableBehavior="single"
-        app:collapsible="false">
+    <group>
 
-        <TextWithBadge
+        <item
             android:id="@+id/nav_action_poscasts"
             android:icon="@drawable/ic_podcast_24dp"
             android:title="@string/title_podcasts"
-            app:badgeText="25" />
+            app:actionViewClass="android.widget.TextView" />
 
-        <TextWithBadge
+        <item
             android:id="@+id/nav_action_discover"
             android:icon="@drawable/ic_search_24dp"
             android:title="@string/title_discover" />
 
+    </group>
 
-        <Separator android:id="@+id/separator_item_1" />
+    <item android:title="More">
+        <menu>
+            <item
+                android:id="@+id/nav_action_downloads"
+                android:icon="@drawable/ic_file_download_24dp"
+                android:title="@string/title_downloads" />
 
-        <TextWithBadge
-            android:id="@+id/nav_action_downloads"
-            android:icon="@drawable/ic_file_download_24dp"
-            android:title="@string/title_downloads" />
-
-        <TextWithBadge
-            android:id="@+id/nav_action_favorite"
-            android:icon="@drawable/ic_star_24dp"
-            android:title="@string/title_favorites" />
-    </Group>
+            <item
+                android:id="@+id/nav_action_favorite"
+                android:icon="@drawable/ic_star_24dp"
+                android:title="@string/title_favorites" />
+        </menu>
+    </item>
 
 </menu>

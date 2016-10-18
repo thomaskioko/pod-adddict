@@ -38,16 +38,13 @@
 
     </android.support.design.widget.CoordinatorLayout>
 
-    <com.appeaser.sublimenavigationviewlibrary.SublimeNavigationView
+    <android.support.design.widget.NavigationView
         android:id="@+id/navigation_view"
         style="@style/NavigationViewStyle"
         android:layout_width="304dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        app:snvHeaderLayout="@layout/nav_header"
-        app:snvHintTypefaceFilename="planer_reg_webfont.ttf"
-        app:snvItemTypefaceFilename="planer_bold_webfont.ttf"
-        app:snvMenu="@menu/nav_drawer_menu"
-        app:snvSubheaderItemTypefaceFilename="planer_bold_webfont.ttf" />
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/nav_drawer_menu" />
 </android.support.v4.widget.DrawerLayout>
