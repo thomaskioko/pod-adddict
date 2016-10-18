@@ -33,6 +33,7 @@ import com.thomaskioko.podadddict.app.data.PodCastContract;
 import com.thomaskioko.podadddict.app.data.db.DbUtils;
 import com.thomaskioko.podadddict.app.ui.adapter.PodcastEpisodeListAdapter;
 import com.thomaskioko.podadddict.app.util.ApplicationConstants;
+import com.thomaskioko.podadddict.app.util.Converter;
 import com.thomaskioko.podadddict.app.util.LogUtils;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
@@ -79,8 +80,9 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
     public PodCastEpisodesFragment() {
     }
 
-
-
+    /**
+     * Callback Interface
+     */
     public interface EpisodeCallback {
         void onEpisodeSelected(Uri uri, Item item);
     }
@@ -175,11 +177,14 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
             String mFeedUrl = data.getString(ApplicationConstants.COLUMN_SUBSCRIBED_PODCAST_FEED_URL);
 
             try {
-                //Check if there is any data saved locally
-                if(DbUtils.episodeDbHasRecords(getActivity(), feedId)){
+                /**
+                 * Check if there is any data saved locally. If not we fetch the data, save it locally
+                 * and load it from Sql.
+                 */
+                if (DbUtils.episodeDbHasRecords(getActivity(), feedId)) {
                     //Load data from DB
                     loadDataFromDb(feedId);
-                }else {
+                } else {
                     fetchFeedData(feedId, mFeedUrl);
                 }
             } catch (UnsupportedEncodingException e) {
@@ -210,7 +215,7 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
             mProgressBar.setVisibility(View.GONE);
             mTvErrorMessage.setVisibility(View.GONE);
 
-            while (cursor.moveToNext()){
+            while (cursor.moveToNext()) {
                 Item item = new Item();
                 Enclosure enclosure = new Enclosure();
                 enclosure.setUrl(cursor.getString(ApplicationConstants.COLUMN_PODCAST_EPISODE_STREAM_URL));
@@ -235,6 +240,7 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
             }));
         }
     }
+
     /**
      * Helper method to fetch podcast playlist
      *
@@ -242,28 +248,14 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
      */
     private void fetchFeedData(final String feedId, String feedUrl) throws UnsupportedEncodingException {
 
-        //TODO:: Check if data exists locally. If not invoke the API
         ApiClient apiClient = new ApiClient();
         apiClient.setIsDebug(true);
         apiClient.setEndpointUrl(ApplicationConstants.LOCAL_SERVER_END_POINT);
 
-        if (feedUrl.contains("%253A")) {
-            feedUrl = feedUrl.replace("%253A", ":");
-        }
-        if (feedUrl.contains("%252F")) {
-            feedUrl = feedUrl.replace("%252F", "/");
-        }
-        if (feedUrl.contains("%253D")) {
-            feedUrl = feedUrl.replace("%253D", ".");
-        }
-        if (feedUrl.contains("%253Fid%253D")) {
-            feedUrl = feedUrl.replace("%253Fid%253D", "?id=");
-        }
-
-
+        //Invoke API Endpoint to fetch feed episodes
         Call<PodCastPlaylistResponse> podCastPlaylistResponseCall = apiClient.iTunesServices()
                 .getPodCastPlaylistResponse(
-                        URLEncoder.encode(feedUrl, "UTF-8") //Encode the URl ensuring it's in the right format.
+                        URLEncoder.encode(Converter.formatUrl(feedUrl), "UTF-8") //Encode the URl ensuring it's in the right format.
                 );
         podCastPlaylistResponseCall.enqueue(new Callback<PodCastPlaylistResponse>() {
             @Override
@@ -275,9 +267,9 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
                     //Save the Podcast episode data locally
                     int record = DbUtils.insertPodcastEpisode(getActivity(), Integer.parseInt(feedId),
                             links);
-                    if(record != 0){
-                     loadDataFromDb(feedId);
-                    }else{
+                    if (record != 0) {
+                        loadDataFromDb(feedId);
+                    } else {
                         //Notify the user something went wrong
                         mTvErrorMessage.setText(getResources().getString(R.string.error_no_message));
                     }
@@ -295,9 +287,14 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
         });
     }
 
+    /**
+     * Method used to pass data when an item on the recyclerView is clicked.
+     *
+     * @param mUri     {@link Uri} Selected item URI
+     * @param feedItem {@link Item} Episode Item
+     */
     public void onClick(Uri mUri, Item feedItem) {
 
-        ((PodCastEpisodesFragment.EpisodeCallback) getActivity())
-                .onEpisodeSelected(mUri, feedItem );
+        ((PodCastEpisodesFragment.EpisodeCallback) getActivity()).onEpisodeSelected(mUri, feedItem);
     }
 }
