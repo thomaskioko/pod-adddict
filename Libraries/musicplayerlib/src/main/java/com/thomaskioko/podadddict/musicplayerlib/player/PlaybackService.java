@@ -44,21 +44,21 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
      * <p/>
      * package private, used by the NotificationManager for PendingIntent.
      */
-    static final String ACTION_TOGGLE_PLAYBACK = "toggle_playback";
+    public static final String ACTION_TOGGLE_PLAYBACK = "toggle_playback";
 
     /**
      * Action used to skip to the next track of the pod adddict player.
      * <p/>
      * package private, used by the NotificationManager for PendingIntent.
      */
-    static final String ACTION_NEXT_TRACK = "player_next";
+    public static final String ACTION_NEXT_TRACK = "player_next";
 
     /**
      * Action used to skip to the previous track of the pod adddict player.
      * <p/>
      * package private, used by the NotificationManager for PendingIntent.
      */
-    static final String ACTION_PREVIOUS_TRACK = "player_previous";
+    public static final String ACTION_PREVIOUS_TRACK = "player_previous";
 
     /**
      * Action used to skip to clear the notification.
