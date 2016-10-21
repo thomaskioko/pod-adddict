@@ -57,6 +57,7 @@
             android:layout_below="@+id/widget_artist"
             android:layout_toEndOf="@+id/widget_art_work"
             android:orientation="horizontal"
+            android:visibility="gone"
             android:layout_marginBottom="15dp">
 
             <ImageView
