@@ -1,5 +1,7 @@
 package com.thomaskioko.podadddict.app.util;
 
+import com.thomaskioko.podadddict.app.BuildConfig;
+
 /**
  * @author Thomas Kioko
  */
@@ -14,9 +16,10 @@ public class ApplicationConstants {
      */
     public static final String ITUNES_END_POINT = "https://itunes.apple.com/";
     /**
-     * Server Url
+     * Server Url. The Ip Address is being retrieved from the BuildConfig using IpGetter. For more
+     * info {@see <a href="https://github.com/brunodles/IpGetter">}
      */
-    public static final String LOCAL_SERVER_END_POINT = "PUT_API_ADDRESS_HERE";
+    public static final String LOCAL_SERVER_END_POINT = BuildConfig.API_URL;
     /**
      * Connection timeout duration
      */
