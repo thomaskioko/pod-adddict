@@ -61,26 +61,28 @@ public class PlayerWidgetService extends IntentService {
 
             views.setOnClickPendingIntent(R.id.widget, startAppPending);
 
-            final Track track = PlaybackService.getCurrentTrack();
+            if (PlaybackService.getCurrentTrack() != null) {
+                final Track track = PlaybackService.getCurrentTrack();
 
-            //If the Track is not null update the widget.
-            if (track != null) {
-                views.setTextViewText(R.id.widget_track_title, track.getTitle());
-                views.setTextViewText(R.id.widget_artist, track.getArtist());
-                views.setImageViewResource(R.id.widget_playback_view_toggle_play, R.drawable.ic_pause_white);
+                //If the Track is not null update the widget.
+                if (track != null) {
+                    views.setTextViewText(R.id.widget_track_title, track.getTitle());
+                    views.setTextViewText(R.id.widget_artist, track.getArtist());
+                    views.setImageViewResource(R.id.widget_playback_view_toggle_play, R.drawable.ic_pause_white);
 
-                //We load the image in a handler since we are using glide in a service.
-                Handler uiHandler = new Handler(Looper.getMainLooper());
-                uiHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Glide.with(PlayerWidgetService.this)
-                                .load(track.getArtworkUrl())
-                                .asBitmap()
-                                .into(appWidgetTarget);
-                    }
-                });
+                    //We load the image in a handler since we are using glide in a service.
+                    Handler uiHandler = new Handler(Looper.getMainLooper());
+                    uiHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Glide.with(PlayerWidgetService.this)
+                                    .load(track.getArtworkUrl())
+                                    .asBitmap()
+                                    .into(appWidgetTarget);
+                        }
+                    });
 
+                }
             } else {
                 views.setTextViewText(R.id.widget_track_title, "Nothing playing");
                 views.setTextViewText(R.id.widget_artist, "--");
