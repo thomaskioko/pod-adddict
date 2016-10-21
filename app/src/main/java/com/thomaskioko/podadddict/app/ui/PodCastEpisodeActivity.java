@@ -29,6 +29,7 @@ import com.thomaskioko.podadddict.musicplayerlib.player.PodAdddictPlayerListener
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
@@ -62,7 +63,18 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
     SeekBar mSeekBar;
     @Bind(R.id.playback_view_loader)
     ProgressBarCompat mLoader;
+    @Bind(R.id.fullPlayer)
+    FrameLayout mFullPlayerLayout;
+    @Bind(R.id.player_album_art)
+    ImageView mIvAlbumArt;
+    @Bind(R.id.controller_close)
+    ImageView mIvClose;
+    @Bind(R.id.selected_track_image_sp)
+    CircleImageView mImageArtWork;
+    @Bind(R.id.selected_track_title_sp)
+    TextView mTvArtistName;
 
+    private boolean isFullPlayerShowing;
     private boolean mSeeking;
     private static PodAdddictPlayer mPodAdddictPlayer;
     public static final String LOG_TAG = PodCastEpisodeActivity.class.getSimpleName();
@@ -114,6 +126,32 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
         // synchronize the player view with the current player (loaded track, playing state, etc.)
         synchronize(mPodAdddictPlayer);
 
+    }
+
+    /**
+     * Method to handle click events using {#@link {@link ButterKnife}}
+     *
+     * @param views {@link View}
+     */
+    @OnClick({R.id.detail_relative_latout, R.id.controller_close})
+    void onClickViews(View views) {
+        switch (views.getId()) {
+            case R.id.detail_relative_latout:
+                if(isFullPlayerShowing){
+                    isFullPlayerShowing = false;
+                    mFullPlayerLayout.setVisibility(View.GONE);
+                }else{
+                    isFullPlayerShowing = true;
+                    mFullPlayerLayout.setVisibility(VISIBLE);
+                }
+                break;
+            case R.id.controller_close:
+                mFullPlayerLayout.setVisibility(View.GONE);
+                isFullPlayerShowing = false;
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
@@ -268,6 +306,9 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
             mDuration.setText(none);
         } else {
 
+            isFullPlayerShowing = true;
+            mFullPlayerLayout.setVisibility(VISIBLE);
+
             if (mPodAdddictPlayer.getTracks().contains(track)) {
                 //TODO:: fix player issue
                 // mPodAdddictPlayer.play(track);
@@ -290,10 +331,18 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
                     .fit()
                     .centerCrop()
                     .placeholder(R.color.placeholder)
-                    .into(mArtwork);
+                    .into(mImageArtWork);
+
+            Picasso.with(getApplicationContext())
+                    .load(track.getArtworkUrl())
+                    .fit()
+                    .centerCrop()
+                    .placeholder(R.color.placeholder)
+                    .into(mIvAlbumArt);
 
             mTitle.setText(track.getTitle());
             mPlayPause.setImageResource(R.drawable.ic_pause_white);
+            mTvArtistName.setText(track.getArtist());
 
             mSeekBar.setMax(((int) track.getDurationInMilli()));
             String none = String.format(getResources().getString(R.string.playback_view_time), 0, 0);
