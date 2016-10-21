@@ -15,6 +15,8 @@
         android:layout_above="@+id/detail_relative_latout"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
+    <!-- Full PlayerView-->
+    <include layout="@layout/layout_full_player_view" />
 
     <FrameLayout
         android:id="@+id/detail_relative_latout"
@@ -26,6 +28,6 @@
         <include
             layout="@layout/playback_view"
             android:layout_width="match_parent"
-            android:layout_height="100dp" />
+            android:layout_height="wrap_content" />
     </FrameLayout>
 </RelativeLayout>
