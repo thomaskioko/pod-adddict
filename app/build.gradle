@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.github.brunodles.IpGetter'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 24
@@ -40,6 +41,8 @@ dependencies {
     compile "com.android.support:palette-v7:$supportLibraryVersion"
     compile "com.android.support:support-v4:$supportLibraryVersion"
     compile "com.android.support:cardview-v7:$supportLibraryVersion"
+
+    compile 'com.google.android.gms:play-services-analytics:9.0.0'
 
 
     compile 'com.squareup.retrofit2:retrofit:2.0.1'
