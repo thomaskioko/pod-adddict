@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -65,7 +66,7 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
     @Bind(R.id.playback_view_loader)
     ProgressBarCompat mLoader;
     @Bind(R.id.fullPlayer)
-    FrameLayout mFullPlayerLayout;
+    RelativeLayout mFullPlayerLayout;
     @Bind(R.id.player_album_art)
     ImageView mIvAlbumArt;
     @Bind(R.id.controller_close)
