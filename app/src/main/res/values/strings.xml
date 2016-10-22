@@ -75,10 +75,12 @@
     <!-- Analytics Categories -->
     <string name="action_category_stream">Stream</string>
     <string name="action_category_download">Download</string>
+    <string name="action_category_gcm">GCM Registration</string>
 
 
     <!-- Analytics Actions -->
     <string name="action_action_stream">Stream Music</string>
     <string name="action_action_download">Download Music</string>
+    <string name="action_action_fcm_complete">Firebase Registration Complete</string>
 
 </resources>
