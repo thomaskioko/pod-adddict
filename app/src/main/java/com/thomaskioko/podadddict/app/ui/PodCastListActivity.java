@@ -36,6 +36,7 @@ import com.thomaskioko.podadddict.app.ui.adapter.SubscribedPodCastAdapter;
 import com.thomaskioko.podadddict.app.ui.fragments.DiscoverPodcastFragment;
 import com.thomaskioko.podadddict.app.ui.fragments.PodcastBottomSheetDialogFragment;
 import com.thomaskioko.podadddict.app.ui.fragments.SubscriptionFragment;
+import com.thomaskioko.podadddict.app.util.GoogleAnalyticsUtil;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -105,6 +106,8 @@ public class PodCastListActivity extends AppCompatActivity implements DiscoverPo
         Uri podCastSubscribedUri = PodCastContract.PodcastFeedSubscriptionEntry.buildSubscriptionUri();
 
         Cursor cursor = getContentResolver().query(podCastSubscribedUri, null, null, null, null);
+
+        GoogleAnalyticsUtil.trackScreenView(LOG_TAG);
 
 
         /**

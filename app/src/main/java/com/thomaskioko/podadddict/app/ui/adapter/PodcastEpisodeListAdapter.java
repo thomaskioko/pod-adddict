@@ -18,6 +18,7 @@ import com.thomaskioko.podadddict.app.ui.fragments.PodCastEpisodesFragment;
 import com.thomaskioko.podadddict.app.ui.fragments.PodcastEpisodeBottomSheetFragment;
 import com.thomaskioko.podadddict.app.ui.util.RecyclerItemChoiceManager;
 import com.thomaskioko.podadddict.app.util.DateUtils;
+import com.thomaskioko.podadddict.app.util.GoogleAnalyticsUtil;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -128,6 +129,7 @@ public class PodcastEpisodeListAdapter extends RecyclerView.Adapter<PodcastEpiso
 
         } catch (ParseException e) {
             e.printStackTrace();
+            GoogleAnalyticsUtil.trackException(mContext, e);
         }
 
         if (null != item.getItunesDuration()) {

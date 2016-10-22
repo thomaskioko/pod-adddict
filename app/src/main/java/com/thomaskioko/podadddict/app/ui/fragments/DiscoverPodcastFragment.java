@@ -26,6 +26,7 @@ import com.thomaskioko.podadddict.app.data.PodCastContract;
 import com.thomaskioko.podadddict.app.ui.PodCastListActivity;
 import com.thomaskioko.podadddict.app.ui.adapter.PodCastAdapterAdapter;
 import com.thomaskioko.podadddict.app.ui.views.GridMarginDecoration;
+import com.thomaskioko.podadddict.app.util.GoogleAnalyticsUtil;
 
 import butterknife.Bind;
 import butterknife.BindDimen;
@@ -82,6 +83,8 @@ public class DiscoverPodcastFragment extends Fragment implements LoaderManager.L
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_discover_podcast, container, false);
         ButterKnife.bind(this, rootView);
+
+        GoogleAnalyticsUtil.trackScreenView(LOG_TAG);
 
         ((PodCastListActivity)getActivity()).getSupportActionBar().setTitle(getString(R.string.title_add_podcast));
 

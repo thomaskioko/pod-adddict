@@ -13,6 +13,7 @@ import com.thomaskioko.podadddict.app.api.model.Item;
 import com.thomaskioko.podadddict.app.api.model.Result;
 import com.thomaskioko.podadddict.app.data.PodCastContract;
 import com.thomaskioko.podadddict.app.util.ApplicationConstants;
+import com.thomaskioko.podadddict.app.util.GoogleAnalyticsUtil;
 import com.thomaskioko.podadddict.app.util.LogUtils;
 
 import java.util.List;
@@ -190,6 +191,7 @@ public class DbUtils {
                 contentValuesVector.add(contentValues);
             } catch (NullPointerException np) {
                 LogUtils.showErrorLog(TAG, "@insertPodcastEpisode Error Inserting Values: " + np.getMessage());
+                GoogleAnalyticsUtil.trackException(context, np);
             }
 
         }
