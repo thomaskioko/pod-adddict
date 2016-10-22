@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -22,6 +23,7 @@ import com.thomaskioko.podadddict.app.service.PlayerWidgetService;
 import com.thomaskioko.podadddict.app.ui.fragments.PodCastEpisodesFragment;
 import com.thomaskioko.podadddict.app.ui.views.ProgressBarCompat;
 import com.thomaskioko.podadddict.app.util.ApplicationConstants;
+import com.thomaskioko.podadddict.app.util.GoogleAnalyticsUtil;
 import com.thomaskioko.podadddict.musicplayerlib.model.Track;
 import com.thomaskioko.podadddict.musicplayerlib.player.PodAdddictPlayer;
 import com.thomaskioko.podadddict.musicplayerlib.player.PodAdddictPlayerListener;
@@ -64,7 +66,7 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
     @Bind(R.id.playback_view_loader)
     ProgressBarCompat mLoader;
     @Bind(R.id.fullPlayer)
-    FrameLayout mFullPlayerLayout;
+    RelativeLayout mFullPlayerLayout;
     @Bind(R.id.player_album_art)
     ImageView mIvAlbumArt;
     @Bind(R.id.controller_close)
@@ -316,6 +318,13 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
                 boolean playNow = !mPodAdddictPlayer.isPlaying();
                 mPodAdddictPlayer.addTrack(track, playNow);
             }
+
+            //Log event to Google analytics
+            GoogleAnalyticsUtil.trackEvent(
+                    getResources().getString(R.string.action_category_stream),
+                    getResources().getString(R.string.action_action_stream),
+                    track.getTitle()
+            );
 
             //Invoke service to update the widget.
             Intent active = new Intent(getApplicationContext(), PlayerWidgetService.class);

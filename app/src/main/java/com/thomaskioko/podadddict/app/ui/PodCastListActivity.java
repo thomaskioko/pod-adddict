@@ -2,7 +2,11 @@ package com.thomaskioko.podadddict.app.ui;
 
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -14,12 +18,14 @@ import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,6 +42,11 @@ import com.thomaskioko.podadddict.app.ui.adapter.SubscribedPodCastAdapter;
 import com.thomaskioko.podadddict.app.ui.fragments.DiscoverPodcastFragment;
 import com.thomaskioko.podadddict.app.ui.fragments.PodcastBottomSheetDialogFragment;
 import com.thomaskioko.podadddict.app.ui.fragments.SubscriptionFragment;
+import com.thomaskioko.podadddict.app.util.ApplicationConstants;
+import com.thomaskioko.podadddict.app.util.FcmUtils;
+import com.thomaskioko.podadddict.app.util.GoogleAnalyticsUtil;
+import com.thomaskioko.podadddict.app.util.LogUtils;
+import com.thomaskioko.podadddict.app.util.NotificationUtils;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -64,6 +75,7 @@ public class PodCastListActivity extends AppCompatActivity implements DiscoverPo
 
     //Variables
     private BottomSheetBehavior mBottomSheetBehavior;
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
     private static final String LOG_TAG = PodCastListActivity.class.getSimpleName();
 
     @Override
@@ -82,6 +94,41 @@ public class PodCastListActivity extends AppCompatActivity implements DiscoverPo
         mDrawerLayout.setDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
 
+        final SharedPreferences pref = getApplicationContext().getSharedPreferences(ApplicationConstants.SHARED_PREF, 0);
+
+        //Check if FCM token has been retrieved.
+        if (!pref.getBoolean(ApplicationConstants.GCM_REGISTRATION_COMPLETE, false)) {
+
+            FcmUtils fcmUtils = new FcmUtils(PodCastListActivity.this, getApplicationContext());
+            if (fcmUtils.checkPlayServices()) {
+                fcmUtils.registerFCM();
+            }
+        }
+
+        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                // checking for type intent filter
+                if (intent.getAction().equals(ApplicationConstants.REGISTRATION_COMPLETE)) {
+
+                    //Get the token from the intent.
+                    String regId = intent.getStringExtra("token");
+
+                    LogUtils.showInformationLog(LOG_TAG, "@BroadcastReceiver :: Firebase reg id: " + regId);
+
+                    if (!TextUtils.isEmpty(regId)) {
+                        //Log the ID to Google Analytics
+                        GoogleAnalyticsUtil.trackEvent(
+                                getString(R.string.action_category_gcm),
+                                getString(R.string.action_action_fcm_complete),
+                                regId
+                        );
+                    }
+                }
+            }
+        };
+
         //Register on clickListener event to the navigation drawer
         mSublimeNavigationView.setNavigationItemSelectedListener(this);
 
@@ -90,7 +137,7 @@ public class PodCastListActivity extends AppCompatActivity implements DiscoverPo
 
         int episodeCount = DbUtils.getEpisodeCount(getApplicationContext());
 
-        TextView tvPodcastCount=(TextView) MenuItemCompat.getActionView(mSublimeNavigationView.getMenu().
+        TextView tvPodcastCount = (TextView) MenuItemCompat.getActionView(mSublimeNavigationView.getMenu().
                 findItem(R.id.nav_action_poscasts));
 
         tvPodcastCount.setText(String.valueOf(episodeCount));
@@ -105,6 +152,8 @@ public class PodCastListActivity extends AppCompatActivity implements DiscoverPo
         Uri podCastSubscribedUri = PodCastContract.PodcastFeedSubscriptionEntry.buildSubscriptionUri();
 
         Cursor cursor = getContentResolver().query(podCastSubscribedUri, null, null, null, null);
+
+        GoogleAnalyticsUtil.trackScreenView(LOG_TAG);
 
 
         /**
@@ -138,6 +187,30 @@ public class PodCastListActivity extends AppCompatActivity implements DiscoverPo
 
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // register GCM registration complete receiver
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(ApplicationConstants.REGISTRATION_COMPLETE));
+
+        // register new push message receiver
+        // by doing this, the activity will be notified each time a new message arrives
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(ApplicationConstants.PUSH_NOTIFICATION));
+
+        // clear the notification area when the app is opened
+        NotificationUtils.clearNotifications(getApplicationContext());
+    }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+        super.onPause();
+
+    }
 
     @Override
     public void onBackPressed() {

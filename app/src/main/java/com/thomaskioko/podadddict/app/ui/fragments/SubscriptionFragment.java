@@ -26,6 +26,7 @@ import com.thomaskioko.podadddict.app.data.PodCastContract;
 import com.thomaskioko.podadddict.app.ui.PodCastListActivity;
 import com.thomaskioko.podadddict.app.ui.adapter.SubscribedPodCastAdapter;
 import com.thomaskioko.podadddict.app.ui.views.GridMarginDecoration;
+import com.thomaskioko.podadddict.app.util.GoogleAnalyticsUtil;
 import com.thomaskioko.podadddict.app.util.LogUtils;
 
 import butterknife.Bind;
@@ -97,8 +98,10 @@ public class SubscriptionFragment extends Fragment implements LoaderManager.Load
         View rootView = inflater.inflate(R.layout.fragment_subscription, container, false);
         ButterKnife.bind(this, rootView);
 
+        GoogleAnalyticsUtil.trackScreenView(LOG_TAG);
+
         //Set the ToolBar Title
-        ((PodCastListActivity)getActivity()).getSupportActionBar().setTitle(getString(R.string.app_name));
+        ((PodCastListActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.app_name));
 
         //Fetch all the records from the Feed Subscription table
 
@@ -112,7 +115,7 @@ public class SubscriptionFragment extends Fragment implements LoaderManager.Load
             mTvErrorMessage.setVisibility(View.GONE);
             mProgressBar.setVisibility(View.GONE);
             cursor.close();
-        }else{
+        } else {
             mTvErrorMessage.setText(getResources().getString(R.string.error_no_data));
             mTvErrorMessage.setVisibility(View.VISIBLE);
             mProgressBar.setVisibility(View.GONE);
@@ -122,7 +125,9 @@ public class SubscriptionFragment extends Fragment implements LoaderManager.Load
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                /* emulating https://material-design.storage.googleapis.com/publish/material_v_4/material_ext_publish/0B6Okdz75tqQsck9lUkgxNVZza1U/style_imagery_integration_scale1.png */
+                /**
+                 * emulating https://material-design.storage.googleapis.com/publish/material_v_4/material_ext_publish/0B6Okdz75tqQsck9lUkgxNVZza1U/style_imagery_integration_scale1.png
+                 */
                 switch (position % 6) {
                     case 0:
                     case 1:

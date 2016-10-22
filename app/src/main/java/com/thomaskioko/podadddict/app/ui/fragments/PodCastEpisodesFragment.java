@@ -34,6 +34,7 @@ import com.thomaskioko.podadddict.app.data.db.DbUtils;
 import com.thomaskioko.podadddict.app.ui.adapter.PodcastEpisodeListAdapter;
 import com.thomaskioko.podadddict.app.util.ApplicationConstants;
 import com.thomaskioko.podadddict.app.util.Converter;
+import com.thomaskioko.podadddict.app.util.GoogleAnalyticsUtil;
 import com.thomaskioko.podadddict.app.util.LogUtils;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
@@ -189,6 +190,7 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
                 }
             } catch (UnsupportedEncodingException e) {
                 LogUtils.showErrorLog(LOG_TAG, "@onLoadFinished: " + e.getMessage());
+                GoogleAnalyticsUtil.trackException(getActivity(), e);
             }
         }
 
