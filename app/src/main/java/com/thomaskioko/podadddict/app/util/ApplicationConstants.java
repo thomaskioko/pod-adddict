@@ -41,6 +41,18 @@ public class ApplicationConstants {
      */
     public static final String IMAGE_SIZE_600x600 = "600";
 
+    // id to handle the notification in the notification tray
+    static final int NOTIFICATION_ID = 100;
+    static final int NOTIFICATION_ID_BIG_IMAGE = 101;
+
+    // broadcast receiver intent filters
+    public static final String REGISTRATION_COMPLETE = "registrationComplete";
+    public static final String PUSH_NOTIFICATION = "pushNotification";
+    public static final String GCM_REGISTRATION_COMPLETE = "registrationComplete";
+
+
+    public static final String SHARED_PREF = "podAdddictPrefs";
+
     /**
      * Podcast feeed column ID. These must match the order on which they have been created in
      * {@link com.thomaskioko.podadddict.app.data.db.PodCastFeedDbHelper} otherwise data will not
