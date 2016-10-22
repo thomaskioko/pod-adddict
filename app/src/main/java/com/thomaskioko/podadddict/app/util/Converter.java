@@ -183,5 +183,27 @@ public final class Converter {
             return 1f;
         return (float) (1 - (Math.log(101 - progress) / Math.log(101)));
     }
+
+    /**
+     * Helper method to format the URL. When stored in the DB, some charachters are added to it.
+     *
+     * @param feedUrl Raw Url from the DB
+     * @return Formatted Url
+     */
+    public static String formatUrl(String feedUrl){
+        if (feedUrl.contains("%253A")) {
+            feedUrl = feedUrl.replace("%253A", ":");
+        }
+        if (feedUrl.contains("%252F")) {
+            feedUrl = feedUrl.replace("%252F", "/");
+        }
+        if (feedUrl.contains("%253D")) {
+            feedUrl = feedUrl.replace("%253D", ".");
+        }
+        if (feedUrl.contains("%253Fid%253D")) {
+            feedUrl = feedUrl.replace("%253Fid%253D", "?id=");
+        }
+        return feedUrl;
+    }
 }
 

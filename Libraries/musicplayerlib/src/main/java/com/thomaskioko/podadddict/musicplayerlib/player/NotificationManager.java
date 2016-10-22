@@ -315,7 +315,7 @@ final class NotificationManager {
         // inti builder.
         mNotificationBuilder = new NotificationCompat.Builder(context);
         mNotificationView = new RemoteViews(context.getPackageName(),
-                R.layout.simple_sound_cloud_notification);
+                R.layout.simple_notification);
         mNotificationExpandedView = new RemoteViews(context.getPackageName(),
                 R.layout.simple_notification_expanded);
 

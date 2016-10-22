@@ -33,6 +33,7 @@ Based one notification_template_material_big_picture.xml
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:singleLine="true"
+            android:layout_marginLeft="28dp"
             android:textColor="@color/notification_title"
             android:textSize="@dimen/dimen_notification_title"
             tools:text="Ivan B" />
@@ -45,6 +46,7 @@ Based one notification_template_material_big_picture.xml
             android:maxLines="2"
             android:textColor="@color/notification_subtitle"
             android:textSize="@dimen/dimen_notification_subtitle"
+            android:layout_marginLeft="28dp"
             tools:text="Story writing" />
 
     </LinearLayout>

@@ -89,7 +89,7 @@ public class DbUtils {
      * This method inserts FeedIds into {@link com.thomaskioko.podadddict.app.data.PodCastContract.PodCastFeedEntry}
      * table
      *
-     * @param context    {@link Context}
+     * @param context   {@link Context}
      * @param entryList List of feed items
      * @return Number or records inserted
      */
@@ -165,9 +165,9 @@ public class DbUtils {
     /**
      * Helper method to insert podcast episode records to the DB.
      *
-     * @param context {@link Context} Context in which method is called
+     * @param context       {@link Context} Context in which method is called
      * @param podcastFeedId Podcast Feed ID
-     * @param itemList list of Feed items
+     * @param itemList      list of Feed items
      * @return Number or records inserted
      */
     public static int insertPodcastEpisode(Context context, int podcastFeedId, List<Item> itemList) {
@@ -176,17 +176,22 @@ public class DbUtils {
 
         //Loop through the response object and get the data
         for (Item item : itemList) {
+            try {
 
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_FEED_ID, podcastFeedId);
-            contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_TITLE, item.getTitle());
-            contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_STREAM_URL, item.getEnclosure().getUrl());
-            contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_SUMMARY, item.getItunesSummary());
-            contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_AUTHOR, item.getItunesAuthor());
-            contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_DURATION, item.getItunesDuration());
-            contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_PUBLISH_DATE, item.getPubDate());
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_FEED_ID, podcastFeedId);
+                contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_TITLE, item.getTitle());
+                contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_STREAM_URL, item.getEnclosure().getUrl());
+                contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_SUMMARY, item.getItunesSummary());
+                contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_AUTHOR, item.getItunesAuthor());
+                contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_DURATION, item.getItunesDuration());
+                contentValues.put(PodCastContract.PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_PUBLISH_DATE, item.getPubDate());
 
-            contentValuesVector.add(contentValues);
+                contentValuesVector.add(contentValues);
+            } catch (NullPointerException np) {
+                LogUtils.showErrorLog(TAG, "@insertPodcastEpisode Error Inserting Values: " + np.getMessage());
+            }
+
         }
 
 
@@ -223,7 +228,7 @@ public class DbUtils {
      * Helper method to check is subscription table has records.
      *
      * @param context {}
-     * @param feedId Podcast Feed Id
+     * @param feedId  Podcast Feed Id
      * @return {@link Boolean} True/False
      */
     public static boolean dbHasRecord(Context context, String feedId) {
@@ -245,7 +250,7 @@ public class DbUtils {
                 count++;
             }
             //here, count is records found
-            LogUtils.showInformationLog(TAG, "@dbHasRecord Records found" +  count);
+            LogUtils.showInformationLog(TAG, "@dbHasRecord Records found" + count);
 
         }
 
@@ -258,7 +263,7 @@ public class DbUtils {
      * Helper method to check if podcast episode db has data.
      *
      * @param context {@link Context}
-     * @param feedId Podcast Feed Id
+     * @param feedId  Podcast Feed Id
      * @return {@link Boolean}
      */
     public static boolean episodeDbHasRecords(Context context, String feedId) {
@@ -280,12 +285,42 @@ public class DbUtils {
                 count++;
             }
             //here, count is records found
-            LogUtils.showInformationLog(TAG, "@episodeDbHasRecords Records found" +  count);
+            LogUtils.showInformationLog(TAG, "@episodeDbHasRecords Records found" + count);
 
         }
 
         cursor.close();          // Dont forget to close your cursor
         db.close();              //AND your Database!
         return hasObject;
+    }
+
+    /**
+     * Helper method to get the number of episodes in the DB
+     *
+     * @param context {@link Context}
+     * @return Number or episodes
+     */
+    public static int getEpisodeCount(Context context) {
+        PodCastFeedDbHelper dbHelper = new PodCastFeedDbHelper(context);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        String selectString = "SELECT * FROM " + PodCastContract.PodCastEpisodeEntry.TABLE_NAME;
+
+        Cursor cursor = db.rawQuery(selectString, null);
+
+        int count = 0;
+        if (cursor.moveToFirst()) {
+
+            while (cursor.moveToNext()) {
+                count++;
+            }
+            //here, count is records found
+            LogUtils.showInformationLog(TAG, "@getEpisodeCount Records found" + count);
+
+        }
+
+        cursor.close();          // Dont forget to close your cursor
+        db.close();              //AND your Database!
+        return count;
     }
 }

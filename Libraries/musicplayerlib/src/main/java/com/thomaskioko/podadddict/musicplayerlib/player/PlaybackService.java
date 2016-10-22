@@ -44,21 +44,21 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
      * <p/>
      * package private, used by the NotificationManager for PendingIntent.
      */
-    static final String ACTION_TOGGLE_PLAYBACK = "toggle_playback";
+    public static final String ACTION_TOGGLE_PLAYBACK = "toggle_playback";
 
     /**
      * Action used to skip to the next track of the pod adddict player.
      * <p/>
      * package private, used by the NotificationManager for PendingIntent.
      */
-    static final String ACTION_NEXT_TRACK = "player_next";
+    public static final String ACTION_NEXT_TRACK = "player_next";
 
     /**
      * Action used to skip to the previous track of the pod adddict player.
      * <p/>
      * package private, used by the NotificationManager for PendingIntent.
      */
-    static final String ACTION_PREVIOUS_TRACK = "player_previous";
+    public static final String ACTION_PREVIOUS_TRACK = "player_previous";
 
     /**
      * Action used to skip to clear the notification.
@@ -99,11 +99,6 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
     private static final String ACTION_SEEK_TO = "player_seek_to";
 
     /**
-     * Bundle key used to pass client id.
-     */
-    private static final String BUNDLE_KEY_CLIENT_ID = "player_bundle_key_client_id";
-
-    /**
      * Bundle key used to pass track url.
      */
     private static final String BUNDLE_KEY_TRACK = "player_bundle_key_track_url";
@@ -112,6 +107,7 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
      * Bundle key used to seek to a given position.
      */
     private static final String BUNDLE_KEY_TRACK_POSITION = "player_bundle_key_seek_to";
+
 
     /**
      * what id used to identify "play" message.
@@ -241,7 +237,7 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
     /**
      * Used to managed the internal playlist.
      */
-    private PlayerPlaylist mPlayerPlaylist;
+    private static PlayerPlaylist mPlayerPlaylist;
 
     /**
      * System service used to managed audio through user device.
@@ -291,6 +287,16 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
     }
 
     /**
+     * Helper method to return the current playing track.
+     *
+     * @return {@link Track} Current playing track
+     */
+    public static Track getCurrentTrack() {
+
+        return mPlayerPlaylist.getCurrentTrack();
+    }
+
+    /**
      * Pause the SoundCloud player.
      *
      * @param context context from which the service will be started.
@@ -309,7 +315,6 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
     public static void resume(Context context) {
         Intent intent = new Intent(context, PlaybackService.class);
         intent.setAction(ACTION_RESUME_PLAYER);
-        intent.putExtra(BUNDLE_KEY_CLIENT_ID, "");
         context.startService(intent);
     }
 
@@ -337,7 +342,6 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
     public static void seekTo(Context context, int milli) {
         Intent intent = new Intent(context, PlaybackService.class);
         intent.setAction(ACTION_SEEK_TO);
-        intent.putExtra(BUNDLE_KEY_CLIENT_ID, "");
         intent.putExtra(BUNDLE_KEY_TRACK_POSITION, milli);
         context.startService(intent);
     }

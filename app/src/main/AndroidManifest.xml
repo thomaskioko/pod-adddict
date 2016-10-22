@@ -26,8 +26,16 @@
         <activity
             android:name=".ui.PodCastEpisodeActivity"
             android:label="@string/title_podcast_detail"
+            android:launchMode="singleTop"
             android:parentActivityName=".ui.PodCastListActivity"
             android:theme="@style/AppTheme.Details">
+            <intent-filter>
+                <action android:name="android.intent.action.MUSIC_PLAYER" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.APP_MUSIC" />
+            </intent-filter>
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.PodCastListActivity" />
@@ -45,6 +53,7 @@
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
+
             <meta-data
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator" />
@@ -57,10 +66,36 @@
             <intent-filter>
                 <action android:name="android.content.SyncAdapter" />
             </intent-filter>
+
             <meta-data
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/syncadapter" />
         </service>
+
+        <service
+            android:name=".service.PlayerWidgetService"
+            android:enabled="true"
+            android:exported="false">
+        </service>
+
+        <receiver android:name=".receiver.PlayerWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <!-- Broadcast Receiver that will also process our self created action -->
+                <action android:name="com.thomaskioko.podadddict.app.ACTION_WIDGET_RECEIVER"/>
+                <action android:name="com.thomaskioko.podadddict.musicplayerlib.FORCE_WIDGET_UPDATE"/>
+                <action android:name="com.thomaskioko.podadddict.musicplayerlib.ACTION_DATA_UPDATED" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/player_widget_info"/>
+
+            <intent-filter>
+                <action android:name="com.thomaskioko.podadddict.musicplayerlib.STOP_WIDGET_UPDATE"/>
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

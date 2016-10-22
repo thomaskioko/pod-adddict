@@ -25,7 +25,7 @@ import com.thomaskioko.podadddict.app.R;
 import com.thomaskioko.podadddict.app.data.PodCastContract;
 import com.thomaskioko.podadddict.app.ui.PodCastListActivity;
 import com.thomaskioko.podadddict.app.ui.adapter.SubscribedPodCastAdapter;
-import com.thomaskioko.podadddict.app.ui.util.GridMarginDecoration;
+import com.thomaskioko.podadddict.app.ui.views.GridMarginDecoration;
 import com.thomaskioko.podadddict.app.util.LogUtils;
 
 import butterknife.Bind;

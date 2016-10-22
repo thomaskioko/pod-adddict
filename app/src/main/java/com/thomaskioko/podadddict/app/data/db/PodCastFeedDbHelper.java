@@ -95,7 +95,7 @@ public class PodCastFeedDbHelper extends SQLiteOpenHelper {
                 // the ID of the PodCastFeedEntry entry associated with this PodcastFeedSubscriptionEntry
                 PodCastEpisodeEntry.COLUMN_PODCAST_FEED_ID + " INTEGER NOT NULL, " +
                 PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_TITLE + " TEXT NOT NULL, " +
-                PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_AUTHOR + " TEXT NOT NULL, " +
+                PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_AUTHOR + " TEXT , " +
                 PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_SUMMARY + " TEXT NOT NULL, " +
                 PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_DURATION + " TEXT NOT NULL," +
                 PodCastEpisodeEntry.COLUMN_PODCAST_EPISODE_PUBLISH_DATE + " TEXT NOT NULL, " +
