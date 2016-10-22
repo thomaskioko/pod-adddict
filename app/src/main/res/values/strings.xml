@@ -72,4 +72,13 @@
     <string name="title_trrack_name">Chapter 8: When it begins</string>
     <string name="title_artist">NPR Radio</string>
 
+    <!-- Analytics Categories -->
+    <string name="action_category_stream">Stream</string>
+    <string name="action_category_download">Download</string>
+
+
+    <!-- Analytics Actions -->
+    <string name="action_action_stream">Stream Music</string>
+    <string name="action_action_download">Download Music</string>
+
 </resources>
