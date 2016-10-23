@@ -148,7 +148,7 @@ public class PodcastEpisodeListAdapter extends RecyclerView.Adapter<PodcastEpiso
             @Override
             public void onClick(View v) {
                 //TODO:: Change Icon based on action. If playing, equalizer icon, pause pause-icon etc
-                mPodCastEpisodesFragment.onClick(mUri, item);
+                mPodCastEpisodesFragment.onClick(mUri, item, position);
             }
         });
 
