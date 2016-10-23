@@ -1,12 +1,15 @@
 package com.thomaskioko.podadddict.app.api.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
  * @author Thomas Kioko
  */
 
-public class Item {
+public class Item implements Parcelable {
     @SerializedName(value = "itunes:author")
     private String itunesAuthor;
     @SerializedName(value = "itunes:subtitle")
@@ -19,6 +22,10 @@ public class Item {
     private String title;
     private String pubDate;
     private Enclosure enclosure;
+
+    public Item(){
+
+    }
 
     /**
      * @return The itunesAuthor
@@ -133,4 +140,42 @@ public class Item {
     public void setEnclosure(Enclosure enclosure) {
         this.enclosure = enclosure;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.itunesAuthor);
+        dest.writeString(this.itunesSubtitle);
+        dest.writeString(this.itunesSummary);
+        dest.writeString(this.itunesDuration);
+        dest.writeString(this.itunesExplicit);
+        dest.writeString(this.title);
+        dest.writeString(this.pubDate);;
+    }
+
+    protected Item(Parcel in) {
+        this.itunesAuthor = in.readString();
+        this.itunesSubtitle = in.readString();
+        this.itunesSummary = in.readString();
+        this.itunesDuration = in.readString();
+        this.itunesExplicit = in.readString();
+        this.title = in.readString();
+        this.pubDate = in.readString();;
+    }
+
+    public static final Creator<Item> CREATOR = new Creator<Item>() {
+        @Override
+        public Item createFromParcel(Parcel source) {
+            return new Item(source);
+        }
+
+        @Override
+        public Item[] newArray(int size) {
+            return new Item[size];
+        }
+    };
 }
