@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:baselineAligned="false"
     android:gravity="center"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:background="@drawable/touch_selector">
 
     <LinearLayout
         android:layout_width="46dp"
