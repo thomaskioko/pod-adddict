@@ -66,5 +66,7 @@
 
     <color name="transparent_grey">#73000000</color>
 
+    <!-- the activated state color -->
+    <color name="activated">#E0E0E0</color>
 
 </resources>
