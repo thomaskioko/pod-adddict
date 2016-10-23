@@ -27,11 +27,12 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.thomaskioko.podadddict.app.R;
 import com.thomaskioko.podadddict.app.api.ApiClient;
-import com.thomaskioko.podadddict.app.api.model.Enclosure;
 import com.thomaskioko.podadddict.app.api.model.Item;
 import com.thomaskioko.podadddict.app.api.model.responses.PodCastPlaylistResponse;
 import com.thomaskioko.podadddict.app.data.PodCastContract;
 import com.thomaskioko.podadddict.app.data.db.DbUtils;
+import com.thomaskioko.podadddict.app.data.tasks.DatabaseAsyncTask;
+import com.thomaskioko.podadddict.app.interfaces.DbTaskCallback;
 import com.thomaskioko.podadddict.app.ui.adapter.PodcastEpisodeListAdapter;
 import com.thomaskioko.podadddict.app.util.ApplicationConstants;
 import com.thomaskioko.podadddict.app.util.Converter;
@@ -54,7 +55,8 @@ import retrofit2.Response;
 /**
  * @author Thomas Kioko
  */
-public class PodCastEpisodesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class PodCastEpisodesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
+        DbTaskCallback {
 
     @Bind(R.id.toolbar)
     android.widget.Toolbar toolbar;
@@ -70,10 +72,10 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
     int slideDuration;
     private Uri mUri;
 
+    private DbTaskCallback mDbTaskCallback = this;
     private List<Item> itemList;
     private static final int LOADER_ID = 100;
     public static final String DETAIL_URI = "URI";
-    private static final String LOG_TAG = PodCastEpisodesFragment.class.getSimpleName();
     private String mFeedId, mImageUrl, mFeedUrl;
     private int mPosition = RecyclerView.NO_POSITION;
     private static final String SELECTED_KEY = "selected_position";
@@ -81,6 +83,7 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
     private static final String KEY_EPISODE_FEED_ID = "feed_id";
     private static final String KEY_EPISODE_IMAGE_URL = "image_url";
     private static final String KEY_EPISODE_FEED_URL = "feed_url";
+    private static final String LOG_TAG = PodCastEpisodesFragment.class.getSimpleName();
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -120,10 +123,14 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
                 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
                 @Override
                 public void onClick(View v) {
+                    //Finish the transition when back button is clicked
                     getActivity().finishAfterTransition();
                 }
             });
         }
+
+        // We need to start the enter transition after the data has loaded
+        getActivity().supportStartPostponedEnterTransition();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Slide slide = new Slide(Gravity.BOTTOM);
@@ -133,6 +140,7 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
             slide.setDuration(slideDuration);
             getActivity().getWindow().setEnterTransition(slide);
         }
+
 
         RecyclerView.ItemAnimator animator = mRecyclerView.getItemAnimator();
         if (animator instanceof SimpleItemAnimator) {
@@ -232,6 +240,26 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
 
     }
 
+    @Override
+    public void CallbackRequest(List<Item> resultArrayList) {
+
+        if (resultArrayList != null) {
+            mProgressBar.setVisibility(View.GONE);
+            mTvErrorMessage.setVisibility(View.GONE);
+
+            mRecyclerView.setAdapter(new PodcastEpisodeListAdapter(getActivity(), resultArrayList, mUri,
+                    PodCastEpisodesFragment.this, new PodcastEpisodeListAdapter.PodCastEpisodeAdapterOnClickHandler() {
+                @Override
+                public void onClick(Uri uri, Item feedItem, View.OnClickListener vh) {
+                    //TODO:: Handle item download.
+                }
+            }));
+        } else {
+            mTvErrorMessage.setVisibility(View.VISIBLE);
+            mTvErrorMessage.setText(getString(R.string.error_db_message));
+        }
+    }
+
     /**
      * Helper method that loads data from the DB. This helps us reused code since this functionality
      * is used in two places.
@@ -258,8 +286,11 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
              * and load it from Sql.
              */
             if (DbUtils.episodeDbHasRecords(getActivity(), mFeedId)) {
-                //Load data from DB
-                loadDataFromDb(mFeedId);
+
+                Uri podCastEpisodeUri = PodCastContract.PodCastEpisodeEntry.buildPodCastEpisode(Integer.parseInt(mFeedId));
+
+                //Use an async task to load the data. prevent the app from hanging
+                new DatabaseAsyncTask(getContext(), mDbTaskCallback).execute(podCastEpisodeUri);
             } else {
                 fetchFeedData(mFeedId, mFeedUrl);
             }
@@ -269,47 +300,6 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
         }
     }
 
-    /**
-     * Helper method to load episodes from DB. This is invoked once {@link #fetchFeedData(String, String)}
-     * has completed loading data from the API
-     *
-     * @param feedId Feed Id related to the episode.
-     */
-    private void loadDataFromDb(String feedId) {
-
-        Uri podCastEpisodeUri = PodCastContract.PodCastEpisodeEntry.buildPodCastEpisode(Integer.parseInt(feedId));
-
-        Cursor cursor = getActivity().getContentResolver().query(podCastEpisodeUri, null, null, null, null);
-        List<Item> itemList = new ArrayList<>();
-        if (cursor != null) {
-            mProgressBar.setVisibility(View.GONE);
-            mTvErrorMessage.setVisibility(View.GONE);
-
-            while (cursor.moveToNext()) {
-                Item item = new Item();
-                Enclosure enclosure = new Enclosure();
-                enclosure.setUrl(cursor.getString(ApplicationConstants.COLUMN_PODCAST_EPISODE_STREAM_URL));
-
-                item.setTitle(cursor.getString(ApplicationConstants.COLUMN_PODCAST_EPISODE_TITLE));
-                item.setItunesAuthor(cursor.getString(ApplicationConstants.COLUMN_PODCAST_EPISODE_AUTHOR));
-                item.setPubDate(cursor.getString(ApplicationConstants.COLUMN_PODCAST_EPISODE_PUBLISH_DATE));
-                item.setItunesSummary(cursor.getString(ApplicationConstants.COLUMN_PODCAST_EPISODE_SUMMARY));
-                item.setItunesDuration(cursor.getString(ApplicationConstants.COLUMN_PODCAST_EPISODE_DURATION));
-                item.setEnclosure(enclosure);
-
-                itemList.add(item);
-            }
-
-            mRecyclerView.setAdapter(new PodcastEpisodeListAdapter(getActivity(), itemList, mUri,
-                    PodCastEpisodesFragment.this, new PodcastEpisodeListAdapter.PodCastEpisodeAdapterOnClickHandler() {
-                @Override
-                public void onClick(Uri uri, Item feedItem, View.OnClickListener vh) {
-
-
-                }
-            }));
-        }
-    }
 
     /**
      * Helper method to fetch podcast playlist
@@ -338,7 +328,7 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
                     int record = DbUtils.insertPodcastEpisode(getActivity(), Integer.parseInt(feedId),
                             links);
                     if (record != 0) {
-                        loadDataFromDb(feedId);
+                        loadData();
                     } else {
                         //Notify the user something went wrong
                         mTvErrorMessage.setText(getResources().getString(R.string.error_no_message));
