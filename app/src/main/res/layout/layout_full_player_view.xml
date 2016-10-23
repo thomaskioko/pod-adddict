@@ -33,6 +33,7 @@
                 android:layout_marginLeft="15dp"
                 android:visibility="visible"
                 app:civ_border_color="#FF000000"
+                android:contentDescription="@string/content_description_art_work"
                 app:civ_border_width="2dp" />
 
             <TextView
@@ -68,6 +69,7 @@
                     android:layout_marginRight="10dp"
                     android:layout_weight="1"
                     android:clickable="true"
+                    android:contentDescription="@string/content_description_close_player"
                     android:src="@drawable/ic_close_white_24dp"
                     android:visibility="visible" />
             </LinearLayout>
@@ -90,7 +92,8 @@
             android:id="@+id/player_album_art"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:contentDescription="@string/content_description_art_work"/>
     </android.support.v7.widget.CardView>
 
 </RelativeLayout>

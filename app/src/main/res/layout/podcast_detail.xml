@@ -13,7 +13,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:clipToPadding="false"
             android:orientation="vertical"
             android:paddingBottom="@dimen/padding_small">
@@ -28,6 +28,7 @@
                     android:layout_height="300dp"
                     android:background="@drawable/photo_background_protection"
                     android:scaleType="fitXY"
+                    android:contentDescription="@string/content_description_art_work"
                     android:transitionName="@string/transition_photo" />
 
                 <Toolbar
