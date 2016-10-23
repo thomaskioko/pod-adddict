@@ -35,7 +35,7 @@
                 android:fontFamily="sans-serif-condensed"
                 android:text="@string/title_trrack_name"
                 android:textColor="#FFFFFF"
-                android:textSize="14sp" />
+                android:textSize="@dimen/text_size_small" />
 
             <TextView
                 android:id="@+id/artist_in_notification"
@@ -46,13 +46,13 @@
                 android:fontFamily="sans-serif-condensed"
                 android:text="@string/title_artist"
                 android:textColor="@color/white"
-                android:textSize="12sp" />
+                android:textSize="@dimen/text_size_micro" />
         </LinearLayout>
 
         <ImageView
             android:id="@+id/btn_prev_in_notification"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="@dimen/dimen_small_plus_image_view"
+            android:layout_height="@dimen/dimen_small_plus_image_view"
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
             android:layout_margin="10dp"
@@ -61,8 +61,8 @@
 
         <ImageView
             android:id="@+id/btn_pause_play_in_notification"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
+            android:layout_width="@dimen/dimen_medium_image_view"
+            android:layout_height="@dimen/dimen_medium_image_view"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="5dp"
@@ -71,8 +71,8 @@
 
         <ImageView
             android:id="@+id/btn_next_in_notification"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="@dimen/dimen_small_plus_image_view"
+            android:layout_height="@dimen/dimen_small_plus_image_view"
             android:layout_alignParentBottom="true"
             android:layout_margin="10dp"
             android:layout_alignParentEnd="true"

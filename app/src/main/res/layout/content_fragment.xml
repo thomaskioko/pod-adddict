@@ -28,7 +28,7 @@
         android:indeterminate="true"
         android:text="@string/error_no_internet_connection"
         android:textColor="@android:color/black"
-        android:textSize="20sp" />
+        android:textSize="@dimen/text_size_large" />
 
 
 </RelativeLayout>
