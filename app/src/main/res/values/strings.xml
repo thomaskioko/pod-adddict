@@ -72,6 +72,7 @@
     <string name="title_trrack_name">Chapter 8: When it begins</string>
     <string name="title_artist">NPR Radio</string>
     <string name="title_description">Description</string>
+    <string name="text_time">0:00</string>
 
     <!-- Analytics Categories -->
     <string name="action_category_stream">Stream</string>
@@ -97,5 +98,8 @@
     <string name="content_description_art_work">Podcast artwork</string>
     <string name="content_description_subscribe_to_podcast">Subscribe to podcast</string>
     <string name="content_description_number_or_podcasts">Number or podcasts</string>
+    <string name="content_description_shuffle_playlist">Shuffle playlist</string>
+    <string name="content_description_add_to_favorite">Add to favorite</string>
+    <string name="content_description_playlist">Playlist</string>
 
 </resources>
