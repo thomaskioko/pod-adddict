@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/listitem_threeline_verticalpadding"
             android:fontFamily="sans-serif-condensed"
-            android:textSize="20sp"
+            android:textSize="@dimen/text_size_medium"
             tools:text="Jan" />
 
         <TextView
@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-condensed"
-            android:textSize="16sp"
+            android:textSize="@dimen/text_size_medium"
             tools:text="23" />
 
     </LinearLayout>
@@ -89,10 +89,10 @@
     <ImageView
         android:id="@+id/btnPlay"
         android:layout_width="@dimen/listview_secondary_button_width"
-        android:layout_height="34dp"
+        android:layout_height="@dimen/listview_secondary_button_width"
         android:clickable="false"
         android:focusable="false"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         android:layout_marginEnd="5dp"
         android:focusableInTouchMode="false"
         android:src="@drawable/ic_play_arrow_black_24dp"

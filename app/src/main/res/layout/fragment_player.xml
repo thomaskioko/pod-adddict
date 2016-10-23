@@ -23,21 +23,20 @@
             android:id="@+id/smallPlayer"
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:layout_alignParentTop="true"
             android:layout_marginBottom="0dp"
-            android:background="#000000"
+            android:background="@color/black"
             android:visibility="invisible">
 
             <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/selected_track_image_sp"
-                android:layout_width="54dp"
-                android:layout_height="54dp"
+                android:layout_width="@dimen/dime_circular_image_view"
+                android:layout_height="@dimen/dime_circular_image_view"
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/current_album_art_holder"
-                android:layout_marginLeft="0dp"
+                android:layout_marginStart="0dp"
                 android:layout_marginTop="10dp"
                 android:visibility="visible"
-                app:civ_border_color="#FF000000"
+                app:civ_border_color="@color/black"
                 app:civ_border_width="0dp" />
 
             <TextView
@@ -46,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/player_control"
                 android:layout_alignParentStart="true"
-                android:layout_marginLeft="35dp"
+                android:layout_marginStart="35dp"
                 android:layout_marginTop="2dp"
                 android:ellipsize="end"
                 android:singleLine="false"
@@ -57,16 +56,17 @@
 
             <ImageView
                 android:id="@+id/player_control_sp"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="@dimen/dimen_micro_image_view"
+                android:layout_height="@dimen/dimen_micro_image_view"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:layout_gravity="right|center_vertical"
+                android:layout_gravity="end|center_vertical"
                 android:layout_marginBottom="5dp"
-                android:layout_marginRight="17dp"
+                android:layout_marginEnd="17dp"
                 android:layout_marginTop="2dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
+                android:contentDescription="@string/content_description_close_player"
                 android:visibility="visible" />
         </android.support.v7.widget.Toolbar>
     </FrameLayout>
@@ -96,41 +96,43 @@
 
         <ImageView
             android:id="@+id/previous"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentLeft="true"
+            android:layout_width="@dimen/dimen_small_image_view"
+            android:layout_height="@dimen/dimen_small_image_view"
+            android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="85dp"
+            android:layout_marginStart="85dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
+            android:contentDescription="@string/content_description_previous_episode"
             android:src="@drawable/ic_skip_previous_white_48dp" />
 
         <ImageView
             android:id="@+id/controller"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="@dimen/dimen_medium_image_view"
+            android:layout_height="@dimen/dimen_medium_image_view"
             android:layout_centerInParent="true"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:clickable="true" />
+            android:clickable="true"
+            android:contentDescription="@string/content_description_play_or_pause_music"/>
 
         <com.wang.avi.AVLoadingIndicatorView
             android:id="@+id/bufferingIndicator"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="@dimen/dimen_small_image_view"
+            android:layout_height="@dimen/dimen_small_image_view"
             android:layout_centerInParent="true"
-            android:background="#000000"
+            android:background="@color/black"
             android:clickable="true"
             android:visibility="invisible"
             app:indicator="BallSpinFadeLoader"
-            app:indicator_color="#FFFFFF" />
+            app:indicator_color="@color/white" />
 
         <ImageView
             android:id="@+id/next"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentRight="true"
+            android:layout_width="@dimen/dimen_small_image_view"
+            android:layout_height="@dimen/dimen_small_image_view"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="85dp"
+            android:layout_marginStart="85dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:src="@drawable/ic_skip_next_white_48dp" />
@@ -149,10 +151,10 @@
             android:id="@+id/currTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:text="0:00"
+            android:layout_marginStart="10dp"
+            android:text="@string/text_time"
             android:textColor="#FFF" />
 
         <SeekBar
@@ -170,10 +172,10 @@
             android:id="@+id/totalTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
-            android:text="0:00"
+            android:layout_marginEnd="10dp"
+            android:text="@string/text_time"
             android:textColor="#FFF" />
 
     </RelativeLayout>
@@ -197,21 +199,13 @@
                 android:layout_weight="0.5" />
 
             <ImageView
-                android:id="@+id/equalizer_icon"
-                android:layout_width="0dp"
-                android:layout_height="32dp"
-                android:layout_weight="1"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:clickable="true"
-                android:src="@drawable/ic_equalizer_white_48dp" />
-
-            <ImageView
                 android:id="@+id/repeat_icon"
                 android:layout_width="0dp"
                 android:layout_height="32dp"
                 android:layout_weight="1"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
+                android:contentDescription="@string/content_description_shuffle_playlist"
                 android:src="@drawable/ic_repeat_white_48dp" />
 
             <ImageView
@@ -221,6 +215,7 @@
                 android:layout_weight="1"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
+                android:contentDescription="@string/content_description_download_podcast"
                 android:src="@drawable/ic_download" />
 
             <ImageView
@@ -230,6 +225,7 @@
                 android:layout_weight="1"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
+                android:contentDescription="@string/content_description_add_to_favorite"
                 android:src="@drawable/ic_heart_out_1" />
 
             <ImageView
@@ -239,6 +235,7 @@
                 android:layout_weight="1"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
+                android:contentDescription="@string/content_description_playlist"
                 android:src="@drawable/ic_queue_music_white_48dp" />
 
             <View

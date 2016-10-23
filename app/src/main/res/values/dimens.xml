@@ -69,5 +69,12 @@
     <dimen name="widget_detail_default_height">180dp</dimen>
     <dimen name="widget_detail_min_resize_width">120dp</dimen>
     <dimen name="widget_detail_min_resize_height">@dimen/widget_detail_default_height</dimen>
+    <dimen name="dimen_mini_player">100dp</dimen>
+    <dimen name="dime_navigation_drawer_size">304dp</dimen>
+    <dimen name="dime_circular_image_view">54dp</dimen>
+    <dimen name="dimen_micro_image_view">25dp</dimen>
+    <dimen name="dimen_small_image_view">40dp</dimen>
+    <dimen name="dimen_small_plus_image_view">48dp</dimen>
+    <dimen name="dimen_medium_image_view">60dp</dimen>
 
 </resources>
