@@ -71,6 +71,7 @@
     <string name="no_media_playing_label">No media playing</string>
     <string name="title_trrack_name">Chapter 8: When it begins</string>
     <string name="title_artist">NPR Radio</string>
+    <string name="title_description">Description</string>
 
     <!-- Analytics Categories -->
     <string name="action_category_stream">Stream</string>
@@ -82,5 +83,19 @@
     <string name="action_action_stream">Stream Music</string>
     <string name="action_action_download">Download Music</string>
     <string name="action_action_fcm_complete">Firebase Registration Complete</string>
+    <string name="text_title">Title</string>
+
+    <!-- Content Description Text -->
+    <string name="content_description_download_podcast">Download podcast</string>
+    <string name="content_description_play_episode">Play episode</string>
+    <string name="content_description_close_player">Close player</string>
+    <string name="content_description_play_or_pause_music">Play or pause music</string>
+    <string name="content_description_app_icon">App Icon</string>
+    <string name="content_description_previous_episode">Previous episode</string>
+    <string name="content_description_next_episode">Next episode</string>
+    <string name="content_description_pause_episode">Pause episode</string>
+    <string name="content_description_art_work">Podcast artwork</string>
+    <string name="content_description_subscribe_to_podcast">Subscribe to podcast</string>
+    <string name="content_description_number_or_podcasts">Number or podcasts</string>
 
 </resources>
