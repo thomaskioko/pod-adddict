@@ -50,10 +50,10 @@
                 android:layout_marginTop="2dp"
                 android:ellipsize="end"
                 android:singleLine="false"
-                android:text="Title"
+                android:text="@string/text_title"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
-                android:textSize="13dp" />
+                android:textSize="13sp" />
 
             <ImageView
                 android:id="@+id/player_control_sp"
@@ -84,6 +84,7 @@
         android:layout_below="@+id/fullscreen_extra_space_occupier"
         android:layout_centerHorizontal="true"
         android:alpha="0.1"
+        android:contentDescription="@string/content_description_art_work"
         android:visibility="invisible" />
 
     <RelativeLayout

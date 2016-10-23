@@ -1,7 +1,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
     android:padding="@dimen/widget_margin">
 
     <RelativeLayout
@@ -15,29 +15,29 @@
             android:id="@+id/widget_track_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:padding="5dp"
             android:layout_marginTop="10dp"
-            android:maxLines="1"
-            android:textColor="@color/white"
-            android:textSize="16sp"
+            android:layout_toEndOf="@+id/widget_art_work"
+            android:ellipsize="end"
             android:fontFamily="sans-serif-medium"
+            android:maxLines="1"
+            android:padding="5dp"
             android:text="@string/title_trrack_name"
-            android:layout_toEndOf="@+id/widget_art_work" />
+            android:textColor="@color/white"
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/widget_artist"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:padding="5dp"
-            android:maxLines="1"
-            android:fontFamily="sans-serif-condensed"
             android:layout_below="@+id/widget_track_title"
-            android:textColor="@color/white"
-            android:textSize="16sp"
+            android:layout_toEndOf="@+id/widget_art_work"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-condensed"
+            android:maxLines="1"
+            android:padding="5dp"
             android:text="@string/title_artist"
-            android:layout_toEndOf="@+id/widget_art_work" />
+            android:textColor="@color/white"
+            android:textSize="16sp" />
 
         <ImageView
             android:id="@+id/widget_art_work"
@@ -45,47 +45,50 @@
             android:layout_height="140dp"
             android:layout_alignParentStart="true"
             android:layout_gravity="start"
+            android:contentDescription="@null"
             android:padding="@dimen/default_padding"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_album_black"
-            android:contentDescription="@null"/>
+            android:src="@drawable/ic_album_black" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:layout_below="@+id/widget_artist"
+            android:layout_marginBottom="15dp"
             android:layout_toEndOf="@+id/widget_art_work"
+            android:gravity="center"
             android:orientation="horizontal"
-            android:visibility="gone"
-            android:layout_marginBottom="15dp">
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/widget_playback_view_previous"
                 android:layout_width="48dp"
                 android:layout_height="65dp"
                 android:layout_marginTop="5dp"
+                android:contentDescription="@string/content_description_previous_episode"
                 android:padding="@dimen/default_padding"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_previous_white"/>
+                android:src="@drawable/ic_previous_white" />
 
             <ImageView
                 android:id="@+id/widget_playback_view_toggle_play"
                 android:layout_width="48dp"
                 android:layout_height="65dp"
                 android:layout_marginTop="5dp"
+                android:contentDescription="@string/content_description_play_or_pause_music"
                 android:padding="@dimen/default_padding"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_play_white"/>
+                android:src="@drawable/ic_play_white" />
 
             <ImageView
                 android:id="@+id/widget_playback_view_next"
                 android:layout_width="48dp"
                 android:layout_height="65dp"
                 android:layout_marginTop="5dp"
+                android:contentDescription="@string/content_description_next_episode"
                 android:padding="@dimen/default_padding"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_next_white"/>
+                android:src="@drawable/ic_next_white" />
 
         </LinearLayout>
     </RelativeLayout>

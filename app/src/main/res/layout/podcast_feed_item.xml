@@ -11,6 +11,7 @@
         android:layout_height="match_parent"
         android:foreground="@drawable/grey_ripple"
         android:scaleType="centerCrop"
+        android:contentDescription="@string/content_description_art_work"
         android:stateListAnimator="@animator/raise"
         android:transitionName="@string/transition_photo" />
 
@@ -18,10 +19,9 @@
         android:id="@+id/triangleCountView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
         android:layout_gravity="end|top"
         android:elevation="4dp"
+        android:contentDescription="@string/content_description_number_or_podcasts"
         app:backgroundColor="@color/colorAccent"
         app:corner="rightTop"
         app:primaryText="146"

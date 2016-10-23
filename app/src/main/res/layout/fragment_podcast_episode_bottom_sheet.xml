@@ -45,7 +45,7 @@
                         android:layout_height="@dimen/image_view_medium"
                         android:layout_centerVertical="true"
                         android:layout_marginStart="10dp"
-                        android:contentDescription="@null"
+                        android:contentDescription="@string/content_description_art_work"
                         android:transitionName="@string/transition_photo" />
 
                     <TextView
@@ -120,6 +120,7 @@
             app:layout_anchor="@id/app_bar_layout"
             app:layout_anchorGravity="bottom|right|end"
             app:pressedTranslationZ="12dp"
+            android:contentDescription="@string/content_description_download_podcast"
             app:rippleColor="@color/white" />
     </android.support.design.widget.CoordinatorLayout>
 

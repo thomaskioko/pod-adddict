@@ -14,7 +14,8 @@
         android:layout_gravity="bottom|start"
         android:layout_marginBottom="@dimen/margin_large"
         android:layout_marginStart="@dimen/margin_medium"
-        android:background="@drawable/icon" />
+        android:background="@drawable/icon"
+        android:contentDescription="@string/content_description_app_icon" />
 
     <TextView
         android:id="@+id/tvNamePlate"
