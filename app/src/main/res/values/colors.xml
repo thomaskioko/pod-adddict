@@ -68,5 +68,6 @@
 
     <!-- the activated state color -->
     <color name="activated">#E0E0E0</color>
+    <color name="black">#000</color>
 
 </resources>
