@@ -26,6 +26,7 @@ import com.thomaskioko.podadddict.app.data.PodCastContract;
 import com.thomaskioko.podadddict.app.ui.PodCastListActivity;
 import com.thomaskioko.podadddict.app.ui.adapter.PodCastAdapterAdapter;
 import com.thomaskioko.podadddict.app.ui.views.GridMarginDecoration;
+import com.thomaskioko.podadddict.app.util.DeviceUtils;
 import com.thomaskioko.podadddict.app.util.GoogleAnalyticsUtil;
 
 import butterknife.Bind;
@@ -52,7 +53,7 @@ public class DiscoverPodcastFragment extends Fragment implements LoaderManager.L
     @BindDimen(R.dimen.grid_item_spacing)
     int mGridSpacing;
 
-    private PodCastAdapterAdapter mForecastAdapter;
+    private PodCastAdapterAdapter mPodCastAdapterAdapter;
     private static final int LOADER_ID = 100;
     private int mPosition = RecyclerView.NO_POSITION;
     private int mChoiceMode;
@@ -110,29 +111,37 @@ public class DiscoverPodcastFragment extends Fragment implements LoaderManager.L
         mRecyclerView.addItemDecoration(new GridMarginDecoration(mGridSpacing));
         mRecyclerView.setHasFixedSize(true);
 
-        Uri podCastUri = PodCastContract.PodCastFeedEntry.buildPodCastFeedUri();
-        final Cursor cursor = getActivity().getContentResolver().query(podCastUri,
-                null, null, null, null);
+        //Check if the device is connected to the internet
+        if(DeviceUtils.isNetworkConnected(getContext())){
+            Uri podCastUri = PodCastContract.PodCastFeedEntry.buildPodCastFeedUri();
+            final Cursor cursor = getActivity().getContentResolver().query(podCastUri,
+                    null, null, null, null);
 
-        if (cursor != null) {
-            //Hide the textView
-            mTvErrorMessage.setVisibility(View.GONE);
-            cursor.close();
+            if (cursor != null) {
+                //Hide the textView
+                mTvErrorMessage.setVisibility(View.GONE);
+                cursor.close();
+            }
+
+            mPodCastAdapterAdapter = new PodCastAdapterAdapter(getActivity(), new PodCastAdapterAdapter.PodCastAdapterAdapterOnClickHandler() {
+                @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+                @Override
+                public void onClick(int feedId, PodCastAdapterAdapter.PhotoViewHolder photoViewHolder) {
+                    mPosition = photoViewHolder.getAdapterPosition();
+
+                    ((Callback) getActivity())
+                            .onFeedItemSelected(PodCastContract.PodCastFeedEntry.buildPodCastFeedUri(feedId), photoViewHolder
+                            );
+                }
+            }, mChoiceMode);
+
+            mRecyclerView.setAdapter(mPodCastAdapterAdapter);
+        }else{
+            mTvErrorMessage.setVisibility(View.VISIBLE);
+            mTvErrorMessage.setText(getString(R.string.error_no_internet_connection));
         }
 
-        mForecastAdapter = new PodCastAdapterAdapter(getActivity(), new PodCastAdapterAdapter.PodCastAdapterAdapterOnClickHandler() {
-            @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-            @Override
-            public void onClick(int feedId, PodCastAdapterAdapter.PhotoViewHolder photoViewHolder) {
-                mPosition = photoViewHolder.getAdapterPosition();
 
-                ((Callback) getActivity())
-                        .onFeedItemSelected(PodCastContract.PodCastFeedEntry.buildPodCastFeedUri(feedId), photoViewHolder
-                        );
-            }
-        }, mChoiceMode);
-
-        mRecyclerView.setAdapter(mForecastAdapter);
 
         // If there's instance state, mine it for useful information.
         // The end-goal here is that the user never knows that turning their device sideways
@@ -145,7 +154,7 @@ public class DiscoverPodcastFragment extends Fragment implements LoaderManager.L
                 // swapout in onLoadFinished.
                 mPosition = savedInstanceState.getInt(SELECTED_KEY);
             }
-            mForecastAdapter.onRestoreInstanceState(savedInstanceState);
+            mPodCastAdapterAdapter.onRestoreInstanceState(savedInstanceState);
         }
 
         return rootView;
@@ -184,7 +193,7 @@ public class DiscoverPodcastFragment extends Fragment implements LoaderManager.L
         if (mPosition != ListView.INVALID_POSITION) {
             outState.putInt(SELECTED_KEY, mPosition);
         }
-        mForecastAdapter.onSaveInstanceState(outState);
+        mPodCastAdapterAdapter.onSaveInstanceState(outState);
         super.onSaveInstanceState(outState);
     }
 
@@ -203,7 +212,7 @@ public class DiscoverPodcastFragment extends Fragment implements LoaderManager.L
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        mForecastAdapter.swapCursor(cursor);
+        mPodCastAdapterAdapter.swapCursor(cursor);
         if (mPosition != RecyclerView.NO_POSITION) {
             // If we don't need to restart the loader, and there's a desired position to restore
             // to, do so now.
@@ -221,11 +230,11 @@ public class DiscoverPodcastFragment extends Fragment implements LoaderManager.L
                     // we see Children.
                     if (mRecyclerView.getChildCount() > 0) {
                         mRecyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
-                        int itemPosition = mForecastAdapter.getSelectedItemPosition();
+                        int itemPosition = mPodCastAdapterAdapter.getSelectedItemPosition();
                         if (RecyclerView.NO_POSITION == itemPosition) itemPosition = 0;
                         RecyclerView.ViewHolder vh = mRecyclerView.findViewHolderForAdapterPosition(itemPosition);
                         if (null != vh && mAutoSelectView) {
-                            mForecastAdapter.selectView(vh);
+                            mPodCastAdapterAdapter.selectView(vh);
                         }
                         if (mHoldForTransition) {
                             getActivity().supportStartPostponedEnterTransition();
@@ -240,6 +249,6 @@ public class DiscoverPodcastFragment extends Fragment implements LoaderManager.L
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mForecastAdapter.swapCursor(null);
+        mPodCastAdapterAdapter.swapCursor(null);
     }
 }
