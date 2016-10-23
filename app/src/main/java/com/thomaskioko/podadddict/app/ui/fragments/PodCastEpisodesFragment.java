@@ -5,11 +5,11 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -69,10 +70,17 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
     int slideDuration;
     private Uri mUri;
 
-    private Palette mPalette;
+    private List<Item> itemList;
     private static final int LOADER_ID = 100;
     public static final String DETAIL_URI = "URI";
     private static final String LOG_TAG = PodCastEpisodesFragment.class.getSimpleName();
+    private String mFeedId, mImageUrl, mFeedUrl;
+    private int mPosition = RecyclerView.NO_POSITION;
+    private static final String SELECTED_KEY = "selected_position";
+    private static final String KEY_EPISODE_OBJECTS = "episode_objects";
+    private static final String KEY_EPISODE_FEED_ID = "feed_id";
+    private static final String KEY_EPISODE_IMAGE_URL = "image_url";
+    private static final String KEY_EPISODE_FEED_URL = "feed_url";
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -99,6 +107,8 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.podcast_detail, container, false);
         ButterKnife.bind(this, rootView);
+
+        itemList = new ArrayList<>();
 
         Bundle arguments = getArguments();
         if (arguments != null) {
@@ -133,6 +143,27 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).build());
 
+        /**
+         * If there's instance state, mine it for useful information. The end-goal here is that the
+         * user never knows that turning their device sideways or magically appeared to take
+         * advantage of room, but data or place in the app was never actually *lost*. does crazy
+         * lifecycle related things.  It should feel like some stuff stretched out.
+         */
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(SELECTED_KEY)) {
+                // The Recycler View probably hasn't even been populated yet.  Actually perform the
+                // swapout in onLoadFinished.
+                mPosition = savedInstanceState.getInt(SELECTED_KEY);
+            }
+            mUri = savedInstanceState.getParcelable(DETAIL_URI);
+            itemList = savedInstanceState.getParcelable(KEY_EPISODE_OBJECTS);
+            mFeedId = savedInstanceState.getString(KEY_EPISODE_FEED_ID);
+            mImageUrl = savedInstanceState.getString(KEY_EPISODE_IMAGE_URL);
+            mFeedUrl = savedInstanceState.getString(KEY_EPISODE_FEED_URL);
+
+            loadData();
+        }
+
         return rootView;
     }
 
@@ -143,21 +174,43 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        if (null != mUri) {
-            // Now create and return a CursorLoader that will take care of
-            // creating a Cursor for the data being displayed.
-            return new CursorLoader(
-                    getActivity(),
-                    mUri,
-                    null,
-                    null,
-                    null,
-                    null
-            );
+    public void onDestroy() {
+        super.onDestroy();
+        if (null != mRecyclerView) {
+            mRecyclerView.clearOnScrollListeners();
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        // When tablets rotate, the currently selected list item needs to be saved.
+        // When no item is selected, mPosition will be set to Listview.INVALID_POSITION,
+        // so check for that before storing.
+        if (mPosition != ListView.INVALID_POSITION) {
+            outState.putInt(SELECTED_KEY, mPosition);
+        }
+        if (mUri != null) {
+            outState.putParcelable(PodCastEpisodesFragment.DETAIL_URI, mUri);
         }
 
-        return null;
+        outState.putString(KEY_EPISODE_FEED_ID, mFeedId);
+        outState.putString(KEY_EPISODE_IMAGE_URL, mImageUrl);
+        outState.putString(KEY_EPISODE_FEED_URL, mFeedUrl);
+        outState.putParcelableArrayList(KEY_EPISODE_OBJECTS, (ArrayList<? extends Parcelable>) itemList);
+
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(
+                getActivity(),
+                mUri,
+                null,
+                null,
+                null,
+                null
+        );
     }
 
     @Override
@@ -165,33 +218,11 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
 
         // We need to start the enter transition after the data has loaded
         while (data.moveToNext()) {
-            String feedId = data.getString(ApplicationConstants.COLUMN_SUBSCRIBED_PODCAST_FEED_ID);
-            String imageUrl = data.getString(ApplicationConstants.COLUMN_SUBSCRIBED_PODCAST_FEED_IMAGE_URL);
+            mFeedId = data.getString(ApplicationConstants.COLUMN_SUBSCRIBED_PODCAST_FEED_ID);
+            mImageUrl = data.getString(ApplicationConstants.COLUMN_SUBSCRIBED_PODCAST_FEED_IMAGE_URL);
+            mFeedUrl = data.getString(ApplicationConstants.COLUMN_SUBSCRIBED_PODCAST_FEED_URL);
 
-            Glide.with(getActivity())
-                    .load(imageUrl)
-                    .crossFade()
-                    .placeholder(R.color.placeholder)
-                    .into(imageView);
-
-
-            String mFeedUrl = data.getString(ApplicationConstants.COLUMN_SUBSCRIBED_PODCAST_FEED_URL);
-
-            try {
-                /**
-                 * Check if there is any data saved locally. If not we fetch the data, save it locally
-                 * and load it from Sql.
-                 */
-                if (DbUtils.episodeDbHasRecords(getActivity(), feedId)) {
-                    //Load data from DB
-                    loadDataFromDb(feedId);
-                } else {
-                    fetchFeedData(feedId, mFeedUrl);
-                }
-            } catch (UnsupportedEncodingException e) {
-                LogUtils.showErrorLog(LOG_TAG, "@onLoadFinished: " + e.getMessage());
-                GoogleAnalyticsUtil.trackException(getActivity(), e);
-            }
+            loadData();
         }
 
     }
@@ -199,6 +230,43 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    /**
+     * Helper method that loads data from the DB. This helps us reused code since this functionality
+     * is used in two places.
+     * 1. When the fragment is first created.
+     * 2. When the screen orientation changes and {@link #onSaveInstanceState(Bundle)} is invoked.
+     */
+    private void loadData() {
+        try {
+
+            if (mPosition != RecyclerView.NO_POSITION) {
+                // If we don't need to restart the loader, and there's a desired position to restore
+                // to, do so now.
+                mRecyclerView.smoothScrollToPosition(mPosition);
+            }
+
+            Glide.with(getActivity())
+                    .load(mImageUrl)
+                    .crossFade()
+                    .placeholder(R.color.placeholder)
+                    .into(imageView);
+
+            /**
+             * Check if there is any data saved locally. If not we fetch the data, save it locally
+             * and load it from Sql.
+             */
+            if (DbUtils.episodeDbHasRecords(getActivity(), mFeedId)) {
+                //Load data from DB
+                loadDataFromDb(mFeedId);
+            } else {
+                fetchFeedData(mFeedId, mFeedUrl);
+            }
+        } catch (UnsupportedEncodingException e) {
+            LogUtils.showErrorLog(LOG_TAG, "@onCreateView: " + e.getMessage());
+            GoogleAnalyticsUtil.trackException(getActivity(), e);
+        }
     }
 
     /**
@@ -295,7 +363,9 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
      * @param mUri     {@link Uri} Selected item URI
      * @param feedItem {@link Item} Episode Item
      */
-    public void onClick(Uri mUri, Item feedItem) {
+    public void onClick(Uri mUri, Item feedItem, int position) {
+
+        mPosition = position;
 
         ((PodCastEpisodesFragment.EpisodeCallback) getActivity()).onEpisodeSelected(mUri, feedItem);
     }
