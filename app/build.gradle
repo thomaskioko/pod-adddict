@@ -15,9 +15,27 @@ android {
 
         buildConfigField "String", "API_URL", '"http://localhost"'
     }
+
+    signingConfigs {
+        release {
+            try {
+                storeFile file(RELEASE_KEY_STORE_PATH)
+                storePassword RELEASE_KEYSTORE_PASSWORD
+                keyAlias RELEASE_KEY_ALIAS
+                keyPassword RELEASE_KEY_PASSWORD
+            }
+            catch (ex) {
+                println(ex.getMessage())
+                throw new InvalidUserDataException("Ensrure RELEASE_KEYSTORE_PASSWORD and RELEASE_KEY_PASSWORD are defined in gradle.properties.")
+            }
+        }
+
+    }
+
     buildTypes {
         release {
             minifyEnabled false
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField "String", "API_URL", '"http://my-real-api.com"'
         }
