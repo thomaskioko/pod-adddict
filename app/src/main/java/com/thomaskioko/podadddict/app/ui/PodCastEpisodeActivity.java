@@ -115,6 +115,9 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
                     .add(R.id.podcast_detail_container, fragment)
                     .commit();
 
+            // Being here means we are in animation mode
+            supportPostponeEnterTransition();
+
         }
         //Initialize the player
         mPodAdddictPlayer = new PodAdddictPlayer.Builder()
