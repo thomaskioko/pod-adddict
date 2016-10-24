@@ -10,7 +10,7 @@
     <!--Image dimensions. -->
     <dimen name="image_small_dimen">70dp</dimen>
     <dimen name="image_height">200dp</dimen>
-    <dimen name="image_view_medium">120dp</dimen>
+    <dimen name="image_view_medium">140dp</dimen>
 
     <!-- Margin dimensions. -->
     <dimen name="margin_medium">16dp</dimen>
@@ -64,11 +64,13 @@
     <dimen name="puce_thickness">2dp</dimen>
     <dimen name="track_list_padding_top">130dp</dimen>
 
+    <!-- Widget Dimensions-->
     <dimen name="widget_margin">8dp</dimen>
     <dimen name="widget_detail_default_width">120dp</dimen>
     <dimen name="widget_detail_default_height">180dp</dimen>
     <dimen name="widget_detail_min_resize_width">120dp</dimen>
     <dimen name="widget_detail_min_resize_height">@dimen/widget_detail_default_height</dimen>
+
     <dimen name="dimen_mini_player">100dp</dimen>
     <dimen name="dime_navigation_drawer_size">304dp</dimen>
     <dimen name="dime_circular_image_view">54dp</dimen>
@@ -76,5 +78,6 @@
     <dimen name="dimen_small_image_view">40dp</dimen>
     <dimen name="dimen_small_plus_image_view">48dp</dimen>
     <dimen name="dimen_medium_image_view">60dp</dimen>
+    <dimen name="dimen_frame_height">300dp</dimen>
 
 </resources>
