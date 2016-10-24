@@ -26,5 +26,5 @@
         app:corner="rightTop"
         app:primaryText="146"
         app:primaryTextColor="@color/white"
-        app:primaryTextSize="12sp" />
+        app:primaryTextSize="@dimen/text_size_micro" />
 </FrameLayout>
