@@ -69,5 +69,10 @@
     <!-- the activated state color -->
     <color name="activated">#E0E0E0</color>
     <color name="black">#000</color>
+    <color name="separator_color">#4000</color>
+
+    <!-- crouton view !-->
+    <color name="crouton_view_background">@color/colorAccent</color>
+    <color name="crouton_view_text">@android:color/white</color>
 
 </resources>
