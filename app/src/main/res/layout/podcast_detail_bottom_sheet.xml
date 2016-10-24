@@ -75,7 +75,7 @@
                 android:fontFamily="sans-serif-condensed"
                 android:text="@string/button_subscribe"
                 android:contentDescription="@string/content_description_subscribe_to_podcast"
-                android:textSize="18sp" />
+                android:textSize="@dimen/text_size_medium" />
 
 
         </RelativeLayout>
@@ -87,7 +87,7 @@
             android:layout_marginEnd="10dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="20dp"
-            android:background="#4000" />
+            android:background="@color/separator_color" />
 
 
         <LinearLayout
