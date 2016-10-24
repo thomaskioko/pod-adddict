@@ -5,7 +5,11 @@ import android.util.Log;
 
 import com.thomaskioko.podadddict.app.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -161,6 +165,27 @@ public final class Converter {
     }
 
     /**
+     * Helper method to convert time to milliseconds
+     *
+     * @param time Raw time 01:23:22
+     * @return time in milliseconds
+     */
+    public static long getMilliSeconds(String time) {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Date date;
+
+        try {
+            date = sdf.parse(time);
+            return date.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    /**
      * Converts seconds to a localized representation
      *
      * @param time The time in seconds
@@ -190,7 +215,7 @@ public final class Converter {
      * @param feedUrl Raw Url from the DB
      * @return Formatted Url
      */
-    public static String formatUrl(String feedUrl){
+    public static String formatUrl(String feedUrl) {
         if (feedUrl.contains("%253A")) {
             feedUrl = feedUrl.replace("%253A", ":");
         }
