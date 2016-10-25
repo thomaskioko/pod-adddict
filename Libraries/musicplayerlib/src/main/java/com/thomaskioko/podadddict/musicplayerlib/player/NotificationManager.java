@@ -290,7 +290,7 @@ final class NotificationManager {
                 mNotificationView.setImageViewBitmap(
                         R.id.simple_sound_cloud_notification_thumbnail, bitmap);
                 mNotificationExpandedView.setImageViewBitmap(
-                        R.id.simple_sound_cloud_notification_thumbnail, bitmap);
+                        R.id.simple_sound_cloud_notification_expanded_thumbnail, bitmap);
                 mNotificationManager.notify(NOTIFICATION_ID, buildNotification());
             }
 
@@ -317,7 +317,7 @@ final class NotificationManager {
         mNotificationView = new RemoteViews(context.getPackageName(),
                 R.layout.simple_notification);
         mNotificationExpandedView = new RemoteViews(context.getPackageName(),
-                R.layout.simple_notification_expanded);
+                R.layout.simple_sound_cloud_notification_expanded);
 
         // add right icon on Lollipop.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
