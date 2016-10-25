@@ -9,11 +9,9 @@ Based one notification_template_material_big_picture.xml
     android:layout_height="256dp"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    tools:ignore="ContentDescription"
-    internal:layout_minHeight="65dp"
-    internal:layout_maxHeight="unbounded">
+    tools:ignore="ContentDescription">
 
-    <include layout="@layout/simple_sound_cloud_notification_icon" />
+    <include layout="@layout/simple_notification_icon" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -28,7 +26,7 @@ Based one notification_template_material_big_picture.xml
             android:id="@+id/simple_sound_cloud_notification_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/simple_sound_cloud_notification_title"
+            android:textColor="@color/notification_title"
             android:singleLine="true"
             android:ellipsize="end"
             android:textSize="@dimen/simple_sound_cloud_notification_title"
@@ -38,7 +36,7 @@ Based one notification_template_material_big_picture.xml
             android:id="@+id/simple_sound_cloud_notification_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/simple_sound_cloud_notification_subtitle"
+            android:textColor="@color/notification_subtitle"
             android:textSize="@dimen/simple_sound_cloud_notification_subtitle"
             android:singleLine="true"
             android:ellipsize="end"
@@ -74,7 +72,7 @@ Based one notification_template_material_big_picture.xml
             android:layout_height="wrap_content"
             android:background="@drawable/notification_button"
             android:padding="@dimen/simple_sound_cloud_notification_padding"
-            android:src="@drawable/simple_sound_cloud_notification_previous" />
+            android:src="@drawable/notification_previous" />
 
         <ImageButton
             android:id="@+id/simple_sound_cloud_notification_play"
@@ -83,7 +81,7 @@ Based one notification_template_material_big_picture.xml
             android:layout_height="wrap_content"
             android:background="@drawable/notification_button"
             android:padding="@dimen/simple_sound_cloud_notification_padding"
-            android:src="@drawable/simple_sound_cloud_notification_play" />
+            android:src="@drawable/notification_play" />
 
         <ImageButton
             android:id="@+id/simple_sound_cloud_notification_next"
@@ -92,7 +90,7 @@ Based one notification_template_material_big_picture.xml
             android:layout_height="wrap_content"
             android:background="@drawable/notification_button"
             android:padding="@dimen/simple_sound_cloud_notification_padding"
-            android:src="@drawable/simple_sound_cloud_notification_next" />
+            android:src="@drawable/notification_next" />
 
     </LinearLayout>
 
@@ -113,6 +111,6 @@ Based one notification_template_material_big_picture.xml
         android:background="@drawable/notification_button"
         android:padding="@dimen/simple_sound_cloud_notification_padding"
         android:scaleType="fitCenter"
-        android:src="@drawable/simple_sound_cloud_notification_clear" />
+        android:src="@drawable/notification_clear" />
 
 </FrameLayout>
