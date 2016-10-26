@@ -199,29 +199,29 @@ final class NotificationManager {
         }
 
         // set the title
-        mNotificationView.setTextViewText(R.id.simple_sound_cloud_notification_title, track.getArtist());
-        mNotificationView.setTextViewText(R.id.simple_sound_cloud_notification_subtitle, track.getTitle());
-        mNotificationExpandedView.setTextViewText(R.id.simple_sound_cloud_notification_title, track.getArtist());
-        mNotificationExpandedView.setTextViewText(R.id.simple_sound_cloud_notification_subtitle, track.getTitle());
+        mNotificationView.setTextViewText(R.id.notification_title, track.getArtist());
+        mNotificationView.setTextViewText(R.id.notification_subtitle, track.getTitle());
+        mNotificationExpandedView.setTextViewText(R.id.notification_title, track.getArtist());
+        mNotificationExpandedView.setTextViewText(R.id.notification_subtitle, track.getTitle());
 
         // set the right icon for the toggle playback action.
         if (isPaused) {
             mNotificationView.setImageViewResource(
-                    R.id.simple_sound_cloud_notification_play,
+                    R.id.notification_play,
                     R.drawable.notification_play
             );
             mNotificationExpandedView.setImageViewResource(
-                    R.id.simple_sound_cloud_notification_play,
+                    R.id.notification_play,
                     R.drawable.notification_play
             );
             mNotificationBuilder.setOngoing(false);
         } else {
             mNotificationView.setImageViewResource(
-                    R.id.simple_sound_cloud_notification_play,
+                    R.id.notification_play,
                     R.drawable.notification_pause
             );
             mNotificationExpandedView.setImageViewResource(
-                    R.id.simple_sound_cloud_notification_play,
+                    R.id.notification_play,
                     R.drawable.notification_pause
             );
             mNotificationBuilder.setOngoing(true);
@@ -288,9 +288,9 @@ final class NotificationManager {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                 mNotificationView.setImageViewBitmap(
-                        R.id.simple_sound_cloud_notification_thumbnail, bitmap);
+                        R.id.notification_thumbnail, bitmap);
                 mNotificationExpandedView.setImageViewBitmap(
-                        R.id.simple_sound_cloud_notification_expanded_thumbnail, bitmap);
+                        R.id.notification_thumbnail, bitmap);
                 mNotificationManager.notify(NOTIFICATION_ID, buildNotification());
             }
 
@@ -317,7 +317,7 @@ final class NotificationManager {
         mNotificationView = new RemoteViews(context.getPackageName(),
                 R.layout.simple_notification);
         mNotificationExpandedView = new RemoteViews(context.getPackageName(),
-                R.layout.simple_sound_cloud_notification_expanded);
+                R.layout.notification_expanded);
 
         // add right icon on Lollipop.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -327,21 +327,21 @@ final class NotificationManager {
 
         // set pending intents
         mNotificationView.setOnClickPendingIntent(
-                R.id.simple_sound_cloud_notification_previous, mPreviousPendingIntent);
+                R.id.notification_previous, mPreviousPendingIntent);
         mNotificationExpandedView.setOnClickPendingIntent(
-                R.id.simple_sound_cloud_notification_previous, mPreviousPendingIntent);
+                R.id.notification_previous, mPreviousPendingIntent);
         mNotificationView.setOnClickPendingIntent(
-                R.id.simple_sound_cloud_notification_next, mNextPendingIntent);
+                R.id.notification_next, mNextPendingIntent);
         mNotificationExpandedView.setOnClickPendingIntent(
-                R.id.simple_sound_cloud_notification_next, mNextPendingIntent);
+                R.id.notification_next, mNextPendingIntent);
         mNotificationView.setOnClickPendingIntent(
-                R.id.simple_sound_cloud_notification_play, mTogglePlaybackPendingIntent);
+                R.id.notification_play, mTogglePlaybackPendingIntent);
         mNotificationExpandedView.setOnClickPendingIntent(
-                R.id.simple_sound_cloud_notification_play, mTogglePlaybackPendingIntent);
+                R.id.notification_play, mTogglePlaybackPendingIntent);
         mNotificationView.setOnClickPendingIntent(
-                R.id.simple_sound_cloud_notification_clear, mClearPendingIntent);
+                R.id.notification_clear, mClearPendingIntent);
         mNotificationExpandedView.setOnClickPendingIntent(
-                R.id.simple_sound_cloud_notification_clear, mClearPendingIntent);
+                R.id.notification_clear, mClearPendingIntent);
 
         // add icon for action bar.
         mNotificationBuilder.setSmallIcon(mNotificationConfig.getNotificationIcon());
@@ -381,9 +381,9 @@ final class NotificationManager {
      * @param notificationView remotesview used in the notification.
      */
     private void addSmallIcon(RemoteViews notificationView) {
-        notificationView.setInt(R.id.simple_sound_cloud_notification_icon,
+        notificationView.setInt(R.id.notification_icon,
                 "setBackgroundResource", mNotificationConfig.getNotificationIconBackground());
-        notificationView.setImageViewResource(R.id.simple_sound_cloud_notification_icon,
+        notificationView.setImageViewResource(R.id.notification_icon,
                 mNotificationConfig.getNotificationIcon());
     }
 
