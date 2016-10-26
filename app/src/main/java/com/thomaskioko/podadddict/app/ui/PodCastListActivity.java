@@ -73,9 +73,11 @@ public class PodCastListActivity extends AppCompatActivity implements DiscoverPo
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
 
+    private TextView mTvPodcastCount;
+
     //Variables
     private BottomSheetBehavior mBottomSheetBehavior;
-    private BroadcastReceiver mRegistrationBroadcastReceiver;
+    private BroadcastReceiver mBroadcastReceiver;
     private static final String LOG_TAG = PodCastListActivity.class.getSimpleName();
 
     @Override
@@ -105,7 +107,7 @@ public class PodCastListActivity extends AppCompatActivity implements DiscoverPo
             }
         }
 
-        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+        mBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
 
@@ -125,6 +127,8 @@ public class PodCastListActivity extends AppCompatActivity implements DiscoverPo
                                 regId
                         );
                     }
+                } else if (intent.getAction().equals(ApplicationConstants.UPDATE_EPISODE_COUNT)) {
+                    updatePodcastCount();
                 }
             }
         };
@@ -135,15 +139,15 @@ public class PodCastListActivity extends AppCompatActivity implements DiscoverPo
         //Initialize the BottomSheet view
         mBottomSheetBehavior = BottomSheetBehavior.from(findViewById(R.id.bottomSheetLayout));
 
-        int episodeCount = DbUtils.getEpisodeCount(getApplicationContext());
-
-        TextView tvPodcastCount = (TextView) MenuItemCompat.getActionView(mSublimeNavigationView.getMenu().
+        mTvPodcastCount = (TextView) MenuItemCompat.getActionView(mSublimeNavigationView.getMenu().
                 findItem(R.id.nav_action_poscasts));
 
-        tvPodcastCount.setText(String.valueOf(episodeCount));
-        tvPodcastCount.setTextColor(getResources().getColor(R.color.colorAccent));
-        tvPodcastCount.setGravity(Gravity.CENTER_VERTICAL);
-        tvPodcastCount.setTypeface(null, Typeface.BOLD);
+
+        mTvPodcastCount.setTextColor(getResources().getColor(R.color.colorAccent));
+        mTvPodcastCount.setGravity(Gravity.CENTER_VERTICAL);
+        mTvPodcastCount.setTypeface(null, Typeface.BOLD);
+
+        updatePodcastCount();
 
         //We set the bottom view state to hidden otherwise it will be displayed be default.
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -193,13 +197,17 @@ public class PodCastListActivity extends AppCompatActivity implements DiscoverPo
         super.onResume();
 
         // register GCM registration complete receiver
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+        LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver,
                 new IntentFilter(ApplicationConstants.REGISTRATION_COMPLETE));
 
         // register new push message receiver
         // by doing this, the activity will be notified each time a new message arrives
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+        LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver,
                 new IntentFilter(ApplicationConstants.PUSH_NOTIFICATION));
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver,
+                new IntentFilter(ApplicationConstants.UPDATE_EPISODE_COUNT));
+
 
         // clear the notification area when the app is opened
         NotificationUtils.clearNotifications(getApplicationContext());
@@ -207,7 +215,7 @@ public class PodCastListActivity extends AppCompatActivity implements DiscoverPo
 
     @Override
     protected void onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver);
         super.onPause();
 
     }
@@ -301,6 +309,14 @@ public class PodCastListActivity extends AppCompatActivity implements DiscoverPo
         } else {
             startActivity(intent);
         }
+    }
+
+    /**
+     * Method called to update podcast count
+     */
+    private void updatePodcastCount() {
+        int episodeCount = DbUtils.getEpisodeCount(getApplicationContext());
+        mTvPodcastCount.setText(String.valueOf(episodeCount));
     }
 
 }
