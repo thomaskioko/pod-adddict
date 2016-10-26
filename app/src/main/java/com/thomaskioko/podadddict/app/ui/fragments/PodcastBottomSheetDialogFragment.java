@@ -14,7 +14,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.graphics.Palette;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,8 +67,11 @@ public class PodcastBottomSheetDialogFragment extends BottomSheetDialogFragment 
     TextView mTvDescriptionTitle;
     @Bind(R.id.button_subscribe)
     Button mBtnSubscribe;
+    @Bind(R.id.button_subscribed)
+    Button mBtnSubscribed;
 
     static PodCastListActivity mPodCastListActivity;
+    private boolean mIsSubscribed;
     private static Uri mUri;
     private int mPodcastFeedId, mRowId;
     private static final int LOADER_ID = 100;
@@ -99,57 +101,58 @@ public class PodcastBottomSheetDialogFragment extends BottomSheetDialogFragment 
         View view = inflater.inflate(R.layout.podcast_detail_bottom_sheet, container, false);
         ButterKnife.bind(this, view);
 
+        if (!mIsSubscribed) {
+            mBtnSubscribe.setVisibility(View.VISIBLE);
+            mBtnSubscribed.setVisibility(View.INVISIBLE);
+        } else {
+            mBtnSubscribe.setVisibility(View.INVISIBLE);
+            mBtnSubscribed.setVisibility(View.VISIBLE);
+        }
 
         return view;
     }
 
-    @OnClick({R.id.button_subscribe})
+    @OnClick({R.id.button_subscribe, R.id.button_subscribed})
     void onButtonSubscribeClicked(View view) {
         switch (view.getId()) {
             case R.id.button_subscribe:
 
-                /**
-                 * Check what text is set on the button. If the text is Subscribe, invoke lookUp api
-                 * and save response in db
-                 */
-                if (mBtnSubscribe.getText().equals(getResources().getString(R.string.button_subscribe))) {
-                    ApiClient apiClient = PodAddictApplication.getApiClientInstance();
-                    apiClient.setEndpointUrl(ApplicationConstants.ITUNES_END_POINT);
+                ApiClient apiClient = PodAddictApplication.getApiClientInstance();
+                apiClient.setEndpointUrl(ApplicationConstants.ITUNES_END_POINT);
 
-                    mBtnSubscribe.setText(getResources().getString(R.string.loading));
-                    mBtnSubscribe.setEnabled(false);
+                mBtnSubscribe.setText(getResources().getString(R.string.loading));
+                mBtnSubscribe.setEnabled(false);
 
-                    Call<ItunesLookUpResponse> iTunesLookUpResponseCall = apiClient.iTunesServices()
-                            .getLookUpResponse(String.valueOf(mPodcastFeedId));
-                    iTunesLookUpResponseCall.enqueue(new Callback<ItunesLookUpResponse>() {
-                        @Override
-                        public void onResponse(Call<ItunesLookUpResponse> call, Response<ItunesLookUpResponse> response) {
-                            mBtnSubscribe.setText(getResources().getString(R.string.button_subscribed));
+                Call<ItunesLookUpResponse> iTunesLookUpResponseCall = apiClient.iTunesServices()
+                        .getLookUpResponse(String.valueOf(mPodcastFeedId));
+                iTunesLookUpResponseCall.enqueue(new Callback<ItunesLookUpResponse>() {
+                    @Override
+                    public void onResponse(Call<ItunesLookUpResponse> call, Response<ItunesLookUpResponse> response) {
+                        mIsSubscribed = true;
+                        mBtnSubscribe.setVisibility(View.INVISIBLE);
+                        mBtnSubscribed.setVisibility(View.VISIBLE);
+                        DbUtils.insertSubscriptionFeed(getActivity(), response.body().getResults(), mPodcastFeedId);
 
-                            long dbRecordId = DbUtils.insertSubscriptionFeed(getActivity(), response.body().getResults(), mPodcastFeedId);
-                            Log.i(LOG_TAG, "@onButtonSubscribeClicked:: " + dbRecordId);
-
-                        }
-
-                        @Override
-                        public void onFailure(Call<ItunesLookUpResponse> call, Throwable t) {
-                        }
-                    });
-                } else {
-                    //Navigate the user to the playlist screen passing the track ID
-
-                    Uri subscriptionUri = PodCastContract.PodcastFeedSubscriptionEntry.buildSubscriptionUri(mPodcastFeedId);
-                    Intent intent = new Intent(mPodCastListActivity, PodCastEpisodeActivity.class).setData(subscriptionUri);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        mPodCastListActivity.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(mPodCastListActivity, mImageView,
-                                mImageView.getTransitionName()).toBundle());
-                    } else {
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        getActivity().startActivity(intent);
                     }
+
+                    @Override
+                    public void onFailure(Call<ItunesLookUpResponse> call, Throwable t) {
+                        mIsSubscribed = false;
+                    }
+                });
+                break;
+            case R.id.button_subscribed:
+
+                //Navigate the user to the playlist screen passing the track ID
+                Uri subscriptionUri = PodCastContract.PodcastFeedSubscriptionEntry.buildSubscriptionUri(mPodcastFeedId);
+                Intent intent = new Intent(mPodCastListActivity, PodCastEpisodeActivity.class).setData(subscriptionUri);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    mPodCastListActivity.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(mPodCastListActivity, mImageView,
+                            mImageView.getTransitionName()).toBundle());
+                } else {
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getActivity().startActivity(intent);
                 }
-
-
                 break;
             default:
                 break;
@@ -203,16 +206,20 @@ public class PodcastBottomSheetDialogFragment extends BottomSheetDialogFragment 
                                     if (palette.getDarkVibrantSwatch() != null) {
                                         mRelativeLayout.setBackgroundColor(palette.getDarkVibrantSwatch().getRgb());
                                         mBtnSubscribe.setTextColor(palette.getDarkVibrantSwatch().getRgb());
+                                        mBtnSubscribed.setTextColor(palette.getDarkVibrantSwatch().getRgb());
 
                                     } else if (palette.getMutedSwatch() != null) {
                                         mRelativeLayout.setBackgroundColor(palette.getMutedSwatch().getRgb());
                                         mBtnSubscribe.setTextColor(palette.getMutedSwatch().getRgb());
+                                        mBtnSubscribed.setTextColor(palette.getMutedSwatch().getRgb());
                                     }
                                     if (palette.getLightVibrantSwatch() != null) {
                                         mBtnSubscribe.setTextColor(palette.getLightVibrantSwatch().getRgb());
+                                        mBtnSubscribed.setTextColor(palette.getLightVibrantSwatch().getRgb());
                                         mTvDescriptionTitle.setTextColor(palette.getLightVibrantSwatch().getRgb());
                                     } else if (palette.getLightMutedSwatch() != null) {
                                         mBtnSubscribe.setTextColor(palette.getLightMutedSwatch().getRgb());
+                                        mBtnSubscribed.setTextColor(palette.getLightMutedSwatch().getRgb());
                                         mTvDescriptionTitle.setTextColor(palette.getLightMutedSwatch().getRgb());
                                     }
                                 }
@@ -240,7 +247,9 @@ public class PodcastBottomSheetDialogFragment extends BottomSheetDialogFragment 
             mPodcastDescription.setText(data.getString(ApplicationConstants.COLUMN_PODCAST_FEED_SUMMARY));
 
             if (DbUtils.dbHasRecord(getActivity(), String.valueOf(mPodcastFeedId))) {
-                mBtnSubscribe.setText(getResources().getString(R.string.button_subscribed));
+                mIsSubscribed = true;
+                mBtnSubscribe.setVisibility(View.INVISIBLE);
+                mBtnSubscribed.setVisibility(View.VISIBLE);
             }
         }
 
