@@ -17,7 +17,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/simple_sound_cloud_notification_title"
+            android:id="@+id/notification_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
@@ -27,7 +27,7 @@
             tools:text="IvanB" />
 
         <TextView
-            android:id="@+id/simple_sound_cloud_notification_subtitle"
+            android:id="@+id/notification_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
@@ -39,7 +39,7 @@
     </LinearLayout>
 
     <ImageButton
-        android:id="@+id/simple_sound_cloud_notification_previous"
+        android:id="@+id/notification_previous"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -49,7 +49,7 @@
         android:src="@drawable/notification_previous" />
 
     <ImageButton
-        android:id="@+id/simple_sound_cloud_notification_play"
+        android:id="@+id/notification_play"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -58,7 +58,7 @@
         android:src="@drawable/notification_play" />
 
     <ImageButton
-        android:id="@+id/simple_sound_cloud_notification_next"
+        android:id="@+id/notification_next"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -75,7 +75,7 @@
         android:background="@color/notification_button_pressed" />
 
     <ImageButton
-        android:id="@+id/simple_sound_cloud_notification_clear"
+        android:id="@+id/notification_clear"
         android:layout_width="36dp"
         android:layout_height="wrap_content"
         android:background="@drawable/notification_button"
