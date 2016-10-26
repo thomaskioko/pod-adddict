@@ -14,6 +14,7 @@
     <string name="title_discover">Discover</string>
     <string name="title_downloads">Downloads</string>
     <string name="title_favorites">Favorites</string>
+    <string name="title_share">Share</string>
 
     <!-- SyncAdapter related -->
     <string name="sync_account_type">podadddict.thomaskioko.com</string>
@@ -101,5 +102,8 @@
     <string name="content_description_shuffle_playlist">Shuffle playlist</string>
     <string name="content_description_add_to_favorite">Add to favorite</string>
     <string name="content_description_playlist">Playlist</string>
+
+    <!-- Share message -->
+    <string name="share_message">Check out PodAdddict on the PlayStore.</string>
 
 </resources>
