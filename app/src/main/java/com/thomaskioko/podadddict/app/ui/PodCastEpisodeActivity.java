@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.thomaskioko.podadddict.app.R;
@@ -440,7 +439,6 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
         mPodAdddictPlayer.addTracks(mPlaylistTracks);
 
         if (mPodAdddictPlayer.getTracks().contains(track)) {
-            Toast.makeText(getApplicationContext(), track.getTitle(), Toast.LENGTH_SHORT).show();
             mPodAdddictPlayer.play(track);
         } else {
             boolean playNow = !mPodAdddictPlayer.isPlaying();
