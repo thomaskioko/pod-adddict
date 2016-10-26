@@ -49,6 +49,7 @@ public class ApplicationConstants {
     public static final String REGISTRATION_COMPLETE = "registrationComplete";
     public static final String PUSH_NOTIFICATION = "pushNotification";
     public static final String GCM_REGISTRATION_COMPLETE = "registrationComplete";
+    public static final String UPDATE_EPISODE_COUNT = "updateEpisodeCount";
 
 
     public static final String SHARED_PREF = "podAdddictPrefs";
