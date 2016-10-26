@@ -1,6 +1,7 @@
 package com.thomaskioko.podadddict.app.ui.adapter;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v4.app.FragmentActivity;
@@ -17,8 +18,11 @@ import com.thomaskioko.podadddict.app.api.model.Item;
 import com.thomaskioko.podadddict.app.ui.fragments.PodCastEpisodesFragment;
 import com.thomaskioko.podadddict.app.ui.fragments.PodcastEpisodeBottomSheetFragment;
 import com.thomaskioko.podadddict.app.ui.util.RecyclerItemChoiceManager;
+import com.thomaskioko.podadddict.app.util.ApplicationConstants;
+import com.thomaskioko.podadddict.app.util.Converter;
 import com.thomaskioko.podadddict.app.util.DateUtils;
 import com.thomaskioko.podadddict.app.util.GoogleAnalyticsUtil;
+import com.thomaskioko.podadddict.musicplayerlib.model.Track;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -45,18 +49,19 @@ public class PodcastEpisodeListAdapter extends RecyclerView.Adapter<PodcastEpiso
     private final RecyclerItemChoiceManager mRecyclerItemChoiceManager;
     final private PodCastEpisodeAdapterOnClickHandler mClickHandler;
     private PodCastEpisodesFragment mPodCastEpisodesFragment;
+    private Listener mListener;
     private static final String LOG_TAG = PodcastEpisodeListAdapter.class.getSimpleName();
 
     /**
      * Constructor
-     *
-     * @param context                 Context in which the class is called.
+     *  @param context                 Context in which the class is called.
+     * @param mRetrieveTracksListener
      * @param itemList                List of podcast feeds
      * @param uri                     {@link Uri} Podcast Query Uri
      * @param podCastEpisodesFragment
      * @param clickHandler            Interface to handle onClick actions
      */
-    public PodcastEpisodeListAdapter(Context context, List<Item> itemList, Uri uri,
+    public PodcastEpisodeListAdapter(Context context, Listener mRetrieveTracksListener, List<Item> itemList, Uri uri,
                                      PodCastEpisodesFragment podCastEpisodesFragment,
                                      PodCastEpisodeAdapterOnClickHandler clickHandler) {
         mContext = context;
@@ -66,6 +71,7 @@ public class PodcastEpisodeListAdapter extends RecyclerView.Adapter<PodcastEpiso
         mPodCastEpisodesFragment = podCastEpisodesFragment;
         mRecyclerItemChoiceManager = new RecyclerItemChoiceManager(this);
         mRecyclerItemChoiceManager.setChoiceMode(choiceMode);
+        mListener = mRetrieveTracksListener;
     }
 
     /**
@@ -116,6 +122,8 @@ public class PodcastEpisodeListAdapter extends RecyclerView.Adapter<PodcastEpiso
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final Item item = mItemList.get(position);
 
+        setListener(mListener);
+
         String dateStr = item.getPubDate();
         DateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss", Locale.getDefault());
         try {
@@ -148,7 +156,26 @@ public class PodcastEpisodeListAdapter extends RecyclerView.Adapter<PodcastEpiso
             @Override
             public void onClick(View v) {
                 //TODO:: Change Icon based on action. If playing, equalizer icon, pause pause-icon etc
-                mPodCastEpisodesFragment.onClick(mUri, item, position);
+                String imageUrl = "";
+                Cursor cursor = mContext.getContentResolver().query(mUri, null, null, null, null);
+                if (cursor != null) {
+                    while (cursor.moveToNext()) {
+                        imageUrl = cursor.getString(ApplicationConstants.COLUMN_SUBSCRIBED_PODCAST_FEED_IMAGE_URL);
+                    }
+
+                }
+
+                Track track = new Track();
+                track.setTitle(item.getTitle());
+                track.setStreamUrl(item.getEnclosure().getUrl());
+                track.setArtist(item.getItunesAuthor());
+                track.setArtworkUrl(imageUrl);
+                track.setDurationInMilli(Converter.getMilliSeconds(item.getItunesDuration()));
+
+
+                if (mListener != null) {
+                    mListener.onTrackClicked(track);
+                }
             }
         });
 
@@ -174,6 +201,28 @@ public class PodcastEpisodeListAdapter extends RecyclerView.Adapter<PodcastEpiso
         BottomSheetDialogFragment bottomSheetDialogFragment = PodcastEpisodeBottomSheetFragment.newInstance(item, mUri);
         bottomSheetDialogFragment.show(((FragmentActivity) mContext).getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
 
+    }
+
+    /**
+     * Interface used to catch view events.
+     */
+    public interface Listener {
+
+        /**
+         * Called when the user clicked on the track view.
+         *
+         * @param track model of the view.
+         */
+        void onTrackClicked(Track track);
+    }
+
+    /**
+     * Set a listener to catch the view events.
+     *
+     * @param listener listener to register.
+     */
+    private void setListener(Listener listener) {
+        mListener = listener;
     }
 
 }
