@@ -70,8 +70,9 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
     TextView mTvErrorMessage;
     @BindInt(R.integer.detail_desc_slide_duration)
     int slideDuration;
-    private Uri mUri;
+    private static Uri mUri;
 
+    static PodcastEpisodeListAdapter.Listener mRetrieveTracksListener;
     private DbTaskCallback mDbTaskCallback = this;
     private List<Item> itemList;
     private static final int LOADER_ID = 100;
@@ -93,10 +94,19 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
     }
 
     /**
-     * Callback Interface
+     * Constructor
+     *
+     * @param listener
+     * @param uri
+     * @return
      */
-    public interface EpisodeCallback {
-        void onEpisodeSelected(Uri uri, Item item);
+    public static PodCastEpisodesFragment newInstance(PodcastEpisodeListAdapter.Listener listener,
+                                                      Uri uri) {
+
+        mRetrieveTracksListener = listener;
+        mUri = uri;
+
+        return new PodCastEpisodesFragment();
     }
 
     @Override
@@ -247,7 +257,8 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
             mProgressBar.setVisibility(View.GONE);
             mTvErrorMessage.setVisibility(View.GONE);
 
-            mRecyclerView.setAdapter(new PodcastEpisodeListAdapter(getActivity(), resultArrayList, mUri,
+            mRecyclerView.setAdapter(new PodcastEpisodeListAdapter(getActivity(), mRetrieveTracksListener,
+                    resultArrayList, mUri,
                     PodCastEpisodesFragment.this, new PodcastEpisodeListAdapter.PodCastEpisodeAdapterOnClickHandler() {
                 @Override
                 public void onClick(Uri uri, Item feedItem, View.OnClickListener vh) {
@@ -345,18 +356,5 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
 
             }
         });
-    }
-
-    /**
-     * Method used to pass data when an item on the recyclerView is clicked.
-     *
-     * @param mUri     {@link Uri} Selected item URI
-     * @param feedItem {@link Item} Episode Item
-     */
-    public void onClick(Uri mUri, Item feedItem, int position) {
-
-        mPosition = position;
-
-        ((PodCastEpisodesFragment.EpisodeCallback) getActivity()).onEpisodeSelected(mUri, feedItem);
     }
 }

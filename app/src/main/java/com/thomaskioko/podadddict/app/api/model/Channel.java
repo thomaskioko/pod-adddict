@@ -19,7 +19,6 @@ public class Channel {
     private String title;
     private String link;
     private String language;
-    private String copyright;
     private String description;
     private List<Item> item = new ArrayList<Item>();
 
@@ -177,19 +176,6 @@ public class Channel {
         this.language = language;
     }
 
-    /**
-     * @return The copyright
-     */
-    public String getCopyright() {
-        return copyright;
-    }
-
-    /**
-     * @param copyright The copyright
-     */
-    public void setCopyright(String copyright) {
-        this.copyright = copyright;
-    }
 
     /**
      * @return The description

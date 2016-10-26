@@ -151,7 +151,7 @@ public final class PodAdddictPlayer implements Action1<ArrayList<Track>> {
     /**
      * Start the playback. First track of the queue will be played.
      * <p/>
-     * If the SoundCloud player is currently paused, the current track will be restart at the stopped position.
+     * If the PodAdddict player is currently paused, the current track will be restart at the stopped position.
      */
     public void play() {
         checkState();
@@ -268,7 +268,7 @@ public final class PodAdddictPlayer implements Action1<ArrayList<Track>> {
     /**
      * Seek to the precise track position.
      * <p/>
-     * The current playing state of the SoundCloud player will be kept.
+     * The current playing state of the PodAdddict player will be kept.
      * <p/>
      * If playing it remains playing, if paused it remains paused.
      *
@@ -282,7 +282,7 @@ public final class PodAdddictPlayer implements Action1<ArrayList<Track>> {
     }
 
     /**
-     * Add a track to the current SoundCloud player playlist.
+     * Add a track to the current PodAdddict player playlist.
      * <p/>
      * See also {@link PodAdddictPlayer#addTrack(Track, boolean)}
      *
@@ -294,7 +294,7 @@ public final class PodAdddictPlayer implements Action1<ArrayList<Track>> {
     }
 
     /**
-     * Add a track to the current SoundCloud player playlist.
+     * Add a track to the current PodAdddict player playlist.
      *
      * @param track   {@link Track} to be
      *                added to the player.
@@ -312,7 +312,7 @@ public final class PodAdddictPlayer implements Action1<ArrayList<Track>> {
     }
 
     /**
-     * Add a list of track to thr current SoundCloud player playlist.
+     * Add a list of track to thr current PodAdddict player playlist.
      *
      * @param tracks list of {@link Track}
      *               to be added to the player.
@@ -325,7 +325,7 @@ public final class PodAdddictPlayer implements Action1<ArrayList<Track>> {
     }
 
     /**
-     * Remove a track from the SoundCloud player playlist.
+     * Remove a track from the PodAdddict player playlist.
      * <p/>
      * If the track is currently played, it will be stopped before being removed.
      *

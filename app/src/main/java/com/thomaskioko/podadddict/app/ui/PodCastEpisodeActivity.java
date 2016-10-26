@@ -1,10 +1,10 @@
 package com.thomaskioko.podadddict.app.ui;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.LightingColorFilter;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
@@ -14,24 +14,28 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.thomaskioko.podadddict.app.R;
-import com.thomaskioko.podadddict.app.api.model.Item;
 import com.thomaskioko.podadddict.app.interfaces.Listener;
 import com.thomaskioko.podadddict.app.service.PlayerWidgetService;
+import com.thomaskioko.podadddict.app.ui.adapter.PodcastEpisodeListAdapter;
 import com.thomaskioko.podadddict.app.ui.fragments.PodCastEpisodesFragment;
+import com.thomaskioko.podadddict.app.ui.views.CroutonView;
 import com.thomaskioko.podadddict.app.ui.views.ProgressBarCompat;
-import com.thomaskioko.podadddict.app.util.ApplicationConstants;
 import com.thomaskioko.podadddict.app.util.GoogleAnalyticsUtil;
 import com.thomaskioko.podadddict.musicplayerlib.model.Track;
 import com.thomaskioko.podadddict.musicplayerlib.player.PodAdddictPlayer;
 import com.thomaskioko.podadddict.musicplayerlib.player.PodAdddictPlayerListener;
 
+import java.util.ArrayList;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
@@ -45,8 +49,8 @@ import static android.view.View.VISIBLE;
  * @author kioko
  */
 public class PodCastEpisodeActivity extends AppCompatActivity implements
-        PodCastEpisodesFragment.EpisodeCallback, PodAdddictPlayerListener,
-        SeekBar.OnSeekBarChangeListener, Listener {
+        PodAdddictPlayerListener, SeekBar.OnSeekBarChangeListener, Listener,
+        PodcastEpisodeListAdapter.Listener{
 
     //Bind Views using {@link ButterKnife}
     @Bind(R.id.detail_relative_latout)
@@ -76,6 +80,11 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
     @Bind(R.id.selected_track_title_sp)
     TextView mTvArtistName;
 
+    private ArrayList<Track> mPlaylistTracks;
+
+    //Crouton, contextual toast.
+    private Crouton mCrouton;
+    private CroutonView mCroutonView;
     private boolean isFullPlayerShowing;
     private boolean mSeeking;
     private static PodAdddictPlayer mPodAdddictPlayer;
@@ -95,6 +104,30 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+
+        //Initialize the player
+        mPodAdddictPlayer = new PodAdddictPlayer.Builder()
+                .from(this)
+                .notificationActivity(PodCastEpisodeActivity.class)
+                .notificationIcon(R.drawable.ic_notification)
+                .build();
+
+        mPlaylistTracks = new ArrayList<>();
+
+        // check if tracks are already loaded into the player.
+        ArrayList<Track> currentsTracks = mPodAdddictPlayer.getTracks();
+        if (currentsTracks != null) {
+            mPlaylistTracks.addAll(currentsTracks);
+        }
+
+        mSeekBar.setOnSeekBarChangeListener(this);
+
+        // synchronize the player view with the current player (loaded track, playing state, etc.)
+        synchronize(mPodAdddictPlayer);
+
+        PodcastEpisodeListAdapter.Listener mRetrieveTracksListener = this;
+
+
         // savedInstanceState is non-null when there is fragment state
         // saved from previous configurations of this activity
         // (e.g. when rotating the screen from portrait to landscape).
@@ -107,30 +140,17 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
         if (savedInstanceState == null) {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
-            Bundle arguments = new Bundle();
-            arguments.putParcelable(PodCastEpisodesFragment.DETAIL_URI, getIntent().getData());
-            PodCastEpisodesFragment fragment = new PodCastEpisodesFragment();
-            fragment.setArguments(arguments);
+
+            Uri uri = getIntent().getData();
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.podcast_detail_container, fragment)
+                    .add(R.id.podcast_detail_container,
+                            PodCastEpisodesFragment.newInstance(mRetrieveTracksListener, uri))
                     .commit();
 
             // Being here means we are in animation mode
             supportPostponeEnterTransition();
 
         }
-        //Initialize the player
-        mPodAdddictPlayer = new PodAdddictPlayer.Builder()
-                .from(this)
-                .notificationActivity(PodCastEpisodeActivity.class)
-                .notificationIcon(R.drawable.ic_notification)
-                .build();
-
-        mSeekBar.setOnSeekBarChangeListener(this);
-
-        // synchronize the player view with the current player (loaded track, playing state, etc.)
-        synchronize(mPodAdddictPlayer);
-
     }
 
     /**
@@ -142,10 +162,10 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
     void onClickViews(View views) {
         switch (views.getId()) {
             case R.id.detail_relative_latout:
-                if(isFullPlayerShowing){
+                if (isFullPlayerShowing) {
                     isFullPlayerShowing = false;
                     mFullPlayerLayout.setVisibility(View.GONE);
-                }else{
+                } else {
                     isFullPlayerShowing = true;
                     mFullPlayerLayout.setVisibility(VISIBLE);
                 }
@@ -179,13 +199,11 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
     protected void onResume() {
         super.onResume();
         mPodAdddictPlayer.registerPlayerListener(this);
-        mPodAdddictPlayer.registerPlayerListener(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mPodAdddictPlayer.unregisterPlayerListener(this);
         mPodAdddictPlayer.unregisterPlayerListener(this);
     }
 
@@ -262,36 +280,7 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
 
     @Override
     public void onErrorOccurred() {
-        mPlayPause.setImageResource(R.drawable.ic_play_white);
-        if (mPlayPause.getVisibility() == INVISIBLE) {
-            mLoader.setVisibility(INVISIBLE);
-            mPlayPause.setVisibility(VISIBLE);
-        }
-    }
 
-
-    @Override
-    public void onEpisodeSelected(Uri uri, Item item) {
-
-        mFrameLayout.setVisibility(VISIBLE);
-
-        //Fetch episode details.
-        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-
-                String imageUrl = cursor.getString(ApplicationConstants.COLUMN_SUBSCRIBED_PODCAST_FEED_IMAGE_URL);
-                //create track object
-                Track track = new Track();
-                track.setTitle(item.getTitle());
-                track.setStreamUrl(item.getEnclosure().getUrl());
-                track.setArtist(item.getItunesAuthor());
-                track.setArtworkUrl(imageUrl);
-                track.setDurationInMilli(Long.parseLong(item.getItunesDuration()));
-
-                setTrack(track);
-            }
-        }
     }
 
 
@@ -311,16 +300,10 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
             mDuration.setText(none);
         } else {
 
-            isFullPlayerShowing = true;
-            mFullPlayerLayout.setVisibility(VISIBLE);
+            mFrameLayout.setVisibility(VISIBLE);
 
-            if (mPodAdddictPlayer.getTracks().contains(track)) {
-                //TODO:: fix player issue
-                // mPodAdddictPlayer.play(track);
-            } else {
-                boolean playNow = !mPodAdddictPlayer.isPlaying();
-                mPodAdddictPlayer.addTrack(track, playNow);
-            }
+            isFullPlayerShowing = true;
+//            mFullPlayerLayout.setVisibility(VISIBLE);
 
             //Log event to Google analytics
             GoogleAnalyticsUtil.trackEvent(
@@ -336,6 +319,13 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
 
             //This will create a blur effect
             mArtwork.setColorFilter(new LightingColorFilter(0xff828282, 0x000000));
+
+            Picasso.with(getApplicationContext())
+                    .load(track.getArtworkUrl())
+                    .fit()
+                    .centerCrop()
+                    .placeholder(R.color.placeholder)
+                    .into(mArtwork);
 
             //Load the art work
             Picasso.with(getApplicationContext())
@@ -443,4 +433,40 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
     public void onSeekToRequested(int milli) {
         mPodAdddictPlayer.seekTo(milli);
     }
+
+    @Override
+    public void onTrackClicked(Track track) {
+        mPlaylistTracks.add(track);
+        mPodAdddictPlayer.addTracks(mPlaylistTracks);
+
+        if (mPodAdddictPlayer.getTracks().contains(track)) {
+            Toast.makeText(getApplicationContext(), track.getTitle(), Toast.LENGTH_SHORT).show();
+            mPodAdddictPlayer.play(track);
+        } else {
+            boolean playNow = !mPodAdddictPlayer.isPlaying();
+
+            mPodAdddictPlayer.addTrack(track, playNow);
+
+            if (!playNow) {
+                toast(R.string.toast_track_added);
+            }
+        }
+    }
+
+    /**
+     * Used to display crouton toast.
+     *
+     * @param message text to be displayed.
+     */
+    private void toast(@StringRes int message) {
+        if (mCrouton != null) {
+            mCrouton.cancel();
+            mCrouton = null;
+        }
+        mCroutonView = new CroutonView(this, getString(message));
+
+        mCrouton = Crouton.make(this, mCroutonView, R.id.activity_main_container);
+        mCrouton.show();
+    }
+
 }

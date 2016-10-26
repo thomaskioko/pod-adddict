@@ -2,10 +2,12 @@ package com.thomaskioko.podadddict.app.data.db;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.support.v4.content.LocalBroadcastManager;
 
 import com.thomaskioko.podadddict.app.api.model.Entry;
 import com.thomaskioko.podadddict.app.api.model.ImImage;
@@ -222,6 +224,10 @@ public class DbUtils {
             return contentValuesVector.size();
         }
 
+        //Send a broadcast notification to update the podcast count
+        Intent intent = new Intent(ApplicationConstants.UPDATE_EPISODE_COUNT);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+
         return 0;
     }
 
@@ -287,7 +293,7 @@ public class DbUtils {
                 count++;
             }
             //here, count is records found
-            LogUtils.showInformationLog(TAG, "@episodeDbHasRecords Records found" + count);
+            LogUtils.showInformationLog(TAG, "@episodeDbHasRecords Records found " + count);
 
         }
 

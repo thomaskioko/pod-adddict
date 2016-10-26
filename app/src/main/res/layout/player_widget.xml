@@ -41,8 +41,8 @@
 
         <ImageView
             android:id="@+id/widget_art_work"
-            android:layout_width="140dp"
-            android:layout_height="140dp"
+            android:layout_width="@dimen/image_view_medium"
+            android:layout_height="@dimen/image_view_medium"
             android:layout_alignParentStart="true"
             android:layout_gravity="start"
             android:contentDescription="@null"

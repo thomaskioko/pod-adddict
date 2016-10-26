@@ -297,7 +297,7 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
     }
 
     /**
-     * Pause the SoundCloud player.
+     * Pause the PodAdddict player.
      *
      * @param context context from which the service will be started.
      */
@@ -308,7 +308,7 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
     }
 
     /**
-     * Resume the SoundCloud player.
+     * Resume the PodAdddict player.
      *
      * @param context context from which the service will be started.
      */
@@ -319,7 +319,7 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
     }
 
     /**
-     * Stop the SoundCloud player.
+     * Stop the PodAdddict player.
      *
      * @param context context from which the service will be started.
      */
@@ -332,7 +332,7 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
     /**
      * Seek to the precise track position.
      * <p/>
-     * The current playing state of the SoundCloud player will be kept.
+     * The current playing state of the PodAdddict player will be kept.
      * <p/>
      * If playing it remains playing, if paused it remains paused.
      *
