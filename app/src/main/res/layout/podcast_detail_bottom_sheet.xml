@@ -77,6 +77,20 @@
                 android:contentDescription="@string/content_description_subscribe_to_podcast"
                 android:textSize="@dimen/text_size_medium" />
 
+            <Button
+                android:id="@+id/button_subscribed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/imageView"
+                android:layout_alignStart="@+id/podcast_artist_name"
+                android:layout_marginEnd="10dp"
+                android:background="@color/white"
+                android:fontFamily="sans-serif-condensed"
+                android:text="@string/button_subscribed"
+                android:visibility="gone"
+                android:contentDescription="@string/content_description_subscribe_to_podcast"
+                android:textSize="@dimen/text_size_medium" />
+
 
         </RelativeLayout>
 
