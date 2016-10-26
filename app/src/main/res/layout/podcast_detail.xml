@@ -5,10 +5,54 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_frame_height"
+        android:fitsSystemWindows="true"
+        android:background="@null"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+    <android.support.design.widget.CollapsingToolbarLayout
+        android:id="@+id/toolbar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        app:expandedTitleMargin="@dimen/activity_horizontal_margin"
+        app:expandedTitleMarginBottom="@dimen/expanded_toolbar_title_margin_bottom"
+        app:layout_scrollFlags="scroll"
+        app:toolbarId="@+id/toolbar">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_frame_height">
+
+            <ImageView
+                android:id="@+id/photo"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_frame_height"
+                android:background="@drawable/photo_background_protection"
+                android:scaleType="fitXY"
+                android:contentDescription="@string/content_description_art_work"
+                android:transitionName="@string/transition_photo" />
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?android:actionBarSize"
+                android:navigationIcon="@drawable/ic_arrow_back" />
+
+        </FrameLayout>
+
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/dimen_frame_height"
         tools:context="com.thomaskioko.podadddict.app.ui.PodCastEpisodeActivity">
 
         <LinearLayout
@@ -17,27 +61,6 @@
             android:clipToPadding="false"
             android:orientation="vertical"
             android:paddingBottom="@dimen/padding_small">
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_frame_height">
-
-                <ImageView
-                    android:id="@+id/photo"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_frame_height"
-                    android:background="@drawable/photo_background_protection"
-                    android:scaleType="fitXY"
-                    android:contentDescription="@string/content_description_art_work"
-                    android:transitionName="@string/transition_photo" />
-
-                <Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?android:actionBarSize"
-                    android:navigationIcon="@drawable/ic_arrow_back" />
-
-            </FrameLayout>
 
 
             <LinearLayout
