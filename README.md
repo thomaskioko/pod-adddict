@@ -16,6 +16,7 @@ This project was developed as the final Capstone Project for [Udacity Android De
       <td align="right"><img src="https://github.com/kioko/pod-adddict/blob/develop/art/PodCast-Episodes.png" width="300"/></td>
     </tr>
     <tr >
+     <td><img src="https://github.com/kioko/pod-adddict/blob/master/art/Podcast-Full-Player.png" width="300"/></td>
      <td><img src="https://github.com/kioko/pod-adddict/blob/develop/art/Podcast-Player.png" width="300"/></td>
      </tr>
       <tr >
