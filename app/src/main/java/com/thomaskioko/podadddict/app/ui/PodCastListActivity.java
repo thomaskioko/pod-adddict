@@ -274,17 +274,24 @@ public class PodCastListActivity extends AppCompatActivity implements DiscoverPo
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        switch (item.getItemId()){
+            case R.id.action_add_subscription:
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.frameLayout_container,
+                        new DiscoverPodcastFragment()
+                );
+                fragmentTransaction.commit();
+                return true;
+            case R.id.action_share:
+                //TODO:: Add link to playstore once app is published. :)
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_message));
+                shareIntent.setType("text/plain");
+                item.setIntent(shareIntent);
 
-        if (id == R.id.action_add_subscription) {
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.frameLayout_container,
-                    new DiscoverPodcastFragment()
-            );
-            fragmentTransaction.commit();
-            return true;
+                return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

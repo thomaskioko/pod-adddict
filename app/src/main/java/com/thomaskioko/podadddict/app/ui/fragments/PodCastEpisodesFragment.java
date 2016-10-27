@@ -2,17 +2,21 @@ package com.thomaskioko.podadddict.app.ui.fragments;
 
 import android.annotation.TargetApi;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
+import android.support.v7.widget.Toolbar;
 import android.transition.Slide;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -32,7 +36,9 @@ import com.thomaskioko.podadddict.app.api.model.responses.PodCastPlaylistRespons
 import com.thomaskioko.podadddict.app.data.PodCastContract;
 import com.thomaskioko.podadddict.app.data.db.DbUtils;
 import com.thomaskioko.podadddict.app.data.tasks.DatabaseAsyncTask;
+import com.thomaskioko.podadddict.app.data.tasks.InsertEpisodesAsyncTask;
 import com.thomaskioko.podadddict.app.interfaces.DbTaskCallback;
+import com.thomaskioko.podadddict.app.interfaces.InsertEpisodesCallback;
 import com.thomaskioko.podadddict.app.ui.adapter.PodcastEpisodeListAdapter;
 import com.thomaskioko.podadddict.app.util.ApplicationConstants;
 import com.thomaskioko.podadddict.app.util.Converter;
@@ -56,10 +62,10 @@ import retrofit2.Response;
  * @author Thomas Kioko
  */
 public class PodCastEpisodesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
-        DbTaskCallback {
+        DbTaskCallback, InsertEpisodesCallback {
 
     @Bind(R.id.toolbar)
-    android.widget.Toolbar toolbar;
+    Toolbar toolbar;
     @Bind(R.id.photo)
     ImageView imageView;
     @Bind(R.id.recycler_view_list)
@@ -68,12 +74,15 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
     ProgressBar mProgressBar;
     @Bind(R.id.textViewMessage)
     TextView mTvErrorMessage;
+    @Bind(R.id.toolbar_layout)
+    CollapsingToolbarLayout mCollapsingToolbarLayout;
     @BindInt(R.integer.detail_desc_slide_duration)
     int slideDuration;
     private static Uri mUri;
 
     static PodcastEpisodeListAdapter.Listener mRetrieveTracksListener;
     private DbTaskCallback mDbTaskCallback = this;
+    private InsertEpisodesCallback mInsertEpisodesCallback = this;
     private List<Item> itemList;
     private static final int LOADER_ID = 100;
     public static final String DETAIL_URI = "URI";
@@ -129,6 +138,7 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
                 @Override
@@ -333,17 +343,9 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
             public void onResponse(Call<PodCastPlaylistResponse> call, Response<PodCastPlaylistResponse> response) {
 
                 if (response.code() == 200) {
-                    List<Item> links = response.body().getRss().getChannel().getItem();
+                    List<Item> feedItemList = response.body().getRss().getChannel().getItem();
 
-                    //Save the Podcast episode data locally
-                    int record = DbUtils.insertPodcastEpisode(getActivity(), Integer.parseInt(feedId),
-                            links);
-                    if (record != 0) {
-                        loadData();
-                    } else {
-                        //Notify the user something went wrong
-                        mTvErrorMessage.setText(getResources().getString(R.string.error_no_message));
-                    }
+                    new InsertEpisodesAsyncTask(getContext(), mInsertEpisodesCallback, feedItemList).execute(feedId);
 
                 }
             }
@@ -352,8 +354,40 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
             public void onFailure(Call<PodCastPlaylistResponse> call, Throwable t) {
 
                 mProgressBar.setVisibility(View.VISIBLE);
-                mTvErrorMessage.setText(t.getLocalizedMessage());
+                if (ApplicationConstants.DEBUG) {
+                    mTvErrorMessage.setText(t.getLocalizedMessage());
+                } else {
+                    mTvErrorMessage.setText(getString(R.string.error_no_message));
+                }
 
+            }
+        });
+    }
+
+    @Override
+    public void CallbackRequest(int recordCount) {
+        if (recordCount != 0) {
+            loadData();
+        } else {
+            //Notify the user something went wrong
+            mTvErrorMessage.setText(getResources().getString(R.string.error_no_message));
+        }
+    }
+
+    /**
+     * Helper method to set the color of the collapsing toolbar.
+     *
+     * @param bitmap Bitmap image
+     */
+    private void changeUIColors(Bitmap bitmap) {
+        Palette.generateAsync(bitmap, new Palette.PaletteAsyncListener() {
+            public void onGenerated(Palette palette) {
+                int defaultColor = 0xFF333333;
+                int darkMutedColor = palette.getDarkMutedColor(defaultColor);
+                if (mCollapsingToolbarLayout != null) {
+                    mCollapsingToolbarLayout.setContentScrimColor(darkMutedColor);
+                    mCollapsingToolbarLayout.setStatusBarScrimColor(darkMutedColor);
+                }
             }
         });
     }
