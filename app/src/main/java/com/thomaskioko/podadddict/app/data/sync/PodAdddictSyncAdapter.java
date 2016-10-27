@@ -18,6 +18,7 @@ import com.thomaskioko.podadddict.app.api.ApiClient;
 import com.thomaskioko.podadddict.app.api.model.responses.TopPodCastResponse;
 import com.thomaskioko.podadddict.app.data.db.DbUtils;
 import com.thomaskioko.podadddict.app.util.ApplicationConstants;
+import com.thomaskioko.podadddict.app.util.GoogleAnalyticsUtil;
 import com.thomaskioko.podadddict.app.util.LogUtils;
 
 import retrofit2.Call;
@@ -69,6 +70,9 @@ public class PodAdddictSyncAdapter extends AbstractThreadedSyncAdapter {
 
             @Override
             public void onFailure(Call<TopPodCastResponse> call, Throwable t) {
+                //Create an instance of Exception class to send the error to Google Analytics
+                Exception exception = new Exception(t.getMessage(), t.getCause());
+                GoogleAnalyticsUtil.trackException(mContext, exception);
                 LogUtils.showErrorLog(LOG_TAG, "@onFailure:: Error " + t.getMessage());
             }
         });

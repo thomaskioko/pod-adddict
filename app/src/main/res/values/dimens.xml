@@ -80,4 +80,8 @@
     <dimen name="dimen_medium_image_view">60dp</dimen>
     <dimen name="dimen_frame_height">300dp</dimen>
 
+    <dimen name="material_layout_app_bar_height">320dp</dimen>
+    <dimen name="expanded_toolbar_height">80dp</dimen>
+    <dimen name="expanded_toolbar_title_margin_bottom">40dp</dimen>
+
 </resources>

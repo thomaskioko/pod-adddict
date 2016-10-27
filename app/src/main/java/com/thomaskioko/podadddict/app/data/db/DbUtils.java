@@ -96,9 +96,10 @@ public class DbUtils {
      * @param entryList List of feed items
      * @return Number or records inserted
      */
-    public static int insertPodcastFeeds(Context context, List<Entry> entryList) {
+    public static int insertPodcastFeeds(Context context, List<Entry> entryList) throws NullPointerException{
         //Vector to hold content values.
         Vector<ContentValues> contentValuesVector = new Vector<>(entryList.size());
+        String summary= "";
 
         //Loop through the response object and get the data
         for (Entry entry : entryList) {
@@ -125,11 +126,15 @@ public class DbUtils {
                 url = url.replace(ApplicationConstants.IMAGE_SIZE_170x170, ApplicationConstants.IMAGE_SIZE_600x600);
             }
 
+            if(entry.getSummary() != null){
+                summary = entry.getSummary().getLabel();
+            }
+
             ContentValues contentValues = new ContentValues();
             contentValues.put(PodCastContract.PodCastFeedEntry.COLUMN_PODCAST_FEED_ID, entry.getId().getAttributes().getImId());
             contentValues.put(PodCastContract.PodCastFeedEntry.COLUMN_PODCAST_FEED_TITLE, entry.getImName().getLabel());
             contentValues.put(PodCastContract.PodCastFeedEntry.COLUMN_PODCAST_FEED_IMAGE_URL, url);
-            contentValues.put(PodCastContract.PodCastFeedEntry.COLUMN_PODCAST_FEED_SUMMARY, entry.getSummary().getLabel());
+            contentValues.put(PodCastContract.PodCastFeedEntry.COLUMN_PODCAST_FEED_SUMMARY, summary);
             contentValues.put(PodCastContract.PodCastFeedEntry.COLUMN_PODCAST_FEED_ARTIST, entry.getImArtist().getLabel());
             contentValues.put(PodCastContract.PodCastFeedEntry.COLUMN_PODCAST_FEED_CATEGORY, entry.getCategory().getAttributes().getLabel());
 
