@@ -38,6 +38,12 @@ This project was developed as the final Capstone Project for [Udacity Android De
 * Android Support Repository
 * Android Support library
 
+## Google Play Services Setup.
+This project uses Firebase and Google Analytics. You will need to generate the configuration file (`google-services.json`) and copy it to your `/app` dir. See links below
+
+1. [Setup Firebase setup](https://firebase.google.com/docs/android/setup)
+2. [Setup Google Analytics](https://developers.google.com/analytics/devguides/collection/android/v4/)
+
 
 ## Project Setup
 
