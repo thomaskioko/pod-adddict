@@ -6,7 +6,7 @@ import com.facebook.stetho.Stetho;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.thomaskioko.podadddict.app.api.ApiClient;
-import com.thomaskioko.podadddict.app.ui.PodCastEpisodeActivity;
+import com.thomaskioko.podadddict.app.ui.NowPlayingActivity;
 import com.thomaskioko.podadddict.app.util.ApplicationConstants;
 import com.thomaskioko.podadddict.musicplayerlib.player.PodAdddictPlayer;
 
@@ -33,7 +33,7 @@ public class PodAddictApplication extends Application {
         //Initialise Player.
         mPodAdddictPlayer = new PodAdddictPlayer.Builder()
                 .from(this)
-                .notificationActivity(PodCastEpisodeActivity.class)
+                .notificationActivity(NowPlayingActivity.class)
                 .notificationIcon(R.drawable.ic_notification)
                 .build();
 
