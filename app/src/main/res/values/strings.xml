@@ -73,6 +73,8 @@
     <string name="title_trrack_name">Chapter 8: When it begins</string>
     <string name="title_artist">NPR Radio</string>
     <string name="title_description">Description</string>
+    <string name="title_publish_date">Mon, 17 Oct 2016</string>
+    <string name="title_artist_name">by NPR Radio</string>
     <string name="text_time">0:00</string>
 
     <!-- Analytics Categories -->
