@@ -16,6 +16,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.thomaskioko.podadddict.app.PodAddictApplication;
 import com.thomaskioko.podadddict.app.R;
 import com.thomaskioko.podadddict.app.interfaces.Listener;
 import com.thomaskioko.podadddict.app.service.PlayerWidgetService;
@@ -105,11 +106,7 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
 
 
         //Initialize the player
-        mPodAdddictPlayer = new PodAdddictPlayer.Builder()
-                .from(this)
-                .notificationActivity(PodCastEpisodeActivity.class)
-                .notificationIcon(R.drawable.ic_notification)
-                .build();
+        mPodAdddictPlayer = PodAddictApplication.getPodAdddictPlayer();
 
         mPlaylistTracks = new ArrayList<>();
 
