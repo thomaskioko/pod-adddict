@@ -1,0 +1,226 @@
+<com.thomaskioko.podadddict.app.ui.views.SlidingRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:theme="@style/Base.ThemeOverlay.AppCompat.Dark.ActionBar"
+    android:visibility="visible">
+
+    <View
+        android:id="@+id/fullscreen_extra_space_occupier"
+        android:layout_width="match_parent"
+        android:layout_height="0dp" />
+
+    <RelativeLayout
+        android:id="@+id/indicator"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/mainControllerContainer"
+        android:layout_below="@+id/pager"
+        android:background="@null">
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:background="?attr/colorPrimary"
+                android:minHeight="?attr/actionBarSize"
+                tools:background="@android:color/darker_gray" />
+
+            <com.viewpagerindicator.CirclePageIndicator
+                android:id="@+id/page_indicator"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="-16dp"
+                android:background="@android:color/transparent"
+                app:fillColor="?android:attr/textColorSecondary"
+                app:radius="4dp"
+                app:strokeColor="?android:attr/textColorSecondary" />
+
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/appBar"
+            android:foreground="?android:windowContentOverlay"
+            tools:background="@android:color/holo_orange_light" />
+    </RelativeLayout>
+
+    <!-- Player controls layout -->
+    <RelativeLayout
+        android:id="@+id/mainControllerContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/seekBarContainer"
+        android:background="@color/colorPrimary"
+        android:padding="5dp">
+
+        <ImageView
+            android:id="@+id/previous"
+            android:layout_width="@dimen/dimen_small_image_view"
+            android:layout_height="@dimen/dimen_small_image_view"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="85dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="@string/content_description_previous_episode"
+            android:src="@drawable/ic_skip_previous_white_48dp" />
+
+        <ImageView
+            android:id="@+id/controller"
+            android:layout_width="@dimen/dimen_medium_image_view"
+            android:layout_height="@dimen/dimen_medium_image_view"
+            android:layout_centerInParent="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="@string/content_description_play_or_pause_music" />
+
+        <com.wang.avi.AVLoadingIndicatorView
+            android:id="@+id/bufferingIndicator"
+            android:layout_width="@dimen/dimen_small_image_view"
+            android:layout_height="@dimen/dimen_small_image_view"
+            android:layout_centerInParent="true"
+            android:background="@color/white"
+            android:clickable="true"
+            android:visibility="invisible"
+            app:indicator="BallSpinFadeLoader"
+            app:indicator_color="@color/white" />
+
+        <ImageView
+            android:id="@+id/next"
+            android:layout_width="@dimen/dimen_small_image_view"
+            android:layout_height="@dimen/dimen_small_image_view"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="85dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:src="@drawable/ic_skip_next_white_48dp" />
+
+    </RelativeLayout>
+
+    <!-- Episode Time layout -->
+    <RelativeLayout
+        android:id="@+id/seekBarContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/toggleContainer"
+        android:background="@color/colorPrimary"
+        android:padding="7dp">
+
+        <TextView
+            android:id="@+id/currTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
+            android:text="@string/text_time"
+            android:textColor="#FFF" />
+
+        <SeekBar
+            android:id="@+id/progressBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:layout_toEndOf="@+id/currTime"
+            android:layout_toStartOf="@+id/totalTime"
+            android:thumb="@drawable/custom_progress_bar_thumb" />
+
+        <TextView
+            android:id="@+id/totalTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:text="@string/text_time"
+            android:textColor="#FFF" />
+
+    </RelativeLayout>
+
+    <!-- Episode Options layout -->
+    <RelativeLayout
+        android:id="@+id/toggleContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimary">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
+            android:padding="4dp">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="32dp"
+                android:layout_weight="0.5" />
+
+            <ImageView
+                android:id="@+id/repeat_icon"
+                android:layout_width="0dp"
+                android:layout_height="32dp"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:contentDescription="@string/content_description_shuffle_playlist"
+                android:src="@drawable/ic_repeat_white_48dp" />
+
+            <ImageView
+                android:id="@+id/toggleSaveDNA"
+                android:layout_width="0dp"
+                android:layout_height="32dp"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:contentDescription="@string/content_description_download_podcast"
+                android:src="@drawable/ic_download" />
+
+            <ImageView
+                android:id="@+id/fav_icon"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:contentDescription="@string/content_description_add_to_favorite"
+                android:src="@drawable/ic_heart_out_1" />
+
+            <ImageView
+                android:id="@+id/queue_icon"
+                android:layout_width="0dp"
+                android:layout_height="32dp"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:contentDescription="@string/content_description_playlist"
+                android:src="@drawable/ic_queue_music_white_48dp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="32dp"
+                android:layout_weight="0.5" />
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+
+</com.thomaskioko.podadddict.app.ui.views.SlidingRelativeLayout>
