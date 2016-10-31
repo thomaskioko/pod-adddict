@@ -8,7 +8,6 @@ import android.content.pm.ProviderInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.os.Build;
 import android.test.AndroidTestCase;
 import android.util.Log;
 
@@ -128,7 +127,7 @@ public class TestProvider extends AndroidTestCase {
      */
     public void testBasicPlaylistQuery() {
         // insert our test records into the database
-        PodCastFeedDbHelper dbHelper = new PodCastFeedDbHelper(mContext);
+        PodCastFeedDbHelper dbHelper = PodCastFeedDbHelper.getInstance(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         long locationRowId = TestUtilities.insertPodcastFeedValues(mContext);
@@ -380,7 +379,7 @@ public class TestProvider extends AndroidTestCase {
      * delete functionality is available in the ContentProvider.
      */
     public void deleteAllRecordsFromDB() {
-        PodCastFeedDbHelper dbHelper = new PodCastFeedDbHelper(mContext);
+        PodCastFeedDbHelper dbHelper = PodCastFeedDbHelper.getInstance(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         db.delete(PodCastFeedPlaylistEntry.TABLE_NAME, null, null);
