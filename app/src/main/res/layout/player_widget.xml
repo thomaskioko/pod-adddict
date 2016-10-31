@@ -45,7 +45,7 @@
             android:layout_height="@dimen/image_view_medium"
             android:layout_alignParentStart="true"
             android:layout_gravity="start"
-            android:contentDescription="@null"
+            android:contentDescription="@string/content_description_art_work"
             android:padding="@dimen/default_padding"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_album_black" />
@@ -62,8 +62,8 @@
 
             <ImageView
                 android:id="@+id/widget_playback_view_previous"
-                android:layout_width="48dp"
-                android:layout_height="65dp"
+                android:layout_width="@dimen/dimen_medium_image_view"
+                android:layout_height="@dimen/dimen_medium_image_view"
                 android:layout_marginTop="5dp"
                 android:contentDescription="@string/content_description_previous_episode"
                 android:padding="@dimen/default_padding"
@@ -72,8 +72,8 @@
 
             <ImageView
                 android:id="@+id/widget_playback_view_toggle_play"
-                android:layout_width="48dp"
-                android:layout_height="65dp"
+                android:layout_width="@dimen/dimen_medium_image_view"
+                android:layout_height="@dimen/dimen_medium_image_view"
                 android:layout_marginTop="5dp"
                 android:contentDescription="@string/content_description_play_or_pause_music"
                 android:padding="@dimen/default_padding"
@@ -82,8 +82,8 @@
 
             <ImageView
                 android:id="@+id/widget_playback_view_next"
-                android:layout_width="48dp"
-                android:layout_height="65dp"
+                android:layout_width="@dimen/dimen_medium_image_view"
+                android:layout_height="@dimen/dimen_medium_image_view"
                 android:layout_marginTop="5dp"
                 android:contentDescription="@string/content_description_next_episode"
                 android:padding="@dimen/default_padding"
