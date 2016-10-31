@@ -155,7 +155,7 @@ public class TestUtilities {
      */
     public static long insertPodcastFeedValues(Context context) {
         // insert our test records into the database
-        PodCastFeedDbHelper dbHelper = new PodCastFeedDbHelper(context);
+        PodCastFeedDbHelper dbHelper = PodCastFeedDbHelper.getInstance(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues testValues = TestUtilities.createPodCastFeedValues();
 
