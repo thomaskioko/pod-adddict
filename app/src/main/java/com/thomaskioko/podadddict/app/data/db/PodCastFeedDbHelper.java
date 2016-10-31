@@ -19,13 +19,26 @@ public class PodCastFeedDbHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
 
     public static final String DATABASE_NAME = "podAdddict.db";
+    private static PodCastFeedDbHelper sInstance;
+
+
+    public static synchronized PodCastFeedDbHelper getInstance(Context context) {
+
+        // Use the application context, which will ensure that you
+        // don't accidentally leak an Activity's context.
+        // See this article for more information: http://bit.ly/6LRzfx
+        if (sInstance == null) {
+            sInstance = new PodCastFeedDbHelper(context.getApplicationContext());
+        }
+        return sInstance;
+    }
 
     /**
      * Default constructor.
      *
      * @param context Context the class is called
      */
-    public PodCastFeedDbHelper(Context context) {
+    private PodCastFeedDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
