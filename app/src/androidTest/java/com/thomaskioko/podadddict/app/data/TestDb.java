@@ -50,7 +50,7 @@ public class TestDb extends AndroidTestCase {
         tableNameHashSet.add(PodCastContract.PodCastEpisodeEntry.TABLE_NAME);
 
         mContext.deleteDatabase(PodCastFeedDbHelper.DATABASE_NAME);
-        SQLiteDatabase db = new PodCastFeedDbHelper(this.mContext).getWritableDatabase();
+        SQLiteDatabase db =  PodCastFeedDbHelper.getInstance(this.mContext).getWritableDatabase();
         assertEquals(true, db.isOpen());
 
         //Check if we have created the tables.
@@ -109,7 +109,7 @@ public class TestDb extends AndroidTestCase {
      */
     public long testPodCastFeedTable() {
         // First step: Get reference to writable database
-        SQLiteDatabase db = new PodCastFeedDbHelper(this.mContext).getWritableDatabase();
+        SQLiteDatabase db = PodCastFeedDbHelper.getInstance(this.mContext).getWritableDatabase();
         assertEquals(true, db.isOpen());
 
         // Create ContentValues of what you want to insert
@@ -154,7 +154,7 @@ public class TestDb extends AndroidTestCase {
         // First step: Get reference to writable database
         // If there's an error in those massive SQL table creation Strings,
         // errors will be thrown here when you try to get a writable database.
-        PodCastFeedDbHelper dbHelper = new PodCastFeedDbHelper(mContext);
+        PodCastFeedDbHelper dbHelper = PodCastFeedDbHelper.getInstance(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         // Second Step (PodCastPlaylist): Create PodCastPlaylist values
@@ -204,7 +204,7 @@ public class TestDb extends AndroidTestCase {
         // First step: Get reference to writable database
         // If there's an error in those massive SQL table creation Strings,
         // errors will be thrown here when you try to get a writable database.
-        PodCastFeedDbHelper dbHelper = new PodCastFeedDbHelper(mContext);
+        PodCastFeedDbHelper dbHelper = PodCastFeedDbHelper.getInstance(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         // Second Step (PodCastFeed): Create PodCastFeed values
@@ -249,7 +249,7 @@ public class TestDb extends AndroidTestCase {
      */
     public long testPodCastEpisodeTable() {
         // First step: Get reference to writable database
-        SQLiteDatabase db = new PodCastFeedDbHelper(this.mContext).getWritableDatabase();
+        SQLiteDatabase db = PodCastFeedDbHelper.getInstance(this.mContext).getWritableDatabase();
         assertEquals(true, db.isOpen());
 
         // Create ContentValues of what you want to insert
@@ -292,7 +292,7 @@ public class TestDb extends AndroidTestCase {
         // First step: Get reference to writable database
         // If there's an error in those massive SQL table creation Strings,
         // errors will be thrown here when you try to get a writable database.
-        PodCastFeedDbHelper dbHelper = new PodCastFeedDbHelper(mContext);
+        PodCastFeedDbHelper dbHelper = PodCastFeedDbHelper.getInstance(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         // Second Step: Create ContentValues of what you want to insert

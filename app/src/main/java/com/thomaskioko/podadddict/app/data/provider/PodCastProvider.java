@@ -55,7 +55,7 @@ public class PodCastProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        mOpenHelper = new PodCastFeedDbHelper(getContext());
+        mOpenHelper = PodCastFeedDbHelper.getInstance(getContext());
         return true;
     }
 
