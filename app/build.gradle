@@ -37,7 +37,7 @@ android {
             minifyEnabled false
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "API_URL", '"http://my-real-api.com"'
+            buildConfigField "String", "API_URL", '"http://thomaskioko.com/Projects/Mobile/Pod-Adddict/"'
         }
         debug {
             buildConfigField "String", "API_URL", "\"${getApiUrl()}\""
