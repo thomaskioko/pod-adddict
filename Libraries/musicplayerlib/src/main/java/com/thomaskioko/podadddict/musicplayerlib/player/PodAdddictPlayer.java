@@ -86,8 +86,7 @@ public final class PodAdddictPlayer implements Action1<ArrayList<Track>> {
     /**
      * Singleton pattern.
      *
-     * @param applicationContext context used to initiate 
-     *
+     * @param applicationContext context used to initiate
      */
     private PodAdddictPlayer(Context applicationContext) {
 
@@ -194,7 +193,6 @@ public final class PodAdddictPlayer implements Action1<ArrayList<Track>> {
      */
     public void play(Track track) {
         checkState();
-
         ArrayList<Track> tracks = mPlayerPlaylist.getPlaylist().getTracks();
         int position = tracks.indexOf(track);
         if (position > -1) {
@@ -390,7 +388,7 @@ public final class PodAdddictPlayer implements Action1<ArrayList<Track>> {
      *
      * @param listener listener to register.
      */
-        public void registerPlayerListener(PodAdddictPlayerListener listener) {
+    public void registerPlayerListener(PodAdddictPlayerListener listener) {
         checkState();
         mPodAdddictPlayerListeners.add(listener);
         if (mState == STATE_PLAYING) {
