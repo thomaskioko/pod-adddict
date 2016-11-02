@@ -12,7 +12,6 @@ android:
     - extra-google-m2repository
 
 script:
-    - ./gradlew build connectedCheck
     - ./gradlew build
 
 branches:
