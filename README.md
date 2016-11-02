@@ -6,6 +6,10 @@ This project was developed as the final Capstone Project for [Udacity Android De
 
 ##Screenshots
 
+<p align="center">
+  <img src="https://github.com/kioko/pod-adddict/blob/master/art/Pod-Addict-Collection.png" width="300" alt="Pod-Adddict"/>
+</p>
+
 <table>
   <tr >
     <td><img src="https://github.com/kioko/pod-adddict/blob/develop/art/Discover-Poscast.png" width="300"/></td>
