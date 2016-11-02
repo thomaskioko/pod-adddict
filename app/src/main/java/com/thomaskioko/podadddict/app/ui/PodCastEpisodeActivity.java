@@ -28,6 +28,7 @@ import com.thomaskioko.podadddict.app.util.GoogleAnalyticsUtil;
 import com.thomaskioko.podadddict.musicplayerlib.model.Track;
 import com.thomaskioko.podadddict.musicplayerlib.player.PodAdddictPlayer;
 import com.thomaskioko.podadddict.musicplayerlib.player.PodAdddictPlayerListener;
+import com.thomaskioko.podadddict.musicplayerlib.player.PodAdddictPlaylistListener;
 
 import java.util.ArrayList;
 
@@ -50,7 +51,7 @@ import static android.view.View.VISIBLE;
  */
 public class PodCastEpisodeActivity extends AppCompatActivity implements
         PodAdddictPlayerListener, SeekBar.OnSeekBarChangeListener, Listener,
-        PodcastEpisodeListAdapter.Listener{
+        PodcastEpisodeListAdapter.Listener, PodAdddictPlaylistListener{
 
     //Bind Views using {@link ButterKnife}
     @Bind(R.id.detail_relative_latout)
@@ -88,7 +89,10 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
     private boolean isFullPlayerShowing;
     private boolean mSeeking;
     private static PodAdddictPlayer mPodAdddictPlayer;
+    PodcastEpisodeListAdapter.Listener mRetrieveTracksListener = this;
     public static final String LOG_TAG = PodCastEpisodeActivity.class.getSimpleName();
+
+    PodAdddictPlayerListener mAdddictPlayerListener;
 
 
     @Override
@@ -107,6 +111,8 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
 
         //Initialize the player
         mPodAdddictPlayer = PodAddictApplication.getPodAdddictPlayer();
+        mAdddictPlayerListener = this;
+
 
         mPlaylistTracks = new ArrayList<>();
 
@@ -120,8 +126,8 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
 
         // synchronize the player view with the current player (loaded track, playing state, etc.)
         synchronize(mPodAdddictPlayer);
+        // synchronize the player view with the current player (loaded track, playing state, etc.)
 
-        PodcastEpisodeListAdapter.Listener mRetrieveTracksListener = this;
 
 
         // savedInstanceState is non-null when there is fragment state
@@ -195,12 +201,16 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
     protected void onResume() {
         super.onResume();
         mPodAdddictPlayer.registerPlayerListener(this);
+        mPodAdddictPlayer.registerPlayerListener(mAdddictPlayerListener);
+        mPodAdddictPlayer.registerPlayerListener(mRetrieveTracksListener);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         mPodAdddictPlayer.unregisterPlayerListener(this);
+        mPodAdddictPlayer.unregisterPlayerListener(mAdddictPlayerListener);
+        mPodAdddictPlayer.unregisterPlayerListener(mRetrieveTracksListener);
     }
 
     @Override
@@ -464,4 +474,13 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
         mCrouton.show();
     }
 
+    @Override
+    public void onTrackAdded(Track track) {
+        mPlaylistTracks.add(track);
+    }
+
+    @Override
+    public void onTrackRemoved(Track track, boolean isEmpty) {
+        mPlaylistTracks.remove(track);
+    }
 }
