@@ -9,7 +9,6 @@ import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.wifi.WifiManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -24,8 +23,8 @@ import android.util.Log;
 
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
-import com.thomaskioko.podadddict.musicplayerlib.model.Track;
 import com.thomaskioko.podadddict.musicplayerlib.media.MediaSessionWrapper;
+import com.thomaskioko.podadddict.musicplayerlib.model.Track;
 
 import java.io.IOException;
 
@@ -37,7 +36,7 @@ import java.io.IOException;
  */
 public class PlaybackService extends Service implements MediaPlayer.OnErrorListener,
         MediaPlayer.OnCompletionListener, MediaPlayer.OnSeekCompleteListener,
-        AudioManager.OnAudioFocusChangeListener, MediaPlayer.OnInfoListener, MediaPlayer.OnPreparedListener {
+        AudioManager.OnAudioFocusChangeListener, MediaPlayer.OnInfoListener {
 
     /**
      * Action used for toggle playback event
@@ -107,7 +106,6 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
      * Bundle key used to seek to a given position.
      */
     private static final String BUNDLE_KEY_TRACK_POSITION = "player_bundle_key_seek_to";
-
 
     /**
      * what id used to identify "play" message.
@@ -210,11 +208,6 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
     private boolean mIsPaused;
 
     /**
-     * Used to know if the player is paused due to audio focus loss.
-     */
-    private boolean mIsPausedAfterAudioFocusChanged;
-
-    /**
      * Used to know if the player has leary played a track.
      */
     private boolean mHasAlreadyPlayed;
@@ -225,12 +218,17 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
     private WifiManager.WifiLock mWifiLock;
 
     /**
+     * SoundCloudClientId.
+     */
+    private String mSoundCloundClientId;
+
+    /**
      * Used to broadcast events.
      */
     private LocalBroadcastManager mLocalBroadcastManager;
 
     /**
-     * Pod adddict notification manager.
+     * Sound cloud notification manager.
      */
     private NotificationManager mNotificationManager;
 
@@ -253,7 +251,7 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
     /**
      * Picasso target used to retrieve the track artwork.
      */
-    private Target mMediaSessionArtworkTarget;
+    private Target mArtworkTarget;
 
     /**
      * Handler running on main thread to perform change on notification ui.
@@ -264,11 +262,6 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
      * Progress used to update current track progress.
      */
     private CountDownTimer mCountDown;
-
-    /**
-     * Boolean used to if the media player is preparing.
-     */
-    private boolean mIsPreparing;
 
 
     /**
@@ -391,7 +384,7 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
         mStopServiceHandler = new StopHandler(mHandlerThread.getLooper());
 
         // instantiate target used to load track artwork.
-        mMediaSessionArtworkTarget = new MediaSessionArtworkTarget();
+        mArtworkTarget = new ArtworkTarget();
 
         // create handler on the main thread to avoid throwing error
         // with picasso when bitmap is retrieved and loaded in notification.
@@ -497,35 +490,9 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
     }
 
     @Override
-    public void onPrepared(MediaPlayer mp) {
-        // start the playback.
-        mIsPreparing = false;
-        if (!mIsPaused) {
-            Intent bufferingEnds = new Intent(PlaybackListener.ACTION_ON_BUFFERING_ENDED);
-            mLocalBroadcastManager.sendBroadcast(bufferingEnds);
-
-            mp.start();
-            Track currentTrack = mPlayerPlaylist.getCurrentTrack();
-            if (currentTrack == null) {
-                mMediaPlayer.stop();
-            } else {
-                startTimer(currentTrack.getDurationInMilli());
-            }
-        }
-    }
-
-    @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
-        // Most of the time when the media player fires an error, it can recover from it.
-        // We simply return true to mark the error as handled.
-        Log.e(TAG, "MediaPlayer error occurred : " + what + " - " + extra + " => reset mediaPlayer");
-
-        // If the media server died
-        // Re-initialize the media player.
-        if (what == MediaPlayer.MEDIA_ERROR_SERVER_DIED) {
-            initializeMediaPlayer();
-        }
-
+        Log.e(TAG, "MediaPlayer error occurred : " + what + " => reset mediaPlayer");
+        initializeMediaPlayer();
         return true;
     }
 
@@ -554,20 +521,18 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
     public void onAudioFocusChange(int focusChange) {
         switch (focusChange) {
             case AudioManager.AUDIOFOCUS_GAIN:
-                if (mIsPausedAfterAudioFocusChanged) {
+                if (mIsPaused) {
                     resume();
                 }
                 mMediaPlayer.setVolume(1.0f, 1.0f);
                 break;
             case AudioManager.AUDIOFOCUS_LOSS:
                 if (!mIsPaused) {
-                    mIsPausedAfterAudioFocusChanged = true;
                     pause();
                 }
                 break;
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
                 if (!mIsPaused) {
-                    mIsPausedAfterAudioFocusChanged = true;
                     pause();
                 }
                 break;
@@ -607,9 +572,7 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
     private void pause() {
         if (mHasAlreadyPlayed && !mIsPaused) {
             mIsPaused = true;
-            if (!mIsPreparing) {
-                mMediaPlayer.pause();
-            }
+            mMediaPlayer.pause();
 
             // broadcast event
             Intent intent = new Intent(PlaybackListener.ACTION_ON_PLAYER_PAUSED);
@@ -628,7 +591,6 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
     private void resume() {
         if (mIsPaused) {
             mIsPaused = false;
-            mIsPausedAfterAudioFocusChanged = false;
             // Try to gain the audio focus before preparing and starting the media player.
             if (mAudioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
                     == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
@@ -672,9 +634,6 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
         mMediaPlayer.setOnCompletionListener(this);
         mMediaPlayer.setOnSeekCompleteListener(this);
         mMediaPlayer.setOnInfoListener(this);
-        mMediaPlayer.setOnPreparedListener(this);
-        mMediaPlayer.setOnErrorListener(this);
-        mIsPreparing = false;
     }
 
     /**
@@ -688,17 +647,21 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
     private void playTrack(Track track) {
         pauseTimer();
         try {
-
             // acquire lock on wifi.
             mWifiLock.acquire();
 
+            // set media player to stop state in order to be able to call prepare.
+            mMediaPlayer.reset();
+
+            // set new data source
+            mMediaPlayer.setDataSource(track.getStreamUrl());
+
             mIsPaused = false;
-            mIsPausedAfterAudioFocusChanged = false;
             mHasAlreadyPlayed = true;
 
-            // UPDATE ALL VISUAL CALLBACK FIRST TO IMPROVE USER EXPERIENCE
-            updateNotification();
+            // 1 - UPDATE ALL VISUAL CALLBACK FIRST TO IMPROVE USER EXPERIENCE
 
+            updateNotification();
             // update playback state as well as meta data.
             mMediaSession.setPlaybackState(MediaSessionWrapper.PLAYBACK_STATE_PLAYING);
             // start loading of the artwork.
@@ -713,21 +676,23 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
 
             // 2 - THEN PREPARE THE TRACK STREAMING
 
-            // set media player to stop state in order to be able to call prepare.
-            mMediaPlayer.reset();
-
-            // set new data source
-            mMediaPlayer.setDataSource(track.getStreamUrl());
-
             // Try to gain the audio focus before preparing and starting the media player.
             if (mAudioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
                     == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                // prepare asynchronously the stream to be able to handle new action on the
-                // service thread such as a pause command.
-                mIsPreparing = true;
-                mMediaPlayer.prepareAsync();
-            }
+                // prepare synchronously as the service run on it's own handler thread.
+                mMediaPlayer.prepare();
+                // start the playback.
+                mMediaPlayer.start();
+                Track currentTrack = mPlayerPlaylist.getCurrentTrack();
+                if (currentTrack == null) {
+                    mMediaPlayer.stop();
+                } else {
+                    startTimer(currentTrack.getDurationInMilli());
+                }
 
+                Intent bufferingEnds = new Intent(PlaybackListener.ACTION_ON_BUFFERING_ENDED);
+                mLocalBroadcastManager.sendBroadcast(bufferingEnds);
+            }
 
         } catch (IOException e) {
             Log.e(TAG, "File referencing not exist : " + track);
@@ -763,12 +728,10 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
         mMainThreadHandler.post(new Runnable() {
             @Override
             public void run() {
-                final Picasso picasso = Picasso.with(context);
-                picasso.cancelRequest(mMediaSessionArtworkTarget);
-                picasso.load(artworkUrl)
-                        .centerCrop()
-                        .resize(MEDIA_SESSION_ARTWORK_SIZE, MEDIA_SESSION_ARTWORK_SIZE)
-                        .into(mMediaSessionArtworkTarget);
+                Picasso
+                        .with(context)
+                        .load(artworkUrl)
+                        .into(mArtworkTarget);
             }
         });
     }
@@ -843,7 +806,7 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
          *
          * @param looper must not be null.
          */
-        PlayerHandler(Looper looper) {
+        public PlayerHandler(Looper looper) {
             super(looper);
         }
 
@@ -886,7 +849,6 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
     /**
      * Callback implementation to catch media session events.
      */
-    @SuppressWarnings("PMD.CallSuperLast") // due to onPause pmd think of an Activity callback.
     private final class MediaSessionCallback implements MediaSessionWrapper.MediaSessionWrapperCallback {
 
         @Override
@@ -922,22 +884,18 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
     /**
      * Custom target used to load track artwork asynchronously.
      */
-    private class MediaSessionArtworkTarget implements Target {
+    private class ArtworkTarget implements Target {
 
         @Override
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+
             // update meta data with artwork.
+            // copy bitmap to avoid IllegalStateException "Can't parcel a recycled bitmap"
+            // from the remove control client on KitKat (IRemoteControlDisplay.java:340)
             Track track = mPlayerPlaylist.getCurrentTrack();
             if (track != null) {
-                // On KitKat and bellow, copy bitmap to avoid IllegalStateException
-                // from the remove control client on KitKat (IRemoteControlDisplay.java:340)
-                // The MediaSession seems to recycle the bitmap, so be sure to pass a copy.
-                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
-                    mMediaSession.setMetaData(mPlayerPlaylist.getCurrentTrack(),
-                            bitmap.copy(bitmap.getConfig(), false));
-                } else {
-                    mMediaSession.setMetaData(mPlayerPlaylist.getCurrentTrack(), bitmap);
-                }
+                mMediaSession.setMetaData(mPlayerPlaylist.getCurrentTrack(),
+                        bitmap.copy(bitmap.getConfig(), false));
             }
 
         }
@@ -962,7 +920,7 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
          *
          * @param looper lopper from handler thread to avoid running on main thread.
          */
-        StopHandler(Looper looper) {
+        public StopHandler(Looper looper) {
             super(looper);
         }
 
