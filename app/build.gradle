@@ -16,6 +16,8 @@ android {
         buildConfigField "String", "API_URL", "\"${getApiUrl()}\""
     }
 
+    //Uncomment this to allow signing of the app via gradle.
+    /*
     signingConfigs {
         release {
             try {
@@ -31,6 +33,7 @@ android {
         }
 
     }
+    */
 
     buildTypes {
         release {
