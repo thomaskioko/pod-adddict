@@ -1,0 +1,38 @@
+{
+  "project_info": {
+    "project_number": "346736384727",
+    "project_id": "pod-adddict"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:346736384727:android:687e430ad639ced1",
+        "android_client_info": {
+          "package_name": "com.thomaskioko.podadddict.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCyv2Un_qj_XStd4w8yBJ0mo3jHI_9pS1w"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-48531134-2"
+          }
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
