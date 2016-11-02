@@ -13,9 +13,11 @@ android {
         versionCode 1
         versionName "1.0"
 
-        buildConfigField "String", "API_URL", '"http://localhost"'
+        buildConfigField "String", "API_URL", "\"${getApiUrl()}\""
     }
 
+    //Uncomment this to allow signing of the app via gradle.
+    /*
     signingConfigs {
         release {
             try {
@@ -31,17 +33,26 @@ android {
         }
 
     }
+    */
 
     buildTypes {
         release {
             minifyEnabled false
-            signingConfig signingConfigs.release
+            //Uncomment this to allow signing of the app via gradle.
+            //signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField "String", "API_URL", '"http://my-real-api.com"'
         }
         debug {
             buildConfigField "String", "API_URL", "\"${getApiUrl()}\""
         }
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
     }
 }
 
