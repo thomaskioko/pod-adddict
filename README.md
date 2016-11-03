@@ -1,10 +1,17 @@
 Pod Adddict
 -----------------------
+
+[![Build Status](https://travis-ci.org/kioko/pod-adddict.svg?branch=master)](https://travis-ci.org/kioko/pod-adddict)
+
 PodAdddict is an open-source Android Podcast manager that fetches Podcast info from [iTunes Affiliate Resources API](https://affiliate.itunes.apple.com/resources/documentation/itunes-store-web-service-search-api/)
 
 This project was developed as the final Capstone Project for [Udacity Android Developer Nanodegree Program.](https://www.udacity.com/course/android-developer-nanodegree-by-google--nd801)
 
 ##Screenshots
+
+<p align="center">
+  <img src="https://github.com/kioko/pod-adddict/blob/master/art/Pod-Addict-Collection.png" alt="Pod-Adddict"/>
+</p>
 
 <table>
   <tr >

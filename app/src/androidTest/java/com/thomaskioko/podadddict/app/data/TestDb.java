@@ -50,7 +50,7 @@ public class TestDb extends AndroidTestCase {
         tableNameHashSet.add(PodCastContract.PodCastEpisodeEntry.TABLE_NAME);
 
         mContext.deleteDatabase(PodCastFeedDbHelper.DATABASE_NAME);
-        SQLiteDatabase db =  PodCastFeedDbHelper.getInstance(this.mContext).getWritableDatabase();
+        SQLiteDatabase db = PodCastFeedDbHelper.getInstance(this.mContext).getWritableDatabase();
         assertEquals(true, db.isOpen());
 
         //Check if we have created the tables.
