@@ -35,6 +35,11 @@ This project was developed as the final Capstone Project for [Udacity Android De
   </tr>
 </table>
 
+## Download APK
+You can download the apk from: 
+
+1. [Google Playstore](https://play.google.com/store/apps/details?id=com.thomaskioko.podadddict.app)
+2. [Github Release](https://github.com/kioko/pod-adddict/releases/download/v1.0.0/Pod-Adddict-v1.0.apk)
 
 
 ## Requirements
