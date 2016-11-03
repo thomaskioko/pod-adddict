@@ -23,6 +23,7 @@ import com.thomaskioko.podadddict.app.util.Converter;
 import com.thomaskioko.podadddict.app.util.DateUtils;
 import com.thomaskioko.podadddict.app.util.GoogleAnalyticsUtil;
 import com.thomaskioko.podadddict.musicplayerlib.model.Track;
+import com.thomaskioko.podadddict.musicplayerlib.player.PodAdddictPlayerListener;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -206,7 +207,7 @@ public class PodcastEpisodeListAdapter extends RecyclerView.Adapter<PodcastEpiso
     /**
      * Interface used to catch view events.
      */
-    public interface Listener {
+    public interface Listener extends PodAdddictPlayerListener {
 
         /**
          * Called when the user clicked on the track view.
@@ -214,6 +215,30 @@ public class PodcastEpisodeListAdapter extends RecyclerView.Adapter<PodcastEpiso
          * @param track model of the view.
          */
         void onTrackClicked(Track track);
+
+        @Override
+        void onPlayerPlay(Track track, int position);
+
+        @Override
+        void onPlayerPause();
+
+        @Override
+        void onPlayerSeekTo(int milli);
+
+        @Override
+        void onPlayerDestroyed();
+
+        @Override
+        void onBufferingStarted();
+
+        @Override
+        void onBufferingEnded();
+
+        @Override
+        void onProgressChanged(int milli);
+
+        @Override
+        void onErrorOccurred();
     }
 
     /**
