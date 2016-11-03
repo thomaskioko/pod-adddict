@@ -41,7 +41,7 @@ android {
             //Uncomment this to allow signing of the app via gradle.
             //signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "API_URL", '"http://thomaskioko.com/Projects/Mobile/Pod-Adddict/"'
+            buildConfigField "String", "API_URL", '"http://thomaskioko.com/Projects/Mobile/"'
         }
         debug {
             buildConfigField "String", "API_URL", "\"${getApiUrl()}\""
