@@ -4,9 +4,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.thomaskioko.podadddict.app.data.model.Track;
 import com.thomaskioko.podadddict.app.ui.fragments.CoverFragment;
+import com.thomaskioko.podadddict.app.ui.fragments.PlaylistFragment;
 import com.thomaskioko.podadddict.app.ui.fragments.SummaryFragment;
+import com.thomaskioko.podadddict.musicplayerlib.model.Track;
 
 /**
  * Adapter class used to load fragments.
@@ -32,7 +33,7 @@ public class NowPlayingPagerAdapter extends FragmentPagerAdapter {
     // Returns total number of pages
     @Override
     public int getCount() {
-        return 2;
+        return 3;
     }
 
     // Returns the fragment to display for that page
@@ -43,6 +44,8 @@ public class NowPlayingPagerAdapter extends FragmentPagerAdapter {
                 return CoverFragment.newInstance(mTrack);
             case 1:
                 return SummaryFragment.newInstance(mTrack);
+            case 2:
+                return new PlaylistFragment();
             default:
                 return null;
         }

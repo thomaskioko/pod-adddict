@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:background="?android:attr/selectableItemBackground"
+    android:foreground="?selectableItemBackground">
+
+    <ImageView
+        android:id="@+id/episode_artwork"
+        android:layout_width="@dimen/expanded_toolbar_height"
+        android:layout_height="@dimen/expanded_toolbar_height"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:contentDescription="@string/content_description_art_work"
+        android:scaleType="center" />
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/episode_artwork"
+        android:layout_toStartOf="@+id/handle"
+        android:maxLines="@integer/max_line"
+        android:text="@string/title_trrack_name"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <ImageView
+        android:id="@+id/handle"
+        android:layout_width="@dimen/dimen_medium_image_view"
+        android:layout_height="@dimen/dimen_medium_image_view"
+        android:scaleType="center"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_reorder_grey_500_24dp"
+        android:contentDescription="@string/conetent_description_drag_view"
+        android:layout_alignParentEnd="true" />
+</RelativeLayout>
