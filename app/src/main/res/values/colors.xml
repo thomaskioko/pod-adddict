@@ -75,4 +75,7 @@
     <color name="crouton_view_background">@color/colorAccent</color>
     <color name="crouton_view_text">@android:color/white</color>
 
+    <color name="green_success">#34bf49</color>
+    <color name="blue_play">#0099e5</color>
+
 </resources>

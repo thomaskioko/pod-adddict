@@ -9,7 +9,7 @@
         android:id="@+id/recycler_view_list"
         android:name="com.thomaskioko.podadddict.app.PodCastListFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         app:layoutManager="LinearLayoutManager"
         tools:context=".ui.PodCastListActivity"
         tools:listitem="@layout/podcast_list_content" />
