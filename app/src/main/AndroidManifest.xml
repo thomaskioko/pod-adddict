@@ -42,7 +42,8 @@
                 android:value=".ui.PodCastListActivity" />
         </activity>
 
-        <activity android:name=".ui.NowPlayingActivity">
+        <activity android:name=".ui.NowPlayingActivity"
+            android:parentActivityName=".ui.PodCastEpisodeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MUSIC_PLAYER" />
 
