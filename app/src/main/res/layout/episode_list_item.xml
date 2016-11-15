@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/listitem_threeline_verticalpadding"
             android:fontFamily="sans-serif-condensed"
-            android:textSize="@dimen/text_size_medium"
+            android:textSize="@dimen/text_size_medium_plus"
             tools:text="Jan" />
 
         <TextView
@@ -83,19 +83,5 @@
 
 
     </RelativeLayout>
-
-    <include layout="@layout/vertical_list_divider" />
-
-    <ImageView
-        android:id="@+id/btnPlay"
-        android:layout_width="@dimen/listview_secondary_button_width"
-        android:layout_height="@dimen/listview_secondary_button_width"
-        android:clickable="false"
-        android:focusable="false"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="5dp"
-        android:focusableInTouchMode="false"
-        android:src="@drawable/ic_play_arrow_black_24dp"
-        android:contentDescription="@string/content_description_play_episode" />
 
 </LinearLayout>
