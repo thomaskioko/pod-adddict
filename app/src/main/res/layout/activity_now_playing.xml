@@ -1,4 +1,4 @@
-<com.thomaskioko.podadddict.app.ui.views.SlidingRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_view"
@@ -18,7 +18,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/mainControllerContainer"
-        android:layout_below="@+id/pager"
         android:background="@null">
 
         <android.support.design.widget.AppBarLayout
@@ -59,58 +58,6 @@
     </RelativeLayout>
 
     <!-- Player controls layout -->
-    <RelativeLayout
-        android:id="@+id/mainControllerContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/seekBarContainer"
-        android:background="@color/colorPrimary"
-        android:padding="5dp">
-
-        <ImageView
-            android:id="@+id/previous"
-            android:layout_width="@dimen/dimen_small_image_view"
-            android:layout_height="@dimen/dimen_small_image_view"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="85dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:contentDescription="@string/content_description_previous_episode"
-            android:src="@drawable/ic_skip_previous_white_48dp" />
-
-        <ImageView
-            android:id="@+id/controller"
-            android:layout_width="@dimen/dimen_medium_image_view"
-            android:layout_height="@dimen/dimen_medium_image_view"
-            android:layout_centerInParent="true"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:contentDescription="@string/content_description_play_or_pause_music" />
-
-        <com.wang.avi.AVLoadingIndicatorView
-            android:id="@+id/bufferingIndicator"
-            android:layout_width="@dimen/dimen_small_image_view"
-            android:layout_height="@dimen/dimen_small_image_view"
-            android:layout_centerInParent="true"
-            android:background="@color/white"
-            android:clickable="true"
-            android:visibility="invisible"
-            app:indicator="BallSpinFadeLoader"
-            app:indicator_color="@color/white" />
-
-        <ImageView
-            android:id="@+id/next"
-            android:layout_width="@dimen/dimen_small_image_view"
-            android:layout_height="@dimen/dimen_small_image_view"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="85dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:src="@drawable/ic_skip_next_white_48dp" />
-
-    </RelativeLayout>
 
     <!-- Episode Time layout -->
     <RelativeLayout
@@ -122,7 +69,7 @@
         android:padding="7dp">
 
         <TextView
-            android:id="@+id/currTime"
+            android:id="@+id/playback_view_current_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -131,19 +78,8 @@
             android:text="@string/text_time"
             android:textColor="#FFF" />
 
-        <SeekBar
-            android:id="@+id/progressBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
-            android:layout_toEndOf="@+id/currTime"
-            android:layout_toStartOf="@+id/totalTime"
-            android:thumb="@drawable/custom_progress_bar_thumb" />
-
         <TextView
-            android:id="@+id/totalTime"
+            android:id="@+id/playback_view_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -151,6 +87,17 @@
             android:layout_marginEnd="10dp"
             android:text="@string/text_time"
             android:textColor="#FFF" />
+
+        <SeekBar
+            android:id="@+id/playback_view_seekbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:thumb="@drawable/custom_progress_bar_thumb"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/playback_view_duration"
+            android:layout_toRightOf="@+id/playback_view_current_time"/>
 
     </RelativeLayout>
 
@@ -166,6 +113,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:orientation="horizontal"
+            android:visibility="gone"
             android:padding="4dp">
 
             <View
@@ -222,5 +170,85 @@
 
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/mainControllerContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:padding="5dp"
+        android:layout_above="@+id/seekBarContainer"
+        android:layout_alignParentStart="true">
 
-</com.thomaskioko.podadddict.app.ui.views.SlidingRelativeLayout>
+        <ImageView
+            android:id="@+id/playback_view_previous"
+            android:layout_width="@dimen/dimen_small_image_view"
+            android:layout_height="@dimen/dimen_small_image_view"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="85dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="@string/content_description_previous_episode"
+            android:src="@drawable/ic_skip_previous_white_48dp" />
+
+        <ImageView
+            android:id="@+id/controller"
+            android:layout_width="@dimen/dimen_medium_image_view"
+            android:layout_height="@dimen/dimen_medium_image_view"
+            android:layout_centerInParent="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="@string/content_description_play_or_pause_music" />
+
+        <ImageView
+            android:id="@+id/playback_view_toggle_play"
+            android:layout_width="48dp"
+            android:layout_height="65dp"
+            android:layout_gravity="end|bottom"
+            android:layout_marginRight="48dp"
+            android:layout_marginTop="5dp"
+            android:background="?attr/selectableItemBackground"
+            android:contentDescription="@string/content_description_play_or_pause_music"
+            android:padding="@dimen/default_padding"
+            android:scaleType="centerCrop"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_play_white"
+            android:visibility="invisible" />
+
+        <com.thomaskioko.podadddict.app.ui.views.ProgressBarCompat
+            android:id="@+id/playback_view_loader"
+            android:layout_width="48dp"
+            android:layout_height="65dp"
+            android:layout_gravity="end|bottom"
+            android:layout_marginRight="48dp"
+            android:layout_marginTop="5dp"
+            android:indeterminate="true"
+            android:layout_centerInParent="true"
+            android:indeterminateTint="@color/progress_color" />
+
+        <com.wang.avi.AVLoadingIndicatorView
+            android:id="@+id/bufferingIndicator"
+            android:layout_width="@dimen/dimen_small_image_view"
+            android:layout_height="@dimen/dimen_small_image_view"
+            android:layout_centerInParent="true"
+            android:background="@color/white"
+            android:clickable="true"
+            android:visibility="invisible"
+            app:indicator="BallSpinFadeLoader"
+            app:indicator_color="@color/white" />
+
+        <ImageView
+            android:id="@+id/playback_view_next"
+            android:layout_width="@dimen/dimen_small_image_view"
+            android:layout_height="@dimen/dimen_small_image_view"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="85dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:src="@drawable/ic_skip_next_white_48dp" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>
