@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.thomaskioko.podadddict.app.R;
-import com.thomaskioko.podadddict.app.data.model.Track;
+import com.thomaskioko.podadddict.musicplayerlib.model.Track;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -27,6 +27,10 @@ public class SummaryFragment extends Fragment {
     TextView mPodcastArtistName;
     @Bind(R.id.description_date)
     TextView mPodcastPublishDate;
+    @Bind(R.id.podcast_summary)
+    TextView mPodcastSummary;
+
+    private static Track mTrack;
 
     /**
      * Required empty public constructor
@@ -39,6 +43,7 @@ public class SummaryFragment extends Fragment {
      * @return {@link SummaryFragment} instance
      */
     public static SummaryFragment newInstance(Track track) {
+        mTrack = track;
         return new SummaryFragment();
     }
 
@@ -48,6 +53,15 @@ public class SummaryFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_summary, container, false);
         ButterKnife.bind(this, rootView);
+
+        if(mTrack != null){
+            mPodcastArtistName.setText(mTrack.getArtist());
+            mPodcastTitle.setText(mTrack.getTitle());
+            mPodcastSummary.setText(mTrack.getDescription());
+            mPodcastPublishDate.setText("");
+        }
+
+
         return rootView;
     }
 
