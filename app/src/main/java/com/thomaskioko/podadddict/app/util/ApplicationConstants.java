@@ -10,7 +10,7 @@ public class ApplicationConstants {
      * Set to true to Enable Debugging in the API false to disable. This should be false when
      * releasing the app.
      */
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = BuildConfig.DEBUG;
     /**
      * Base iTunes API Endpoint.
      */
@@ -19,7 +19,7 @@ public class ApplicationConstants {
      * Server Url. The Ip Address is being retrieved from the BuildConfig using IpGetter. For more
      * info {@see <a href="https://github.com/brunodles/IpGetter">}
      */
-    public static final String LOCAL_SERVER_END_POINT = BuildConfig.API_URL;
+    public static final String LOCAL_SERVER_END_POINT = "http://thomaskioko.com/Projects/Mobile/";
     /**
      * Connection timeout duration
      */
