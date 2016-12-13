@@ -20,21 +20,6 @@
         android:contentDescription="@string/content_description_art_work"
         android:scaleType="centerCrop" />
 
-    <TextView
-        android:id="@+id/playback_view_track"
-        android:layout_width="match_parent"
-        android:layout_height="65dp"
-        android:layout_gravity="bottom"
-        android:layout_marginEnd="144dp"
-        android:layout_marginTop="5dp"
-        android:ellipsize="end"
-        android:gravity="start|center_vertical"
-        android:padding="@dimen/activity_vertical_margin"
-        android:singleLine="true"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        tools:text="Story writing" />
-
     <ImageView
         android:id="@+id/playback_view_previous"
         android:layout_width="48dp"
@@ -116,5 +101,20 @@
         android:textColor="@color/white"
         android:textStyle="italic"
         tools:text="03:48" />
+
+    <TextView
+        android:id="@+id/playback_view_track"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_gravity="bottom"
+        android:layout_marginEnd="144dp"
+        android:layout_marginTop="5dp"
+        android:ellipsize="end"
+        android:gravity="start|center_vertical"
+        android:padding="@dimen/activity_vertical_margin"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        tools:text="Story writing" />
 
 </FrameLayout>
