@@ -39,6 +39,7 @@ import com.thomaskioko.podadddict.app.data.tasks.DatabaseAsyncTask;
 import com.thomaskioko.podadddict.app.data.tasks.InsertEpisodesAsyncTask;
 import com.thomaskioko.podadddict.app.interfaces.DbTaskCallback;
 import com.thomaskioko.podadddict.app.interfaces.InsertEpisodesCallback;
+import com.thomaskioko.podadddict.app.interfaces.TrackListener;
 import com.thomaskioko.podadddict.app.ui.adapter.PodcastEpisodeListAdapter;
 import com.thomaskioko.podadddict.app.util.ApplicationConstants;
 import com.thomaskioko.podadddict.app.util.Converter;
@@ -80,7 +81,7 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
     int slideDuration;
     private static Uri mUri;
 
-    static PodcastEpisodeListAdapter.Listener mRetrieveTracksListener;
+    static TrackListener mRetrieveTracksListener;
     private DbTaskCallback mDbTaskCallback = this;
     private InsertEpisodesCallback mInsertEpisodesCallback = this;
     private List<Item> itemList;
@@ -109,8 +110,7 @@ public class PodCastEpisodesFragment extends Fragment implements LoaderManager.L
      * @param uri
      * @return
      */
-    public static PodCastEpisodesFragment newInstance(PodcastEpisodeListAdapter.Listener listener,
-                                                      Uri uri) {
+    public static PodCastEpisodesFragment newInstance(TrackListener listener, Uri uri) {
 
         mRetrieveTracksListener = listener;
         mUri = uri;

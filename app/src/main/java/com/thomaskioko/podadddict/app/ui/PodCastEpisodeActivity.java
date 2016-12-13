@@ -16,11 +16,10 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.thomaskioko.podadddict.app.PodAddictApplication;
 import com.thomaskioko.podadddict.app.R;
 import com.thomaskioko.podadddict.app.interfaces.Listener;
+import com.thomaskioko.podadddict.app.interfaces.TrackListener;
 import com.thomaskioko.podadddict.app.service.PlayerWidgetService;
-import com.thomaskioko.podadddict.app.ui.adapter.PodcastEpisodeListAdapter;
 import com.thomaskioko.podadddict.app.ui.fragments.PodCastEpisodesFragment;
 import com.thomaskioko.podadddict.app.ui.views.CroutonView;
 import com.thomaskioko.podadddict.app.ui.views.ProgressBarCompat;
@@ -50,8 +49,7 @@ import static android.view.View.VISIBLE;
  * @author kioko
  */
 public class PodCastEpisodeActivity extends AppCompatActivity implements
-        PodAdddictPlayerListener, SeekBar.OnSeekBarChangeListener, Listener,
-        PodcastEpisodeListAdapter.Listener, PodAdddictPlaylistListener{
+        PodAdddictPlayerListener, SeekBar.OnSeekBarChangeListener, Listener, PodAdddictPlaylistListener {
 
     //Bind Views using {@link ButterKnife}
     @Bind(R.id.detail_relative_latout)
@@ -89,7 +87,7 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
     private boolean isFullPlayerShowing;
     private boolean mSeeking;
     private static PodAdddictPlayer mPodAdddictPlayer;
-    PodcastEpisodeListAdapter.Listener mRetrieveTracksListener = this;
+    private TrackListener mRetrieveTracksListener;
     public static final String LOG_TAG = PodCastEpisodeActivity.class.getSimpleName();
 
     PodAdddictPlayerListener mAdddictPlayerListener;
@@ -110,8 +108,29 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
 
 
         //Initialize the player
-        mPodAdddictPlayer = PodAddictApplication.getPodAdddictPlayer();
-        mAdddictPlayerListener = this;
+        mPodAdddictPlayer = new PodAdddictPlayer.Builder()
+                .from(this)
+                .notificationActivity(NowPlayingActivity.class)
+                .notificationIcon(R.drawable.ic_notification)
+                .build();
+
+        mRetrieveTracksListener = new TrackListener() {
+            @Override
+            public void onTrackClicked(Track track) {
+                if (mPodAdddictPlayer.getTracks().contains(track)) {
+                    mPodAdddictPlayer.play(track);
+                } else {
+                    boolean playNow = !mPodAdddictPlayer.isPlaying();
+
+                    mPodAdddictPlayer.addTrack(track, playNow);
+
+                    if (!playNow) {
+                        toast(R.string.toast_track_added);
+                    }
+                }
+            }
+
+        };
 
 
         mPlaylistTracks = new ArrayList<>();
@@ -126,8 +145,6 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
 
         // synchronize the player view with the current player (loaded track, playing state, etc.)
         synchronize(mPodAdddictPlayer);
-        // synchronize the player view with the current player (loaded track, playing state, etc.)
-
 
 
         // savedInstanceState is non-null when there is fragment state
@@ -164,17 +181,7 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
     void onClickViews(View views) {
         switch (views.getId()) {
             case R.id.detail_relative_latout:
-                if (isFullPlayerShowing) {
-                    isFullPlayerShowing = false;
-                    mFullPlayerLayout.setVisibility(View.GONE);
-                } else {
-                    isFullPlayerShowing = true;
-                    mFullPlayerLayout.setVisibility(VISIBLE);
-                }
-                break;
-            case R.id.controller_close:
-                mFullPlayerLayout.setVisibility(View.GONE);
-                isFullPlayerShowing = false;
+                startActivity(new Intent(getApplicationContext(), NowPlayingActivity.class));
                 break;
             default:
                 break;
@@ -200,17 +207,17 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        mPodAdddictPlayer.registerPlayerListener(this);
-        mPodAdddictPlayer.registerPlayerListener(mAdddictPlayerListener);
-        mPodAdddictPlayer.registerPlayerListener(mRetrieveTracksListener);
+//        mPodAdddictPlayer.registerPlayerListener(this);
+//        mPodAdddictPlayer.registerPlayerListener(mAdddictPlayerListener);
+//        mPodAdddictPlayer.registerPlayerListener(mRetrieveTracksListener);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mPodAdddictPlayer.unregisterPlayerListener(this);
-        mPodAdddictPlayer.unregisterPlayerListener(mAdddictPlayerListener);
-        mPodAdddictPlayer.unregisterPlayerListener(mRetrieveTracksListener);
+//        mPodAdddictPlayer.unregisterPlayerListener(this);
+//        mPodAdddictPlayer.unregisterPlayerListener(mAdddictPlayerListener);
+//        mPodAdddictPlayer.unregisterPlayerListener(mRetrieveTracksListener);
     }
 
     @Override
@@ -438,24 +445,6 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
     @Override
     public void onSeekToRequested(int milli) {
         mPodAdddictPlayer.seekTo(milli);
-    }
-
-    @Override
-    public void onTrackClicked(Track track) {
-        mPlaylistTracks.add(track);
-        mPodAdddictPlayer.addTracks(mPlaylistTracks);
-
-        if (mPodAdddictPlayer.getTracks().contains(track)) {
-            mPodAdddictPlayer.play(track);
-        } else {
-            boolean playNow = !mPodAdddictPlayer.isPlaying();
-
-            mPodAdddictPlayer.addTrack(track, playNow);
-
-            if (!playNow) {
-                toast(R.string.toast_track_added);
-            }
-        }
     }
 
     /**
