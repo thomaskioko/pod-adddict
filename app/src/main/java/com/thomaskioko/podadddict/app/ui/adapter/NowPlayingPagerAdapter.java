@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.thomaskioko.podadddict.app.interfaces.TrackListener;
 import com.thomaskioko.podadddict.app.ui.fragments.CoverFragment;
 import com.thomaskioko.podadddict.app.ui.fragments.PlaylistFragment;
 import com.thomaskioko.podadddict.app.ui.fragments.SummaryFragment;
@@ -18,16 +19,20 @@ import com.thomaskioko.podadddict.musicplayerlib.model.Track;
 public class NowPlayingPagerAdapter extends FragmentPagerAdapter {
 
     private Track mTrack;
+    private static TrackListener mRetrieveTracksListener;
 
     /**
      * Constructor
      *
      * @param fragmentManager {@link FragmentManager}
      * @param track           {@link Track}
+     * @param listener        Player listener instance
      */
-    public NowPlayingPagerAdapter(FragmentManager fragmentManager, Track track) {
+    public NowPlayingPagerAdapter(FragmentManager fragmentManager, Track track,
+                                  TrackListener listener) {
         super(fragmentManager);
         mTrack = track;
+        mRetrieveTracksListener = listener;
     }
 
     // Returns total number of pages
@@ -45,7 +50,7 @@ public class NowPlayingPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 return SummaryFragment.newInstance(mTrack);
             case 2:
-                return new PlaylistFragment();
+                return PlaylistFragment.newInstance(mRetrieveTracksListener);
             default:
                 return null;
         }

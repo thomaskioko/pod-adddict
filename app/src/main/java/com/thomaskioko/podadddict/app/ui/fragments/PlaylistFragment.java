@@ -13,10 +13,11 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.thomaskioko.podadddict.app.PodAddictApplication;
 import com.thomaskioko.podadddict.app.R;
 import com.thomaskioko.podadddict.app.interfaces.OnStartDragListener;
 import com.thomaskioko.podadddict.app.interfaces.SimpleItemTouchHelperCallback;
+import com.thomaskioko.podadddict.app.interfaces.TrackListener;
+import com.thomaskioko.podadddict.app.ui.NowPlayingActivity;
 import com.thomaskioko.podadddict.app.ui.adapter.PlaylistAdapter;
 import com.thomaskioko.podadddict.musicplayerlib.model.Track;
 import com.thomaskioko.podadddict.musicplayerlib.player.PodAdddictPlayer;
@@ -44,6 +45,7 @@ public class PlaylistFragment extends Fragment implements OnStartDragListener {
 
     private ItemTouchHelper mItemTouchHelper;
     private ArrayList<Track> mPlaylistTracks;
+    static TrackListener mRetrieveTracksListener;
 
     /**
      * Required empty public constructor
@@ -51,12 +53,22 @@ public class PlaylistFragment extends Fragment implements OnStartDragListener {
     public PlaylistFragment() {
     }
 
+    /**
+     * @param listener {@link TrackListener } instance
+     * @return Fragment instance
+     */
+    public static PlaylistFragment newInstance(TrackListener listener) {
+
+        mRetrieveTracksListener = listener;
+
+        return new PlaylistFragment();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView =  inflater.inflate(R.layout.fragment_playlist, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_playlist, container, false);
         ButterKnife.bind(this, rootView);
 
         return rootView;
@@ -66,7 +78,11 @@ public class PlaylistFragment extends Fragment implements OnStartDragListener {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        PodAdddictPlayer podAdddictPlayer = PodAddictApplication.getPodAdddictPlayer();
+        PodAdddictPlayer podAdddictPlayer = new PodAdddictPlayer.Builder()
+                .from(getActivity())
+                .notificationActivity(NowPlayingActivity.class)
+                .notificationIcon(R.drawable.ic_notification)
+                .build();
 
         mPlaylistTracks = new ArrayList<>();
 
@@ -76,7 +92,7 @@ public class PlaylistFragment extends Fragment implements OnStartDragListener {
             mPlaylistTracks.addAll(currentsTracks);
         }
 
-        PlaylistAdapter adapter = new PlaylistAdapter(getActivity(), this);
+        PlaylistAdapter adapter = new PlaylistAdapter(getActivity(), this, mPlaylistTracks, mRetrieveTracksListener);
 
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(adapter);
