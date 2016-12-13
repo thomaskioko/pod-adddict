@@ -1,7 +1,6 @@
 package com.thomaskioko.podadddict.app.ui.adapter;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.net.Uri;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v4.app.FragmentActivity;
@@ -9,21 +8,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.thomaskioko.podadddict.app.R;
 import com.thomaskioko.podadddict.app.api.model.Item;
+import com.thomaskioko.podadddict.app.interfaces.TrackListener;
 import com.thomaskioko.podadddict.app.ui.fragments.PodCastEpisodesFragment;
 import com.thomaskioko.podadddict.app.ui.fragments.PodcastEpisodeBottomSheetFragment;
 import com.thomaskioko.podadddict.app.ui.util.RecyclerItemChoiceManager;
-import com.thomaskioko.podadddict.app.util.ApplicationConstants;
-import com.thomaskioko.podadddict.app.util.Converter;
 import com.thomaskioko.podadddict.app.util.DateUtils;
 import com.thomaskioko.podadddict.app.util.GoogleAnalyticsUtil;
-import com.thomaskioko.podadddict.musicplayerlib.model.Track;
-import com.thomaskioko.podadddict.musicplayerlib.player.PodAdddictPlayerListener;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -50,19 +45,20 @@ public class PodcastEpisodeListAdapter extends RecyclerView.Adapter<PodcastEpiso
     private final RecyclerItemChoiceManager mRecyclerItemChoiceManager;
     final private PodCastEpisodeAdapterOnClickHandler mClickHandler;
     private PodCastEpisodesFragment mPodCastEpisodesFragment;
-    private Listener mListener;
+    private TrackListener mListener;
     private static final String LOG_TAG = PodcastEpisodeListAdapter.class.getSimpleName();
 
     /**
      * Constructor
-     *  @param context                 Context in which the class is called.
-     * @param mRetrieveTracksListener
+     *
+     * @param context                 Context in which the class is called.
+     * @param mRetrieveTracksListener {@link TrackListener} Interface instance.
      * @param itemList                List of podcast feeds
      * @param uri                     {@link Uri} Podcast Query Uri
      * @param podCastEpisodesFragment
      * @param clickHandler            Interface to handle onClick actions
      */
-    public PodcastEpisodeListAdapter(Context context, Listener mRetrieveTracksListener, List<Item> itemList, Uri uri,
+    public PodcastEpisodeListAdapter(Context context, TrackListener mRetrieveTracksListener, List<Item> itemList, Uri uri,
                                      PodCastEpisodesFragment podCastEpisodesFragment,
                                      PodCastEpisodeAdapterOnClickHandler clickHandler) {
         mContext = context;
@@ -95,8 +91,6 @@ public class PodcastEpisodeListAdapter extends RecyclerView.Adapter<PodcastEpiso
         TextView mTvMonth;
         @Bind(R.id.txtDate)
         TextView mTvDate;
-        @Bind(R.id.btnPlay)
-        ImageView mPlayImageButton;
         @Bind(R.id.episodeRelativeLayout)
         RelativeLayout mEpisodeRl;
         public View view;
@@ -122,8 +116,6 @@ public class PodcastEpisodeListAdapter extends RecyclerView.Adapter<PodcastEpiso
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final Item item = mItemList.get(position);
-
-        setListener(mListener);
 
         String dateStr = item.getPubDate();
         DateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss", Locale.getDefault());
@@ -153,33 +145,6 @@ public class PodcastEpisodeListAdapter extends RecyclerView.Adapter<PodcastEpiso
         }
 
         holder.mTvPodcastTitle.setText(item.getTitle());
-        holder.mPlayImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO:: Change Icon based on action. If playing, equalizer icon, pause pause-icon etc
-                String imageUrl = "";
-                Cursor cursor = mContext.getContentResolver().query(mUri, null, null, null, null);
-                if (cursor != null) {
-                    while (cursor.moveToNext()) {
-                        imageUrl = cursor.getString(ApplicationConstants.COLUMN_SUBSCRIBED_PODCAST_FEED_IMAGE_URL);
-                    }
-
-                }
-
-                Track track = new Track();
-                track.setTitle(item.getTitle());
-                track.setStreamUrl(item.getEnclosure().getUrl());
-                track.setArtist(item.getItunesAuthor());
-                track.setArtworkUrl(imageUrl);
-                track.setDurationInMilli(Converter.getMilliSeconds(item.getItunesDuration()));
-
-
-                if (mListener != null) {
-                    mListener.onTrackClicked(track);
-                }
-            }
-        });
-
         holder.mEpisodeRl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -195,58 +160,26 @@ public class PodcastEpisodeListAdapter extends RecyclerView.Adapter<PodcastEpiso
     }
 
     /**
-     * This method displays a bottom sheet containting podcast episode details.
+     * This method displays a bottom sheet containing podcast episode details.
      */
     private void displayBottomSheet(Item item) {
 
-        BottomSheetDialogFragment bottomSheetDialogFragment = PodcastEpisodeBottomSheetFragment.newInstance(item, mUri);
-        bottomSheetDialogFragment.show(((FragmentActivity) mContext).getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
+        BottomSheetDialogFragment bottomSheetDialogFragment = PodcastEpisodeBottomSheetFragment
+                .newInstance(item, mUri, mListener);
+        bottomSheetDialogFragment.show(
+                ((FragmentActivity) mContext).getSupportFragmentManager(),
+                bottomSheetDialogFragment.getTag()
+        );
 
     }
 
-    /**
-     * Interface used to catch view events.
-     */
-    public interface Listener extends PodAdddictPlayerListener {
-
-        /**
-         * Called when the user clicked on the track view.
-         *
-         * @param track model of the view.
-         */
-        void onTrackClicked(Track track);
-
-        @Override
-        void onPlayerPlay(Track track, int position);
-
-        @Override
-        void onPlayerPause();
-
-        @Override
-        void onPlayerSeekTo(int milli);
-
-        @Override
-        void onPlayerDestroyed();
-
-        @Override
-        void onBufferingStarted();
-
-        @Override
-        void onBufferingEnded();
-
-        @Override
-        void onProgressChanged(int milli);
-
-        @Override
-        void onErrorOccurred();
-    }
 
     /**
      * Set a listener to catch the view events.
      *
      * @param listener listener to register.
      */
-    private void setListener(Listener listener) {
+    private void setListener(TrackListener listener) {
         mListener = listener;
     }
 
