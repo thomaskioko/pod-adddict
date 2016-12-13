@@ -1,6 +1,7 @@
 package com.thomaskioko.podadddict.app;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.facebook.stetho.Stetho;
 import com.google.android.gms.analytics.GoogleAnalytics;
@@ -20,6 +21,7 @@ public class PodAddictApplication extends Application {
     private static ApiClient mApiClientInstance = new ApiClient();
     private static PodAdddictPlayer mPodAdddictPlayer;
     private static GoogleAnalytics mGoogleAnalytics;
+    private static Context mContext;
 
     @Override
     public void onCreate() {
@@ -30,12 +32,14 @@ public class PodAddictApplication extends Application {
             Stetho.initializeWithDefaults(this);
         }
 
-        //Initialise Player.
+        mContext = this;
+
         mPodAdddictPlayer = new PodAdddictPlayer.Builder()
-                .from(this)
+                .from(mContext)
                 .notificationActivity(NowPlayingActivity.class)
                 .notificationIcon(R.drawable.ic_notification)
                 .build();
+
 
         mGoogleAnalytics = GoogleAnalytics.getInstance(this);
 
@@ -57,7 +61,17 @@ public class PodAddictApplication extends Application {
      * @return {@link PodAdddictPlayer} instance
      */
     public static PodAdddictPlayer getPodAdddictPlayer() {
-        return mPodAdddictPlayer;
+
+        if (mPodAdddictPlayer == null) {
+
+            return mPodAdddictPlayer = new PodAdddictPlayer.Builder()
+                    .from(mContext)
+                    .notificationActivity(NowPlayingActivity.class)
+                    .notificationIcon(R.drawable.ic_notification)
+                    .build();
+        } else {
+            return mPodAdddictPlayer;
+        }
     }
 
     /**
