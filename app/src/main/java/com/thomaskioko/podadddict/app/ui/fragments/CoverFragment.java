@@ -8,8 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Picasso;
 import com.thomaskioko.podadddict.app.R;
-import com.thomaskioko.podadddict.app.data.model.Track;
+import com.thomaskioko.podadddict.musicplayerlib.model.Track;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -25,6 +26,8 @@ public class CoverFragment extends Fragment {
     @Bind(R.id.player_album_art)
     ImageView mPlayerArtWork;
 
+    private static Track mTrack;
+
     public CoverFragment() {
         // Required empty public constructor
     }
@@ -36,6 +39,7 @@ public class CoverFragment extends Fragment {
      * @return {@link CoverFragment} instance
      */
     public static CoverFragment newInstance(Track track) {
+        mTrack = track;
         return new CoverFragment();
     }
 
@@ -46,6 +50,13 @@ public class CoverFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_cover, container, false);
         ButterKnife.bind(this, rootView);
+
+        Picasso.with(getActivity())
+                .load(mTrack.getArtworkUrl())
+                .fit()
+                .centerCrop()
+                .placeholder(R.color.placeholder)
+                .into(mPlayerArtWork);
 
         return rootView;
     }
