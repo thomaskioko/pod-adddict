@@ -106,21 +106,65 @@
 
         </LinearLayout>
 
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fabDownload"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:clickable="true"
-            android:src="@drawable/ic_file_download_white_18dp"
-            app:borderWidth="0dp"
-            app:elevation="4dp"
-            app:fabSize="normal"
             app:layout_anchor="@id/app_bar_layout"
+            android:gravity="end"
             app:layout_anchorGravity="bottom|right|end"
-            app:pressedTranslationZ="12dp"
-            android:contentDescription="@string/content_description_download_podcast"
-            app:rippleColor="@color/white" />
+            android:orientation="horizontal"
+            android:layout_marginEnd="10dp">
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fabDownload"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:src="@drawable/ic_file_download_white_18dp"
+                app:borderWidth="0dp"
+                app:elevation="4dp"
+                app:fabSize="normal"
+                app:layout_anchor="@id/app_bar_layout"
+                app:layout_anchorGravity="bottom|right|end"
+                app:pressedTranslationZ="12dp"
+                android:contentDescription="@string/content_description_download_podcast"
+                app:rippleColor="@color/white" />
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fabPlaylist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:src="@drawable/ic_playlist_add_white_24dp"
+                app:borderWidth="0dp"
+                app:elevation="4dp"
+                app:fabSize="normal"
+                app:layout_anchor="@id/app_bar_layout"
+                app:layout_anchorGravity="bottom|right|end"
+                app:pressedTranslationZ="12dp"
+                android:contentDescription="@string/content_description_download_podcast"
+                app:rippleColor="@color/white" />
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fabPlay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:src="@drawable/ic_play_arrow_white"
+                app:borderWidth="0dp"
+                app:elevation="4dp"
+                app:fabSize="normal"
+                app:layout_anchor="@id/app_bar_layout"
+                app:layout_anchorGravity="bottom|right|end"
+                app:pressedTranslationZ="12dp"
+                android:contentDescription="@string/content_description_download_podcast"
+                app:rippleColor="@color/white" />
+
+
+
+        </LinearLayout>
+
+
     </android.support.design.widget.CoordinatorLayout>
 
 </LinearLayout>
