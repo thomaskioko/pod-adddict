@@ -1,6 +1,7 @@
 package com.thomaskioko.podadddict.app.ui.fragments;
 
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -24,7 +25,18 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.github.clans.fab.FloatingActionButton;
 import com.thomaskioko.podadddict.app.R;
 import com.thomaskioko.podadddict.app.api.model.Item;
+import com.thomaskioko.podadddict.app.interfaces.Listener;
+import com.thomaskioko.podadddict.app.interfaces.TrackListener;
+import com.thomaskioko.podadddict.app.service.PlayerWidgetService;
+import com.thomaskioko.podadddict.app.ui.NowPlayingActivity;
 import com.thomaskioko.podadddict.app.util.ApplicationConstants;
+import com.thomaskioko.podadddict.app.util.Converter;
+import com.thomaskioko.podadddict.musicplayerlib.model.Track;
+import com.thomaskioko.podadddict.musicplayerlib.player.PodAdddictPlayer;
+import com.thomaskioko.podadddict.musicplayerlib.player.PodAdddictPlayerListener;
+import com.thomaskioko.podadddict.musicplayerlib.player.PodAdddictPlaylistListener;
+
+import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -35,7 +47,9 @@ import butterknife.OnClick;
  *
  * @author kioko
  */
-public class PodcastEpisodeBottomSheetFragment extends BottomSheetDialogFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class PodcastEpisodeBottomSheetFragment extends BottomSheetDialogFragment implements
+        LoaderManager.LoaderCallbacks<Cursor>, PodAdddictPlayerListener, Listener,
+        TrackListener, PodAdddictPlaylistListener {
 
     /**
      * BindView
@@ -54,8 +68,17 @@ public class PodcastEpisodeBottomSheetFragment extends BottomSheetDialogFragment
     TextView mTvDescriptionTitle;
     @Bind(R.id.fabDownload)
     FloatingActionButton mFloatingActionButton;
+    @Bind(R.id.fabPlay)
+    FloatingActionButton mFabPlay;
+    @Bind(R.id.fabPlaylist)
+    FloatingActionButton mFabPlaylist;
 
+    private Track track;
+    private ArrayList<Track> mPlaylistTracks = new ArrayList<>();
+    private PodAdddictPlayer mPodAddictPlayer;
+    PodAdddictPlayerListener mAdddictPlayerListener;
     private static Uri mUri;
+    static TrackListener mListener;
     private static Item mItem;
     private static final int LOADER_ID = 100;
     private static final String LOG_TAG = PodcastEpisodeBottomSheetFragment.class.getSimpleName();
@@ -63,13 +86,15 @@ public class PodcastEpisodeBottomSheetFragment extends BottomSheetDialogFragment
     /**
      * Constructor
      *
-     * @param item Feed Item
-     * @param uri  UrI with selected item.
+     * @param item     Feed Item
+     * @param uri      UrI with selected item.
+     * @param listener {@link TrackListener} interface
      * @return Fragment instance
      */
-    public static PodcastEpisodeBottomSheetFragment newInstance(Item item, Uri uri) {
+    public static PodcastEpisodeBottomSheetFragment newInstance(Item item, Uri uri, TrackListener listener) {
         mUri = uri;
         mItem = item;
+        mListener = listener;
         return new PodcastEpisodeBottomSheetFragment();
     }
 
@@ -77,6 +102,40 @@ public class PodcastEpisodeBottomSheetFragment extends BottomSheetDialogFragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        mPodAddictPlayer = new PodAdddictPlayer.Builder()
+                .from(getActivity())
+                .notificationActivity(NowPlayingActivity.class)
+                .notificationIcon(R.drawable.ic_notification)
+                .build();
+
+        mListener = this;
+        mAdddictPlayerListener = this;
+
+        // check if tracks are already loaded into the player.
+        ArrayList<Track> currentsTracks = mPodAddictPlayer.getTracks();
+        if (currentsTracks != null) {
+            mPlaylistTracks.addAll(currentsTracks);
+        }
+
+        if (mPodAddictPlayer.isPlaying()) {
+            mFabPlay.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause_white_24dp));
+        }
+
+        String imageUrl = "";
+        Cursor cursor = getActivity().getContentResolver().query(mUri, null, null, null, null);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                imageUrl = cursor.getString(ApplicationConstants.COLUMN_SUBSCRIBED_PODCAST_FEED_IMAGE_URL);
+            }
+        }
+
+        track = new Track();
+        track.setTitle(mItem.getTitle());
+        track.setStreamUrl(mItem.getEnclosure().getUrl());
+        track.setArtist(mItem.getItunesAuthor());
+        track.setArtworkUrl(imageUrl);
+        track.setDurationInMilli(Converter.getMilliSeconds(mItem.getItunesDuration()));
+        track.setDescription(mItem.getItunesSummary());
 
     }
 
@@ -92,13 +151,40 @@ public class PodcastEpisodeBottomSheetFragment extends BottomSheetDialogFragment
         return view;
     }
 
-    @OnClick({R.id.fabDownload})
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mPodAddictPlayer.unregisterPlayerListener(this);
+        mPodAddictPlayer.unregisterPlayerListener(mAdddictPlayerListener);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mPodAddictPlayer.destroy();
+    }
+
+    @OnClick({R.id.fabDownload, R.id.fabPlaylist, R.id.fabPlay})
     void onButtonSubscribeClicked(View view) {
         switch (view.getId()) {
+
             case R.id.fabDownload:
                 //TODO:: Download the Episode or change this to favorite.
                 break;
+
+            case R.id.fabPlay:
+                mListener.onTrackClicked(track);
+
+                dismiss();
+                break;
             default:
+            case R.id.fabPlaylist:
+                //Add the track to the playlist
+                mPodAddictPlayer.addTrack(track, false);
+                mFabPlaylist.setColorNormal(getResources().getColor(R.color.green_success));
+
+                dismiss();
                 break;
         }
     }
@@ -170,6 +256,100 @@ public class PodcastEpisodeBottomSheetFragment extends BottomSheetDialogFragment
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
+
+
+    @Override
+    public void onTogglePlayPressed() {
+        mPodAddictPlayer.play(track);
+        mPodAddictPlayer.togglePlayback();
+    }
+
+    @Override
+    public void onPreviousPressed() {
+        mPodAddictPlayer.previous();
+    }
+
+    @Override
+    public void onNextPressed() {
+        mPodAddictPlayer.next();
+    }
+
+    @Override
+    public void onSeekToRequested(int milli) {
+        mPodAddictPlayer.seekTo(milli);
+    }
+
+    @Override
+    public void onTrackClicked(Track track) {
+
+        mPlaylistTracks.add(track);
+        mPodAddictPlayer.addTracks(mPlaylistTracks);
+
+        if (mPodAddictPlayer.getTracks().contains(track)) {
+            mPodAddictPlayer.play(track);
+        } else {
+            boolean playNow = !mPodAddictPlayer.isPlaying();
+
+            mPodAddictPlayer.addTrack(track, playNow);
+        }
+    }
+
+    @Override
+    public void onPlayerPlay(Track track, int position) {
+
+        mPodAddictPlayer.play(track);
+
+        //Invoke service to update the widget.
+        Intent active = new Intent(getActivity(), PlayerWidgetService.class);
+        active.setAction("ACTION_START_PLAYER");
+        getActivity().startService(active);
+    }
+
+    @Override
+    public void onPlayerPause() {
+        mFabPlay.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_white));
+
+    }
+
+    @Override
+    public void onPlayerSeekTo(int milli) {
+
+    }
+
+    @Override
+    public void onPlayerDestroyed() {
+
+    }
+
+    @Override
+    public void onBufferingStarted() {
+
+    }
+
+    @Override
+    public void onBufferingEnded() {
+
+    }
+
+    @Override
+    public void onProgressChanged(int milli) {
+
+    }
+
+    @Override
+    public void onErrorOccurred() {
+
+    }
+
+    @Override
+    public void onTrackAdded(Track track) {
+        mPlaylistTracks.add(track);
+    }
+
+    @Override
+    public void onTrackRemoved(Track track, boolean isEmpty) {
 
     }
 }
