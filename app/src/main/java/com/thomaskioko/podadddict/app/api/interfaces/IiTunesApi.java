@@ -14,14 +14,14 @@ import retrofit2.http.Query;
 /**
  * @author Thomas Kioko
  */
-public interface iTunesService {
+public interface IiTunesApi {
 
     /**
      * Get Top rated PodCast from iTunes
      *
      * @return Json Response
      */
-    @GET("us/rss/toppodcasts/limit=50/explicit=true/json")
+    @GET("us/rss/toppodcasts/limit=10/explicit=true/json")
     Call<TopPodCastResponse> getTopRatedPodCasts();
 
     /**
