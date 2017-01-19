@@ -19,4 +19,10 @@
         <item name="android:windowAllowEnterTransitionOverlap">true</item>
         <item name="android:windowAllowReturnTransitionOverlap">true</item>
     </style>
+
+    <!-- Style for the main container of an activity, handle top offset !-->
+    <style name="AppTheme.MainContainer">
+        <item name="android:fitsSystemWindows">true</item>
+        <item name="android:layout_marginTop">0dp</item>
+    </style>
 </resources>
