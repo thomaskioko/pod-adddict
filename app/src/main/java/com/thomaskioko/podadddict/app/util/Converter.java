@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.thomaskioko.podadddict.app.R;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -229,6 +230,25 @@ public final class Converter {
             feedUrl = feedUrl.replace("%253Fid%253D", "?id=");
         }
         return feedUrl;
+    }
+
+    /**
+     * Helper method that converts string to Date object.
+     *
+     * @param dateStr {@link String} date in string format
+     * @return {@link Date} Date object.
+     */
+    public static Date stringToDate(String dateStr) {
+        DateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss", Locale.getDefault());
+        Date date = null;
+        try {
+            date = formatter.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+        return date;
     }
 }
 
