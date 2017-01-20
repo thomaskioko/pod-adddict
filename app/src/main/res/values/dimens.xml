@@ -53,7 +53,7 @@
     <dimen name="shadow_size">10dp</dimen>
 
     <!-- playback view !-->
-    <dimen name="playback_view_height">100dp</dimen>
+    <dimen name="playback_view_height">65dp</dimen>
 
     <!-- activity pick !-->
     <dimen name="activity_pick_bottom_logo_height">120dp</dimen>
@@ -79,10 +79,18 @@
     <dimen name="dimen_small_image_view">40dp</dimen>
     <dimen name="dimen_small_plus_image_view">48dp</dimen>
     <dimen name="dimen_medium_image_view">60dp</dimen>
-    <dimen name="dimen_frame_height">300dp</dimen>
+    <dimen name="dimen_frame_height">220dp</dimen>
 
     <dimen name="material_layout_app_bar_height">320dp</dimen>
     <dimen name="expanded_toolbar_height">80dp</dimen>
     <dimen name="expanded_toolbar_title_margin_bottom">40dp</dimen>
+
+    <!-- cheerleader banner !-->
+    <dimen name="cheerleader_banner_height">190dp</dimen>
+
+
+    <!-- Playback View Image dimensions -->
+    <dimen name="playback_image_height">55dp</dimen>
+    <dimen name="playback_image_width">35dp</dimen>
 
 </resources>
