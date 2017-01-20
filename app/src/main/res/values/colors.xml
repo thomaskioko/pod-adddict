@@ -36,11 +36,11 @@
     <color name="dark_grey">#ff212121</color>
     <color name="black_translucent">#aa000000</color>
 
-    <color name="red">#f61825</color>
-    <color name="red_light">#fff17f86</color>
-    <color name="red_translucent">#aaf61825</color>
-    <color name="red_dark">#c31119</color>
-    <color name="red_darker">#ff951018</color>
+    <color name="blue">#49b5ec</color>
+    <color name="blue_light">#b3e0f7</color>
+    <color name="blue_translucent">#6ec3ef</color>
+    <color name="blue_dark">#25a6e8</color>
+    <color name="blue_darker">@color/colorAccent</color>
 
     <!-- TrackView Colors-->
     <color name="track_view_artwork_border">@android:color/white</color>

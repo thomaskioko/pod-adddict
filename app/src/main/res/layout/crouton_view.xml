@@ -9,7 +9,7 @@
         android:id="@+id/crouton_view_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/crouton_view_background"
+        android:background="@color/colorPrimaryDark"
         android:gravity="center"
         android:padding="@dimen/default_padding"
         android:textColor="@color/crouton_view_text"
