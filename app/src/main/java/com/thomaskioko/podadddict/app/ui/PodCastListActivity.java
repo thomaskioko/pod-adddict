@@ -1,7 +1,6 @@
 package com.thomaskioko.podadddict.app.ui;
 
 import android.annotation.TargetApi;
-import android.app.ActivityOptions;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Typeface;
@@ -115,7 +114,7 @@ public class PodCastListActivity extends AppCompatActivity implements DiscoverPo
 
         /**
          * Check if the user has any subscriptions and decide what fragment to load.
-         * If there are no subscriptions load {@link DiscoverPodcastFragment} otherwise we load
+         * If there are no b subscriptions load {@link DiscoverPodcastFragment} otherwise we load
          * {@link SubscriptionFragment}
          */
         if (cursor != null) {
@@ -130,6 +129,8 @@ public class PodCastListActivity extends AppCompatActivity implements DiscoverPo
                 fragmentTransaction.commit();
                 cursor.close();
             } else {
+                //Initialize the sync adapter
+                PodAdddictSyncAdapter.syncImmediately(this);
                 //Load discover fragment
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.add(R.id.frameLayout_container, new DiscoverPodcastFragment());
@@ -137,11 +138,6 @@ public class PodCastListActivity extends AppCompatActivity implements DiscoverPo
 
             }
         }
-
-        //Initialize the sync adapter
-        PodAdddictSyncAdapter.syncImmediately(this);
-
-
     }
 
 
@@ -213,7 +209,7 @@ public class PodCastListActivity extends AppCompatActivity implements DiscoverPo
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_add_subscription:
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.frameLayout_container,
@@ -249,12 +245,13 @@ public class PodCastListActivity extends AppCompatActivity implements DiscoverPo
     public void onSubscribedFeedItemSelected(Uri feedUri, SubscribedPodCastAdapter.ViewHolder viewHolder) {
         //Pass the uri via the intent
         Intent intent = new Intent(getApplicationContext(), PodCastEpisodeActivity.class).setData(feedUri);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this, viewHolder.imageView,
-                    viewHolder.imageView.getTransitionName()).toBundle());
-        } else {
-            startActivity(intent);
-        }
+        startActivity(intent);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this, viewHolder.imageView,
+//                    viewHolder.imageView.getTransitionName()).toBundle());
+//        } else {
+//            startActivity(intent);
+//        }
     }
 
     /**
