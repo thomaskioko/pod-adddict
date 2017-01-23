@@ -137,6 +137,7 @@ public class DiscoverPodcastFragment extends Fragment implements LoaderManager.L
 
             mRecyclerView.setAdapter(mPodCastAdapterAdapter);
         }else{
+            mProgressBar.setVisibility(View.GONE);
             mTvErrorMessage.setVisibility(View.VISIBLE);
             mTvErrorMessage.setText(getString(R.string.error_no_internet_connection));
         }
