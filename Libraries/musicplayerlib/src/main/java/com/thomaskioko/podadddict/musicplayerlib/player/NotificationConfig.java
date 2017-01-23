@@ -14,7 +14,7 @@ final class NotificationConfig implements Parcelable {
      * Parcelable.
      */
     public static final Parcelable.Creator<NotificationConfig> CREATOR
-        = new Parcelable.Creator<NotificationConfig>() {
+            = new Parcelable.Creator<NotificationConfig>() {
         public NotificationConfig createFromParcel(Parcel source) {
             return new NotificationConfig(source);
         }
