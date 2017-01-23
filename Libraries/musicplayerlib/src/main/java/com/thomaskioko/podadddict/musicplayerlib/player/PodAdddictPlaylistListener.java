@@ -13,7 +13,7 @@ public interface PodAdddictPlaylistListener {
      *
      * @param track track added.
      */
-    public void onTrackAdded(Track track);
+    void onTrackAdded(Track track);
 
 
     /**
@@ -22,5 +22,5 @@ public interface PodAdddictPlaylistListener {
      * @param track   track removed.
      * @param isEmpty true if the playlist is empty after deletion.
      */
-    public void onTrackRemoved(Track track, boolean isEmpty);
+    void onTrackRemoved(Track track, boolean isEmpty);
 }
