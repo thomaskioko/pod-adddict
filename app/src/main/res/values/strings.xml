@@ -112,18 +112,5 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="conetent_description_drag_view">Drag View</string>
 
-    <!-- TODO: Delete after data has been loaded. This is for test purposes -->
-    <array name="dummy_items">
-        <item>@string/title_trrack_name</item>
-        <item>@string/title_trrack_name</item>
-        <item>@string/title_trrack_name</item>
-        <item>@string/title_trrack_name</item>
-        <item>@string/title_trrack_name</item>
-        <item>@string/title_trrack_name</item>
-        <item>@string/title_trrack_name</item>
-        <item>@string/title_trrack_name</item>
-        <item>@string/title_trrack_name</item>
-        <item>@string/title_trrack_name</item>
-    </array>
 
 </resources>
