@@ -1,44 +1,61 @@
 package com.thomaskioko.podadddict.app.ui;
 
 import android.content.Intent;
-import android.graphics.LightingColorFilter;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
-import android.support.v7.app.ActionBar;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.SeekBar;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
+import com.netcosports.recyclergesture.library.swipe.SwipeToDismissDirection;
+import com.netcosports.recyclergesture.library.swipe.SwipeToDismissGesture;
+import com.netcosports.recyclergesture.library.swipe.SwipeToDismissStrategy;
 import com.thomaskioko.podadddict.app.R;
-import com.thomaskioko.podadddict.app.interfaces.Listener;
-import com.thomaskioko.podadddict.app.interfaces.TrackListener;
-import com.thomaskioko.podadddict.app.service.PlayerWidgetService;
-import com.thomaskioko.podadddict.app.ui.fragments.PodCastEpisodesFragment;
+import com.thomaskioko.podadddict.app.api.ApiClient;
+import com.thomaskioko.podadddict.app.api.model.Item;
+import com.thomaskioko.podadddict.app.api.model.responses.PodCastPlaylistResponse;
+import com.thomaskioko.podadddict.app.data.PodCastContract;
+import com.thomaskioko.podadddict.app.data.db.DbUtils;
+import com.thomaskioko.podadddict.app.data.tasks.DatabaseAsyncTask;
+import com.thomaskioko.podadddict.app.data.tasks.InsertEpisodesAsyncTask;
+import com.thomaskioko.podadddict.app.interfaces.DbTaskCallback;
+import com.thomaskioko.podadddict.app.interfaces.InsertEpisodesCallback;
+import com.thomaskioko.podadddict.app.ui.adapter.TracksAdapter;
 import com.thomaskioko.podadddict.app.ui.views.CroutonView;
-import com.thomaskioko.podadddict.app.ui.views.ProgressBarCompat;
+import com.thomaskioko.podadddict.app.ui.views.PlaybackView;
+import com.thomaskioko.podadddict.app.ui.views.TrackView;
+import com.thomaskioko.podadddict.app.util.ApplicationConstants;
+import com.thomaskioko.podadddict.app.util.Converter;
 import com.thomaskioko.podadddict.app.util.GoogleAnalyticsUtil;
+import com.thomaskioko.podadddict.app.util.LogUtils;
 import com.thomaskioko.podadddict.musicplayerlib.model.Track;
 import com.thomaskioko.podadddict.musicplayerlib.player.PodAdddictPlayer;
-import com.thomaskioko.podadddict.musicplayerlib.player.PodAdddictPlayerListener;
 import com.thomaskioko.podadddict.musicplayerlib.player.PodAdddictPlaylistListener;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
-import de.hdodenhof.circleimageview.CircleImageView;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
-
-import static android.view.View.INVISIBLE;
-import static android.view.View.VISIBLE;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Activity used to display and play podcast episodes. This class also implements classes that
@@ -48,64 +65,58 @@ import static android.view.View.VISIBLE;
  *
  * @author kioko
  */
-public class PodCastEpisodeActivity extends AppCompatActivity implements
-        PodAdddictPlayerListener, SeekBar.OnSeekBarChangeListener, Listener, PodAdddictPlaylistListener {
+public class PodCastEpisodeActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
+        DbTaskCallback, InsertEpisodesCallback, PlaybackView.Listener, PodAdddictPlaylistListener, TracksAdapter.Listener {
 
-    //Bind Views using {@link ButterKnife}
-    @Bind(R.id.detail_relative_latout)
-    FrameLayout mFrameLayout;
-    @Bind(R.id.playback_view_artwork)
-    ImageView mArtwork;
-    @Bind(R.id.playback_view_track)
-    TextView mTitle;
-    @Bind(R.id.playback_view_current_time)
-    TextView mCurrentTime;
-    @Bind(R.id.playback_view_duration)
-    TextView mDuration;
-    @Bind(R.id.playback_view_toggle_play)
-    ImageView mPlayPause;
-    @Bind(R.id.playback_view_seekbar)
-    SeekBar mSeekBar;
-    @Bind(R.id.playback_view_loader)
-    ProgressBarCompat mLoader;
-    @Bind(R.id.fullPlayer)
-    RelativeLayout mFullPlayerLayout;
-    @Bind(R.id.player_album_art)
-    ImageView mIvAlbumArt;
-    @Bind(R.id.controller_close)
-    ImageView mIvClose;
-    @Bind(R.id.selected_track_image_sp)
-    CircleImageView mImageArtWork;
-    @Bind(R.id.selected_track_title_sp)
-    TextView mTvArtistName;
+    //Bind view with butterknife
+    @Bind(R.id.activity_artist_progress)
+    ProgressBar mProgress;
+    @Bind(R.id.activity_artist_callback)
+    TextView mCallback;
+    @Bind(R.id.activity_artist_list)
+    RecyclerView mRetrieveTracksRecyclerView;
+    @Bind(R.id.photo)
+    ImageView mImageBanner;
+    @Bind(R.id.activity_artist_banner)
+    View mBanner;
+    @Bind(R.id.activity_artist_playlist)
+    RecyclerView mPlaylistRecyclerView;
+    @Bind(R.id.toolbar)
+    Toolbar mToolbar;
 
     private ArrayList<Track> mPlaylistTracks;
+    private ArrayList<Track> mRetrievedTracks;
 
-    //Crouton, contextual toast.
+    private TracksAdapter mAdapter;
+    private TracksAdapter mPlaylistAdapter;
+
+    private PodAdddictPlayer mPodAdddictPlayer;
+    private PlaybackView mPlaybackView;
     private Crouton mCrouton;
-    private CroutonView mCroutonView;
-    private boolean isFullPlayerShowing;
-    private boolean mSeeking;
-    private static PodAdddictPlayer mPodAdddictPlayer;
-    private TrackListener mRetrieveTracksListener;
-    public static final String LOG_TAG = PodCastEpisodeActivity.class.getSimpleName();
+    private TrackView.Listener mRetrieveTracksListener;
 
-    PodAdddictPlayerListener mAdddictPlayerListener;
+    private Uri mUri;
+
+    private int mScrollY;
+    private int mRetrieveTrackListPaddingBottom;
+    private int mRetrieveTrackListPaddingTop;
+    private static final int LOADER_ID = 100;
+
+    private DbTaskCallback mDbTaskCallback = this;
+    private InsertEpisodesCallback mInsertEpisodesCallback = this;
+
+    private String mFeedId, mImageUrl, mFeedUrl;
+    public static final String LOG_TAG = PodCastEpisodeActivity.class.getSimpleName();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_podcast_detail);
+
         ButterKnife.bind(this);
 
-
-        // Show the Up button in the action bar.
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-
+        mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
 
         //Initialize the player
         mPodAdddictPlayer = new PodAdddictPlayer.Builder()
@@ -114,26 +125,9 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
                 .notificationIcon(R.drawable.ic_notification)
                 .build();
 
-        mRetrieveTracksListener = new TrackListener() {
-            @Override
-            public void onTrackClicked(Track track) {
-                if (mPodAdddictPlayer.getTracks().contains(track)) {
-                    mPodAdddictPlayer.play(track);
-                } else {
-                    boolean playNow = !mPodAdddictPlayer.isPlaying();
-
-                    mPodAdddictPlayer.addTrack(track, playNow);
-
-                    if (!playNow) {
-                        toast(R.string.toast_track_added);
-                    }
-                }
-            }
-
-        };
-
-
-        mPlaylistTracks = new ArrayList<>();
+        initRetrieveTracksRecyclerView();
+        initPlaylistTracksRecyclerView();
+        setTrackListPadding();
 
         // check if tracks are already loaded into the player.
         ArrayList<Track> currentsTracks = mPodAdddictPlayer.getTracks();
@@ -141,11 +135,14 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
             mPlaylistTracks.addAll(currentsTracks);
         }
 
-        mSeekBar.setOnSeekBarChangeListener(this);
-
         // synchronize the player view with the current player (loaded track, playing state, etc.)
-        synchronize(mPodAdddictPlayer);
-
+        mPlaybackView.synchronize(mPodAdddictPlayer);
+        mPlaybackView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), NowPlayingActivity.class));
+            }
+        });
 
         // savedInstanceState is non-null when there is fragment state
         // saved from previous configurations of this activity
@@ -160,32 +157,113 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
 
-            Uri uri = getIntent().getData();
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.podcast_detail_container,
-                            PodCastEpisodesFragment.newInstance(mRetrieveTracksListener, uri))
-                    .commit();
+            mUri = getIntent().getData();
 
             // Being here means we are in animation mode
             supportPostponeEnterTransition();
 
         }
+
+        getSupportLoaderManager().initLoader(LOADER_ID, null, this);
     }
 
     /**
-     * Method to handle click events using {#@link {@link ButterKnife}}
-     *
-     * @param views {@link View}
+     * Helper method that fetches and displays tracks fetched in the players playlist.
      */
-    @OnClick({R.id.detail_relative_latout, R.id.controller_close})
-    void onClickViews(View views) {
-        switch (views.getId()) {
-            case R.id.detail_relative_latout:
-                startActivity(new Intent(getApplicationContext(), NowPlayingActivity.class));
-                break;
-            default:
-                break;
-        }
+    private void initRetrieveTracksRecyclerView() {
+
+        mRetrieveTracksListener = new TrackView.Listener() {
+            @Override
+            public void onTrackClicked(Track track) {
+                if (mPodAdddictPlayer.getTracks().contains(track)) {
+                    mPodAdddictPlayer.play(track);
+                } else {
+                    boolean playNow = !mPodAdddictPlayer.isPlaying();
+
+                    mPodAdddictPlayer.addTrack(track, playNow);
+                    mPlaylistAdapter.notifyDataSetChanged();
+
+                    if (!playNow) {
+                        toast(R.string.toast_track_added);
+                    }
+                }
+            }
+        };
+
+        mRetrievedTracks = new ArrayList<>();
+        mRetrieveTracksRecyclerView.setLayoutManager(new LinearLayoutManager(this,
+                LinearLayoutManager.VERTICAL, false)
+        );
+
+        mAdapter = new TracksAdapter(mRetrieveTracksListener, mRetrievedTracks);
+        mRetrieveTracksRecyclerView.setAdapter(mAdapter);
+
+        mScrollY = 0;
+        RecyclerView.OnScrollListener mRetrieveTracksScrollListener = new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                mScrollY += dy;
+                mBanner.setTranslationY(-mScrollY / 2f);
+            }
+        };
+        mRetrieveTracksRecyclerView.setOnScrollListener(mRetrieveTracksScrollListener);
+
+        mRetrieveTrackListPaddingTop = getResources().getDimensionPixelSize(R.dimen.dimen_frame_height);
+        mRetrieveTrackListPaddingBottom = getResources().getDimensionPixelSize(R.dimen.playback_view_height);
+        mRetrieveTracksRecyclerView.setPadding(0, mRetrieveTrackListPaddingTop, 0, 0);
+    }
+
+    /**
+     * Helper method to initialise the tracks recyclerView
+     */
+    private void initPlaylistTracksRecyclerView() {
+
+        TrackView.Listener mPlaylistTracksListener = new TrackView.Listener() {
+            @Override
+            public void onTrackClicked(Track track) {
+                mPodAdddictPlayer.play(track);
+            }
+        };
+
+        mPlaybackView = new PlaybackView(this);
+        mPlaybackView.setListener(this);
+
+        mPlaylistTracks = new ArrayList<>();
+        mPlaylistAdapter = new TracksAdapter(mPlaylistTracksListener, mPlaylistTracks);
+        mPlaylistAdapter.setHeaderView(mPlaybackView);
+
+        mPlaylistRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        mPlaylistAdapter.setAdapterListener(this);
+
+    }
+
+    /**
+     * Helper method to initialise the playlist recyclerView
+     */
+    private void setTrackListPadding() {
+        mPlaylistRecyclerView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                mPlaylistRecyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
+                int headerListHeight = getResources().getDimensionPixelOffset(R.dimen.playback_view_height);
+                mPlaylistRecyclerView.setPadding(0, mPlaylistRecyclerView.getHeight() - headerListHeight, 0, 0);
+                mPlaylistRecyclerView.setAdapter(mPlaylistAdapter);
+
+                // attach the dismiss gesture.
+                new SwipeToDismissGesture.Builder(SwipeToDismissDirection.HORIZONTAL)
+                        .on(mPlaylistRecyclerView)
+                        .apply(new DismissStrategy())
+                        .backgroundColor(getResources().getColor(R.color.grey))
+                        .build();
+
+                // hide if current play playlist is empty.
+                if (mPlaylistTracks.isEmpty()) {
+                    mPlaybackView.setTranslationY(headerListHeight);
+                }
+                return true;
+            }
+        });
     }
 
     @Override
@@ -207,17 +285,17 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-//        mPodAdddictPlayer.registerPlayerListener(this);
-//        mPodAdddictPlayer.registerPlayerListener(mAdddictPlayerListener);
-//        mPodAdddictPlayer.registerPlayerListener(mRetrieveTracksListener);
+        mPodAdddictPlayer.registerPlayerListener(mPlaybackView);
+        mPodAdddictPlayer.registerPlayerListener(mPlaylistAdapter);
+        mPodAdddictPlayer.registerPlaylistListener(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-//        mPodAdddictPlayer.unregisterPlayerListener(this);
-//        mPodAdddictPlayer.unregisterPlayerListener(mAdddictPlayerListener);
-//        mPodAdddictPlayer.unregisterPlayerListener(mRetrieveTracksListener);
+        mPodAdddictPlayer.unregisterPlayerListener(mPlaybackView);
+        mPodAdddictPlayer.unregisterPlayerListener(mPlaylistAdapter);
+        mPodAdddictPlayer.unregisterPlaylistListener(this);
     }
 
     @Override
@@ -226,206 +304,14 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
         mPodAdddictPlayer.destroy();
     }
 
-
     @Override
-    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        int[] secondMinute = getSecondMinutes(progress);
-        mCurrentTime.setText(String.format(getResources().getString(R.string.playback_view_time), secondMinute[0], secondMinute[1]));
-    }
-
-    @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {
-        mSeeking = true;
-    }
-
-    @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {
-        mSeeking = false;
-        this.onSeekToRequested(seekBar.getProgress());
-    }
-
-    @Override
-    public void onPlayerPlay(Track track, int position) {
-        setTrack(track);
-    }
-
-    @Override
-    public void onPlayerPause() {
-        mPlayPause.setImageResource(R.drawable.ic_play_white);
-        if (mPlayPause.getVisibility() == INVISIBLE) {
-            mLoader.setVisibility(INVISIBLE);
-            mPlayPause.setVisibility(VISIBLE);
-        }
-    }
-
-    @Override
-    public void onPlayerSeekTo(int milli) {
-        mSeekBar.setProgress(milli);
-    }
-
-    @Override
-    public void onPlayerDestroyed() {
-        mPlayPause.setImageResource(R.drawable.ic_play_white);
-    }
-
-    @Override
-    public void onBufferingStarted() {
-        mLoader.setVisibility(VISIBLE);
-        mPlayPause.setVisibility(INVISIBLE);
-    }
-
-    @Override
-    public void onBufferingEnded() {
-        mLoader.setVisibility(INVISIBLE);
-        mPlayPause.setVisibility(VISIBLE);
-    }
-
-    @Override
-    public void onProgressChanged(int milli) {
-        if (!mSeeking) {
-            mSeekBar.setProgress(milli);
-            int[] secondMinute = getSecondMinutes(milli);
-            String duration = String.format(getResources().getString(R.string.playback_view_time),
-                    secondMinute[0], secondMinute[1]);
-            mCurrentTime.setText(duration);
-        }
-    }
-
-    @Override
-    public void onErrorOccurred() {
-
-    }
-
-
-    /**
-     * Helper method to populate the track on the player.
-     *
-     * @param track {@link Track} object
-     */
-    private void setTrack(Track track) {
-        if (track == null) {
-            mTitle.setText("");
-            mArtwork.setImageDrawable(null);
-            mPlayPause.setImageResource(R.drawable.ic_play_white);
-            mSeekBar.setProgress(0);
-            String none = String.format(getResources().getString(R.string.playback_view_time), 0, 0);
-            mCurrentTime.setText(none);
-            mDuration.setText(none);
+    public void onBackPressed() {
+        if (mPlaybackView.getTop() < mPlaylistRecyclerView.getHeight() - mPlaybackView.getHeight()) {
+            mPlaylistRecyclerView.getLayoutManager().smoothScrollToPosition(mPlaylistRecyclerView, null, 0);
         } else {
-
-            mFrameLayout.setVisibility(VISIBLE);
-
-            isFullPlayerShowing = true;
-//            mFullPlayerLayout.setVisibility(VISIBLE);
-
-            //Log event to Google analytics
-            GoogleAnalyticsUtil.trackEvent(
-                    getResources().getString(R.string.action_category_stream),
-                    getResources().getString(R.string.action_action_stream),
-                    track.getTitle()
-            );
-
-            //Invoke service to update the widget.
-            Intent active = new Intent(getApplicationContext(), PlayerWidgetService.class);
-            active.setAction("ACTION_START_PLAYER");
-            startService(active);
-
-            //This will create a blur effect
-            mArtwork.setColorFilter(new LightingColorFilter(0xff828282, 0x000000));
-
-            Picasso.with(getApplicationContext())
-                    .load(track.getArtworkUrl())
-                    .fit()
-                    .centerCrop()
-                    .placeholder(R.color.placeholder)
-                    .into(mArtwork);
-
-            //Load the art work
-            Picasso.with(getApplicationContext())
-                    .load(track.getArtworkUrl())
-                    .fit()
-                    .centerCrop()
-                    .placeholder(R.color.placeholder)
-                    .into(mImageArtWork);
-
-            Picasso.with(getApplicationContext())
-                    .load(track.getArtworkUrl())
-                    .fit()
-                    .centerCrop()
-                    .placeholder(R.color.placeholder)
-                    .into(mIvAlbumArt);
-
-            mTitle.setText(track.getTitle());
-            mPlayPause.setImageResource(R.drawable.ic_pause_white);
-            mTvArtistName.setText(track.getArtist());
-
-            mSeekBar.setMax(((int) track.getDurationInMilli()));
-            String none = String.format(getResources().getString(R.string.playback_view_time), 0, 0);
-            int[] secondMinute = getSecondMinutes(track.getDurationInMilli());
-            String duration = String.format(getResources().getString(R.string.playback_view_time), secondMinute[0], secondMinute[1]);
-            mCurrentTime.setText(none);
-            mDuration.setText(duration);
-
+            super.onBackPressed();
         }
     }
-
-    @OnClick({R.id.playback_view_next, R.id.playback_view_previous, R.id.playback_view_toggle_play})
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.playback_view_next:
-                this.onNextPressed();
-                break;
-            case R.id.playback_view_previous:
-                this.onPreviousPressed();
-                break;
-            case R.id.playback_view_toggle_play:
-                this.onTogglePlayPressed();
-                break;
-
-        }
-    }
-
-    /**
-     * Helper method that converts time in milliseconds to standard time hh:mm
-     *
-     * @param milli time in milliseconds
-     * @return formatted time.
-     */
-    private int[] getSecondMinutes(long milli) {
-        int inSeconds = (int) milli / 1000;
-        return new int[]{inSeconds / 60, inSeconds % 60};
-    }
-
-    /**
-     * Synchronize the player view with the current player state.
-     * <p/>
-     * Basically, check if a track is loaded as well as the playing state.
-     *
-     * @param player player currently used.
-     */
-    public void synchronize(PodAdddictPlayer player) {
-        setTrack(player.getCurrentTrack());
-        mLoader.setVisibility(INVISIBLE);
-        mPlayPause.setVisibility(VISIBLE);
-        setPlaying(player.isPlaying());
-    }
-
-    /**
-     * Used to update the play/pause button.
-     * <p/>
-     * Should be synchronize with the player playing state.
-     * See also : {@link PodAdddictPlayer#isPlaying()}.
-     *
-     * @param isPlaying true if a track is currently played.
-     */
-    private void setPlaying(boolean isPlaying) {
-        if (isPlaying) {
-            mPlayPause.setImageResource(R.drawable.ic_pause_white);
-        } else {
-            mPlayPause.setImageResource(R.drawable.ic_play_white);
-        }
-    }
-
 
     @Override
     public void onTogglePlayPressed() {
@@ -447,6 +333,35 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
         mPodAdddictPlayer.seekTo(milli);
     }
 
+    @Override
+    public void onTrackAdded(Track track) {
+
+        if (mPlaylistTracks.isEmpty()) {
+            mPlaylistRecyclerView.animate().translationY(0);
+            mRetrieveTracksRecyclerView.setPadding(0,
+                    mRetrieveTrackListPaddingTop, 0, mRetrieveTrackListPaddingBottom);
+        }
+        mPlaylistTracks.add(track);
+        mPlaylistAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onTrackRemoved(Track track, boolean isEmpty) {
+        if (mPlaylistTracks.remove(track)) {
+            mPlaylistAdapter.notifyDataSetChanged();
+        }
+        if (isEmpty) {
+            mPlaylistRecyclerView.animate().translationY(mPlaybackView.getHeight());
+            mRetrieveTracksRecyclerView.setPadding(0, mRetrieveTrackListPaddingTop, 0, 0);
+        }
+    }
+
+    // Adapter callbacks.
+    @Override
+    public void onTrackDismissed(int i) {
+        mPodAdddictPlayer.removeTrack(i);
+    }
+
     /**
      * Used to display crouton toast.
      *
@@ -457,19 +372,160 @@ public class PodCastEpisodeActivity extends AppCompatActivity implements
             mCrouton.cancel();
             mCrouton = null;
         }
-        mCroutonView = new CroutonView(this, getString(message));
+        CroutonView mCroutonView = new CroutonView(this, getString(message));
 
-        mCrouton = Crouton.make(this, mCroutonView, R.id.activity_main_container);
+        mCrouton = Crouton.make(this, mCroutonView, R.id.activity_artist_main_container);
         mCrouton.show();
     }
 
+
     @Override
-    public void onTrackAdded(Track track) {
-        mPlaylistTracks.add(track);
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(
+                this,
+                mUri,
+                null,
+                null,
+                null,
+                null
+        );
     }
 
     @Override
-    public void onTrackRemoved(Track track, boolean isEmpty) {
-        mPlaylistTracks.remove(track);
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        // We need to start the enter transition after the data has loaded
+        while (data.moveToNext()) {
+            mFeedId = data.getString(ApplicationConstants.COLUMN_SUBSCRIBED_PODCAST_FEED_ID);
+            mImageUrl = data.getString(ApplicationConstants.COLUMN_SUBSCRIBED_PODCAST_FEED_IMAGE_URL);
+            mFeedUrl = data.getString(ApplicationConstants.COLUMN_SUBSCRIBED_PODCAST_FEED_URL);
+
+
+            Glide.with(this)
+                    .load(mImageUrl)
+                    .crossFade()
+                    .placeholder(R.color.placeholder)
+                    .into(mImageBanner);
+            loadData();
+        }
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
+
+    /**
+     * Helper method that loads data from the DB. This helps us reused code since this functionality
+     * is used in two places.
+     * 1. When the fragment is first created.
+     * 2. When the screen orientation changes and {@link #onSaveInstanceState(Bundle)} is invoked.
+     */
+    private void loadData() {
+        try {
+
+            /**
+             * Check if there is any data saved locally. If not we fetch the data, save it locally
+             * and load it from Sql.
+             */
+            if (DbUtils.episodeDbHasRecords(getApplicationContext(), mFeedId)) {
+
+                Uri podCastEpisodeUri = PodCastContract.PodCastEpisodeEntry.buildPodCastEpisode(Integer.parseInt(mFeedId));
+
+                //Use an async task to load the data. prevent the app from hanging
+                new DatabaseAsyncTask(getApplicationContext(), mDbTaskCallback).execute(podCastEpisodeUri);
+            } else {
+                fetchFeedData(mFeedId, mFeedUrl);
+            }
+        } catch (UnsupportedEncodingException e) {
+            LogUtils.showErrorLog(LOG_TAG, "@loadData: " + e.getMessage());
+            GoogleAnalyticsUtil.trackException(getApplicationContext(), e);
+        }
+    }
+
+
+    /**
+     * Helper method to fetch podcast playlist
+     *
+     * @param feedUrl {@link String} Url containing podacast playlist
+     */
+    private void fetchFeedData(final String feedId, String feedUrl) throws UnsupportedEncodingException {
+
+        ApiClient apiClient = new ApiClient();
+        apiClient.setIsDebug(true);
+        apiClient.setEndpointUrl(ApplicationConstants.LOCAL_SERVER_END_POINT);
+
+        //Invoke API Endpoint to fetch feed episodes
+        Call<PodCastPlaylistResponse> podCastPlaylistResponseCall = apiClient.iTunesServices()
+                .getPodCastPlaylistResponse(
+                        URLEncoder.encode(Converter.formatUrl(feedUrl), "UTF-8") //Encode the URl ensuring it's in the right format.
+                );
+        podCastPlaylistResponseCall.enqueue(new Callback<PodCastPlaylistResponse>() {
+            @Override
+            public void onResponse(Call<PodCastPlaylistResponse> call, Response<PodCastPlaylistResponse> response) {
+
+                if (response.code() == 200) {
+                    List<Item> feedItemList = response.body().getRss().getChannel().getItem();
+
+                    new InsertEpisodesAsyncTask(getApplicationContext(), mInsertEpisodesCallback,
+                            feedItemList).execute(feedId);
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PodCastPlaylistResponse> call, Throwable t) {
+                //TODO:: Display error mesage
+            }
+        });
+    }
+
+    @Override
+    public void CallbackRequest(int recordCount) {
+        if (recordCount != 0) {
+            loadData();
+        }
+    }
+
+    @Override
+    public void CallbackRequest(List<Item> resultArrayList) {
+
+        mProgress.setVisibility(View.GONE);
+
+        for (Item item : resultArrayList) {
+
+            Track track = new Track();
+            track.setTitle(item.getTitle());
+            track.setArtist(item.getItunesAuthor());
+            track.setDescription(item.getItunesSummary());
+            track.setStreamUrl(item.getEnclosure().getUrl());
+            track.setCreationDate(Converter.stringToDate(item.getPubDate()));
+            track.setArtworkUrl(mImageUrl);
+
+            if (!item.getItunesDuration().contains(":")) {
+                track.setDurationInMilli(Long.parseLong(item.getItunesDuration()));
+            }
+
+            mRetrievedTracks.add(track);
+        }
+
+        mAdapter = new TracksAdapter(mRetrieveTracksListener, mRetrievedTracks);
+        mRetrieveTracksRecyclerView.setAdapter(mAdapter);
+
+    }
+
+
+    /**
+     * Swipe to dismiss strategy used to disable swipe to dismiss on the header.
+     */
+    private static class DismissStrategy extends SwipeToDismissStrategy {
+        @Override
+        public SwipeToDismissDirection getDismissDirection(int position) {
+            if (position == 0) {
+                return SwipeToDismissDirection.NONE;
+            } else {
+                return SwipeToDismissDirection.HORIZONTAL;
+            }
+        }
     }
 }
