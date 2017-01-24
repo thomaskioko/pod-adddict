@@ -1,34 +1,48 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout
+    android:id="@+id/activity_artist_main_container"
+    style="@style/AppTheme.MainContainer"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context=".ui.PodCastEpisodeActivity"
-    android:id="@+id/activity_main_container"
-    tools:ignore="MergeRootFrame">
+    tools:context=".ui.PodCastEpisodeActivity">
+
+    <include
+        android:id="@+id/activity_artist_banner"
+        layout="@layout/podcast_header_view" />
 
 
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/podcast_detail_container"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/activity_artist_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/detail_relative_latout"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:clipToPadding="false"
+        android:divider="@null" />
 
-    <!-- Full PlayerView-->
-    <include layout="@layout/layout_full_player_view" />
+    <com.thomaskioko.podadddict.app.ui.views.ProgressBarCompat
+        android:id="@+id/activity_artist_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/progress_color"
+        android:visibility="visible" />
 
-    <FrameLayout
-        android:id="@+id/detail_relative_latout"
+    <TextView
+        android:id="@+id/activity_artist_callback"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/playback_view_height"
+        android:textColor="@color/black"
+        android:visibility="invisible" />
+
+    <com.thomaskioko.podadddict.app.ui.views.BottomRecyclerListView
+        android:id="@+id/activity_artist_playlist"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_mini_player"
-        android:layout_alignParentBottom="true"
-        android:visibility="gone">
-
-        <include
-            layout="@layout/playback_view"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/playback_view_height" />
-    </FrameLayout>
-</RelativeLayout>
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:divider="@null"
+        android:overScrollMode="never"
+        android:scrollbars="none" />
+</FrameLayout>
