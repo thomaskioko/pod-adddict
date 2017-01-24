@@ -40,6 +40,9 @@
     <string name="title_add_podcast">Add Podcast</string>
     <string name="title_player">Music Player</string>
     <string name="new_label">New</string>
+    <string name="title_now_playing">Now Playing</string>
+    <string name="title_up_next">Up Next</string>
+    <string name="title_podcast_summary">Podcast Summary</string>
 
     <!-- Time Strings -->
     <string name="time_seconds">seconds</string>
