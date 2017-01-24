@@ -17,7 +17,7 @@
         android:id="@+id/indicator"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/mainControllerContainer"
+        android:layout_above="@+id/seekBarContainer"
         android:background="@null">
 
         <android.support.design.widget.AppBarLayout
@@ -40,10 +40,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
-                android:layout_marginTop="-16dp"
+                android:layout_marginTop="-12dp"
                 android:background="@android:color/transparent"
                 app:fillColor="?android:attr/textColorSecondary"
-                app:radius="4dp"
+                app:radius="2dp"
                 app:strokeColor="?android:attr/textColorSecondary" />
 
         </android.support.design.widget.AppBarLayout>
@@ -59,62 +59,21 @@
 
     <!-- Player controls layout -->
 
-    <!-- Episode Time layout -->
-    <RelativeLayout
-        android:id="@+id/seekBarContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/toggleContainer"
-        android:background="@color/colorPrimary"
-        android:padding="7dp">
-
-        <TextView
-            android:id="@+id/playback_view_current_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="10dp"
-            android:text="@string/text_time"
-            android:textColor="#FFF" />
-
-        <TextView
-            android:id="@+id/playback_view_duration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="10dp"
-            android:text="@string/text_time"
-            android:textColor="#FFF" />
-
-        <SeekBar
-            android:id="@+id/playback_view_seekbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
-            android:thumb="@drawable/custom_progress_bar_thumb"
-            android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@+id/playback_view_duration"
-            android:layout_toRightOf="@+id/playback_view_current_time"/>
-
-    </RelativeLayout>
 
     <!-- Episode Options layout -->
     <RelativeLayout
         android:id="@+id/toggleContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_above="@+id/seekBarContainer"
         android:background="@color/colorPrimary">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:orientation="horizontal"
-            android:visibility="gone"
-            android:padding="4dp">
+            android:padding="4dp"
+            android:visibility="gone">
 
             <View
                 android:layout_width="0dp"
@@ -170,14 +129,78 @@
 
     </RelativeLayout>
 
+    <!-- Episode Time layout -->
     <RelativeLayout
+        android:id="@+id/seekBarContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/mainControllerContainer"
+        android:background="@color/colorPrimary"
+        android:padding="7dp">
+
+        <TextView
+            android:id="@+id/tv_now_playing_track"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:text="@string/title_artist"
+            android:textColor="#FFF"
+            android:textSize="@dimen/text_size_medium" />
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_now_playing_track"
+            android:background="@color/colorPrimary"
+            android:padding="7dp">
+
+
+            <TextView
+                android:id="@+id/playback_view_current_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="10dp"
+                android:text="@string/text_time"
+                android:textColor="#FFF" />
+
+            <TextView
+                android:id="@+id/playback_view_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="10dp"
+                android:text="@string/text_time"
+                android:textColor="#FFF" />
+
+            <SeekBar
+                android:id="@+id/playback_view_seekbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp"
+                android:layout_toLeftOf="@+id/playback_view_duration"
+                android:layout_toRightOf="@+id/playback_view_current_time"
+                android:thumb="@drawable/custom_progress_bar_thumb" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayoutc
         android:id="@+id/mainControllerContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
         android:background="@color/colorPrimary"
-        android:padding="5dp"
-        android:layout_above="@+id/seekBarContainer"
-        android:layout_alignParentStart="true">
+        android:padding="5dp">
 
         <ImageView
             android:id="@+id/playback_view_previous"
@@ -204,6 +227,7 @@
             android:id="@+id/playback_view_toggle_play"
             android:layout_width="48dp"
             android:layout_height="65dp"
+            android:layout_centerInParent="true"
             android:layout_gravity="end|bottom"
             android:layout_marginRight="48dp"
             android:layout_marginTop="5dp"
@@ -211,7 +235,6 @@
             android:contentDescription="@string/content_description_play_or_pause_music"
             android:padding="@dimen/default_padding"
             android:scaleType="centerCrop"
-            android:layout_centerInParent="true"
             android:src="@drawable/ic_play_white"
             android:visibility="invisible" />
 
@@ -219,11 +242,11 @@
             android:id="@+id/playback_view_loader"
             android:layout_width="48dp"
             android:layout_height="65dp"
+            android:layout_centerInParent="true"
             android:layout_gravity="end|bottom"
             android:layout_marginRight="48dp"
             android:layout_marginTop="5dp"
             android:indeterminate="true"
-            android:layout_centerInParent="true"
             android:indeterminateTint="@color/progress_color" />
 
         <com.wang.avi.AVLoadingIndicatorView
@@ -248,7 +271,7 @@
             android:clickable="true"
             android:src="@drawable/ic_skip_next_white_48dp" />
 
-    </RelativeLayout>
+    </RelativeLayoutc>
 
 
 </RelativeLayout>
