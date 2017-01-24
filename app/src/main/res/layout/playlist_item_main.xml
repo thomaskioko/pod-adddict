@@ -3,38 +3,55 @@
     android:id="@+id/item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
-    android:background="?android:attr/selectableItemBackground"
-    android:foreground="?selectableItemBackground">
+    android:foreground="?selectableItemBackground"
+    android:paddingTop="3dp">
+
+    <ImageView
+        android:id="@+id/handle"
+        android:layout_width="@dimen/dimen_medium_image_view"
+        android:layout_height="@dimen/dimen_medium_image_view"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:contentDescription="@string/conetent_description_drag_view"
+        android:scaleType="center"
+        android:src="@drawable/ic_reorder_grey_500_24dp" />
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="20dp"
+        android:layout_toRightOf="@+id/episode_artwork"
+        android:maxLines="@integer/max_line"
+        android:text="@string/title_trrack_name"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <ImageView
         android:id="@+id/episode_artwork"
         android:layout_width="@dimen/expanded_toolbar_height"
         android:layout_height="@dimen/expanded_toolbar_height"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="3dp"
         android:contentDescription="@string/content_description_art_work"
         android:scaleType="center" />
 
     <TextView
-        android:id="@+id/text"
+        android:id="@+id/author"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toEndOf="@+id/episode_artwork"
-        android:layout_toStartOf="@+id/handle"
+        android:layout_below="@+id/text"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="3dp"
+        android:textSize="@dimen/text_size_medium"
+        android:fontFamily="sans-serif-light"
+        android:layout_toRightOf="@+id/episode_artwork"
         android:maxLines="@integer/max_line"
-        android:text="@string/title_trrack_name"
+        android:text="@string/title_artist_name"
         android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <ImageView
-        android:id="@+id/handle"
-        android:layout_width="@dimen/dimen_medium_image_view"
-        android:layout_height="@dimen/dimen_medium_image_view"
-        android:scaleType="center"
-        android:layout_centerVertical="true"
-        android:src="@drawable/ic_reorder_grey_500_24dp"
-        android:contentDescription="@string/conetent_description_drag_view"
-        android:layout_alignParentEnd="true" />
 </RelativeLayout>
