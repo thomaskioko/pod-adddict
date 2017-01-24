@@ -22,6 +22,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 
 /**
  * Simple RecyclerView.Adapter that implements {@link ItemTouchHelperAdapter} to respond to move and
@@ -40,7 +43,8 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ItemVi
 
     /**
      * Constructor.
-     *  @param context           {@link Context}
+     *
+     * @param context           {@link Context}
      * @param dragStartListener
      * @param mPlaylistTracks
      * @param listener
@@ -65,6 +69,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ItemVi
         final Track item = mItemList.get(position);
 
         holder.textView.setText(item.getTitle());
+        holder.author.setText(item.getArtist());
         Picasso.with(mContext)
                 .load(item.getArtworkUrl())
                 .fit()
@@ -116,16 +121,20 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ItemVi
     static class ItemViewHolder extends RecyclerView.ViewHolder implements
             ItemTouchHelperViewHolder {
 
-        final TextView textView;
-        final ImageView handleView;
-        final ImageView mArtWork;
-        final View mView;
+        @Bind(R.id.text)
+        TextView textView;
+        @Bind(R.id.author)
+        TextView author;
+        @Bind(R.id.handle)
+        ImageView handleView;
+        @Bind(R.id.episode_artwork)
+        ImageView mArtWork;
+        View mView;
 
         ItemViewHolder(View itemView) {
             super(itemView);
-            textView = (TextView) itemView.findViewById(R.id.text);
-            handleView = (ImageView) itemView.findViewById(R.id.handle);
-            mArtWork = (ImageView) itemView.findViewById(R.id.episode_artwork);
+            ButterKnife.bind(this, itemView);
+
             mView = itemView;
         }
 
