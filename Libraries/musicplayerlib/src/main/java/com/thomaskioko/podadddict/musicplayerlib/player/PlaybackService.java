@@ -178,11 +178,6 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
     private static final String THREAD_NAME = TAG + "player_thread";
 
     /**
-     * The size of the bitmap to load for the media session artwork. (in pixels).
-     */
-    private static final int MEDIA_SESSION_ARTWORK_SIZE = 300;
-
-    /**
      * Thread used to complete work off the main thread.
      */
     private HandlerThread mHandlerThread;
@@ -216,11 +211,6 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
      * Lock used to keep wifi while playing.
      */
     private WifiManager.WifiLock mWifiLock;
-
-    /**
-     * SoundCloudClientId.
-     */
-    private String mSoundCloundClientId;
 
     /**
      * Used to broadcast events.
@@ -281,16 +271,6 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
 
     /**
      * Helper method to return the current playing track.
-     *
-     * @return {@link Track} Current playing track
-     */
-    public static Track getCurrentTrack() {
-
-        return mPlayerPlaylist.getCurrentTrack();
-    }
-
-    /**
-     * Pause the PodAdddict player.
      *
      * @param context context from which the service will be started.
      */
@@ -666,7 +646,6 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
             mMediaSession.setPlaybackState(MediaSessionWrapper.PLAYBACK_STATE_PLAYING);
             // start loading of the artwork.
             loadArtwork(this, track.getArtworkUrl());
-
             // broadcast events
             Intent intent = new Intent(PlaybackListener.ACTION_ON_TRACK_PLAYED);
             intent.putExtra(PlaybackListener.EXTRA_KEY_TRACK, track);
@@ -816,7 +795,6 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
             Bundle data = msg.getData();
             switch (msg.what) {
                 case WHAT_PLAY:
-                    initializeMediaPlayer();
                     playTrack(((Track) data.getParcelable(BUNDLE_KEY_TRACK)));
                     break;
                 case WHAT_PAUSE_PLAYER:
@@ -934,5 +912,15 @@ public class PlaybackService extends Service implements MediaPlayer.OnErrorListe
 
             stopSelf();
         }
+    }
+
+    /**
+     * Helper method to return the current playing track.
+     *
+     * @return {@link Track} Current playing track
+     */
+    public static Track getCurrentTrack() {
+
+        return mPlayerPlaylist.getCurrentTrack();
     }
 }
