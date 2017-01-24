@@ -305,7 +305,7 @@ public final class PodAdddictPlayer implements Action1<ArrayList<Track>> {
             listener.onTrackAdded(track);
         }
         if (playNow) {
-            play(track);
+            play(mPlayerPlaylist.size() - 1);
         }
     }
 
