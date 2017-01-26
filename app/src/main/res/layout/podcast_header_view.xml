@@ -1,0 +1,21 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dimen_frame_height">
+
+    <ImageView
+        android:id="@+id/photo"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_frame_height"
+        android:background="@drawable/photo_background_protection"
+        android:contentDescription="@string/content_description_art_work"
+        android:elevation="4dp"
+        android:scaleType="fitXY"
+        android:transitionName="@string/transition_photo" />
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?android:actionBarSize"
+        android:navigationIcon="@drawable/ic_arrow_back" />
+
+</FrameLayout>
