@@ -49,6 +49,8 @@ public class NowPlayingActivity extends AppCompatActivity implements
     SeekBar mSeekBar;
     @Bind(R.id.playback_view_loader)
     ProgressBarCompat mLoader;
+    @Bind(R.id.tv_now_playing_track)
+    TextView mTvNowPlaying;
 
     private boolean mSeeking;
     private Track mTrack;
@@ -85,6 +87,8 @@ public class NowPlayingActivity extends AppCompatActivity implements
             actionBar.setHomeButtonEnabled(true);
             actionBar.setTitle(mTrack.getTitle());
         }
+
+        mTvNowPlaying.setText(mTrack.getTitle());
 
 
         mAdddictPlayerListener = this;
